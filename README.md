@@ -11,7 +11,7 @@ _in alphabetical order_
 1. Shakuntala Baichoo (University of Mauritius, H3ABioNet)
 2. Alexandros Dimopoulos (Institute for Fundamental Biomedical Science, BSRC Al. Fleming / ELIXIR - GR)
 3. Wandrille Duchemin
-4. Thuong Van Du Tran
+4. Van Du T. Tran (SIB Swiss Institute of Bioinformatics, Vital-IT group)
 5. Pedro L. Fernandes
 6. Alireza Khanteymoori
 7. Anmol Kiran (Malawi-Liverpool-Wellcome Trust, H3ABionet)
