@@ -14,7 +14,7 @@ _in alphabetical order_
 4. Thuong Van Du Tran
 5. Pedro L. Fernandes
 6. Alireza Khanteymoori
-7. Anmol Kiran
+7. Anmol Kiran (Malawi-Liverpool-Wellcome Trust, H3ABionet)
 8. Claudio Mirabello
 9. Fotis Psomopoulos (Institute of Applied Biosciences, Centre for Research and Technology Hellas / ELIXIR-GR)
 10. Bengt Sennblad
