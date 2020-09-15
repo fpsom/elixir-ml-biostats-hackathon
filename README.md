@@ -9,7 +9,7 @@ Working repo for the ELIXIR lesson hackathon on Machine Learning and Biostatisti
 _in alphabetical order_
 
 1. Shakuntala Baichoo (University of Mauritius, H3ABioNet)
-2. Alexandros Dimopoulos
+2. Alexandros Dimopoulos (Institute for Fundamental Biomedical Science, BSRC Al. Fleming / ELIXIR - GR)
 3. Wandrille Duchemin
 4. Thuong Van Du Tran
 5. Pedro L. Fernandes
