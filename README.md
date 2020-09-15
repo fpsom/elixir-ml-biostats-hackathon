@@ -60,3 +60,21 @@ _content should be open (i.e. under CC license), and practical (i.e. hands-on ex
 4. [Cambridge bioinformatics training GitHub repo](https://github.com/cambiotraining)  ([Cambridge Coding Academy website](http://cambiotraining.github.io/))
   - **Notes**: Contains various relevant courses that can be re-used / adapted [Course materials for An Introduction to Machine Learning 2019](https://bioinformatics-training.github.io/intro-machine-learning-2019/), [Basic statistics and data handling](https://github.com/cambiotraining/stats-intro)
   
+
+## Lesson templates
+
+1. [The Turing Way](https://the-turing-way.netlify.app/)
+ - **Notes**: Uses [JupyterBook](https://jupyterbook.org/intro.html), in GitHub looks like [this](https://github.com/alan-turing-institute/the-turing-way/tree/master/book).
+ 
+2. [The Carpentries Template](https://github.com/carpentries/lesson-example)
+ - **Notes**: Custom created template.
+ 
+3. [The Open Science Training Handbook](https://book.fosteropenscience.eu/en/)
+  - **Notes**: Based on [Gitbook](https://docs.gitbook.com/)
+
+4. [Open Science Open Data Open Science Book](https://pfern.github.io/OSODOS/gitbook/)
+  - **Notes**: Based on [Gitbook](https://docs.gitbook.com/)
+  
+5. Other? (EG jekyll templates)
+
+ 
