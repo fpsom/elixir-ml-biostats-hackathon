@@ -17,7 +17,7 @@ _in alphabetical order_
 7. Anmol Kiran (Malawi-Liverpool-Wellcome Trust, H3ABionet)
 8. Claudio Mirabello (Linköping University, NBIS)
 9. Fotis Psomopoulos (Institute of Applied Biosciences, Centre for Research and Technology Hellas / ELIXIR-GR)
-10. Bengt Sennblad
+10. Bengt Sennblad (Uppsala University, NBIS)
 
 
 
