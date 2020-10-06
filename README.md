@@ -56,25 +56,28 @@ _content should be open (i.e. under CC license), and practical (i.e. hands-on ex
 
 4. [Cambridge Coding Academy GitHub repo](https://github.com/cambridgecoding)  ([Cambridge Coding Academy website](https://cambridgecoding.com/))
   - **Notes**:
-  
-4. [Cambridge bioinformatics training GitHub repo](https://github.com/cambiotraining)  ([Cambridge Coding Academy website](http://cambiotraining.github.io/))
+
+5. [Cambridge bioinformatics training GitHub repo](https://github.com/cambiotraining)  ([Cambridge Coding Academy website](http://cambiotraining.github.io/))
   - **Notes**: Contains various relevant courses that can be re-used / adapted [Course materials for An Introduction to Machine Learning 2019](https://bioinformatics-training.github.io/intro-machine-learning-2019/), [Basic statistics and data handling](https://github.com/cambiotraining/stats-intro)
-  
+
+6. [NBIS Workshop in Biostatistics and Machine Learning](https://nbisweden.github.io/workshop-mlbiostatistics/)
+  - **Notes**: Contains the teaching material (lectures/tutorials/labs) for the different course sessions, see [link to course info and schedule](https://nbisweden.github.io/workshop-mlbiostatistics/) for how these sessions are structured in the course. This workshop will be given in November 2020 and material above is in the process of being updated from the 2019 workshop and reformatted into a common format, in other words *Work in progress*. 
+
+7. [NBIS Workshop in Omics Integration](https://github.com/NBISweden/workshop_omics_integration)
+  - **Notes**: Contains the teaching material (lectures/tutorials/labs) for the different course sessions, see [link to course info and schedule](https://nbisweden.github.io/workshop_omics_integration/) for how these sessions are structured in the course. This workshop is currently being given (October 2020) and material above is still being updated, in other words *Work in progress*
 
 ## Lesson templates
 
 1. [The Turing Way](https://the-turing-way.netlify.app/)
  - **Notes**: Uses [JupyterBook](https://jupyterbook.org/intro.html), in GitHub looks like [this](https://github.com/alan-turing-institute/the-turing-way/tree/master/book).
- 
+
 2. [The Carpentries Template](https://github.com/carpentries/lesson-example)
  - **Notes**: Custom created template.
- 
+
 3. [The Open Science Training Handbook](https://book.fosteropenscience.eu/en/)
   - **Notes**: Based on [Gitbook](https://docs.gitbook.com/)
 
 4. [Open Science Open Data Open Science Book](https://pfern.github.io/OSODOS/gitbook/)
   - **Notes**: Based on [Gitbook](https://docs.gitbook.com/)
-  
-5. Other? (EG jekyll templates)
 
- 
+5. Other? (EG jekyll templates)
