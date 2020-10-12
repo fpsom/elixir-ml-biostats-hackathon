@@ -12,7 +12,7 @@ _in alphabetical order_
 2. Alexandros Dimopoulos (Institute for Fundamental Biomedical Science, BSRC Al. Fleming / ELIXIR - GR)
 3. Wandrille Duchemin
 4. Van Du T. Tran (Vital-IT, SIB Swiss Institute of Bioinformatics)
-5. Pedro L. Fernandes
+5. Pedro L. Fernandes (Instituto Gulbenkian de Ciência / ELIXIR-PT)
 6. Alireza Khanteymoori
 7. Anmol Kiran (Malawi-Liverpool-Wellcome Trust, H3ABionet)
 8. Claudio Mirabello (Linköping University, NBIS)
