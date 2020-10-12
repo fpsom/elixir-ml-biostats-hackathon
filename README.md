@@ -70,7 +70,7 @@ _content should be open (i.e. under CC license), and practical (i.e. hands-on ex
 8. [Introduction to Probability and Statistics for Engineers](https://stanford.edu/~shervine/teaching/cme-106/)
 
 
-9. [NBIS Workshop in Biostatistics and Machine Learning](https://nbisweden.github.io/workshop-mlbiostatistics/)
+9. [NBIS Workshop in Biostatistics and Machine Learning](https://github.com/NBISweden/workshop-mlbiostatistics)
   - **Notes**: Contains the teaching material (lectures/tutorials/labs) for the different course sessions, see [link to course info and schedule](https://nbisweden.github.io/workshop-mlbiostatistics/) for how these sessions are structured in the course. This workshop will be given in November 2020 and material above is in the process of being updated from the 2019 workshop and reformatted into a common format, in other words *Work in progress*. 
 
 10. [NBIS Workshop in Omics Integration](https://github.com/NBISweden/workshop_omics_integration)
