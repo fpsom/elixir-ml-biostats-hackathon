@@ -118,9 +118,9 @@ One "creative" way to think deeply about the audience for a workshop is to take 
 > Software Carpentry will show João how to write shell scripts to count the lines and crop the right range for each file, and how to use R to read these files and calculate the required statistics. It will also show him how to put his programs and files under version control so that he can re-run analyses and figure out which results may have been affected by changes.
 
 
-## What Are The Learning Objectives?
+## What Are The Learning Outcomes?
 
-Once you have an idea of your intended audience, the next step is to think through the goals for your workshop. These goals are usually communicated through _learning objectives_. We need to be realistic about what audience can learn in the time available (1-2 days). Having specific objectives helps avoid creep in lesson scope. Bloom's Taxonomy can help with this:
+Once you have an idea of your intended audience, the next step is to think through the goals for your workshop. These goals are usually communicated through _learning outcomes_. We need to be realistic about what audience can learn in the time available (1-2 days). Having specific outcomes helps avoid creep in lesson scope. Bloom's Taxonomy can help with this:
 
 _"By the end of the [lesson|section], learners will be able to..."_
 
