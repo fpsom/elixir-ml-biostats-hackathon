@@ -87,7 +87,8 @@ _Learning Outcomes_
 2. Be able to choose one or more appropriate ML methods (taught in the course) for the research question / dataset in question
 3. For each appropriate ML method, being able to identify the optimal parameter set (hyperparameter optimization)
     - _Internal Note_: Also define what is hyperpatameter optimization
-
+4. Grasp the issue of bias and variance in ML and how ML design choices influence this balance
+5. Explain the problem of data imbalance and how to solve it properly
 
 ### Episode 4: **Optimizing the features**
 
@@ -105,6 +106,9 @@ _Learning Outcomes_
 4. Apply method A to own data (having access to relevant code snippets/function/library)
     - _Internal Note_: Define method A/B in the final lesson
 5. Be able to locate alternative methods B, not taught in the course (using resources shared in course), appropriate for research questions and data
+
+
+
 
 
 
