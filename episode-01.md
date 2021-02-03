@@ -28,7 +28,7 @@ from dataset import Dataset
 ~~~
 {: .language-python}
 
-In this way, we only import the `Dataset()` function from `dataset` toolkit. In order to download our data, we use the following lines of code. (Note that if we don't specify which function to import from `dataset toolkit`, we need to call the `Dataset()` function in this way: `dataset.Dataset()`)
+In this way, we only import the `Dataset()` function from `dataset` toolkit. In order to download our data, we use the following lines of code. - Note that if we don't specify which function to import from `dataset toolkit`, we need to call the `Dataset()` function in this way: `dataset.Dataset()` -
 
 ~~~
 # Downloading data file
@@ -95,4 +95,4 @@ data
 ~~~
 {: .output}
 
-As it was mentioned before, this data table doesn't contain any header at all, so we need to download them from a different URL. We use the following commands for this purpose.
+As it was previously mentioned, this data table doesn't contain any header at all, so we need to download them from a different URL. We use the following commands for this purpose.
