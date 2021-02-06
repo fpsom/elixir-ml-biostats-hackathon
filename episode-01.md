@@ -1,15 +1,15 @@
 # Episode 1: Introduction to Machine Learning
 
 ## Learning outcomes
-1. Mention the components of machine learning (data, features and models)
+1. Mention the components of machine learning (data, features and models) #
 2. Argue what the role of statistics is in AI/DL/ML
 3. Explain the difference between supervised and unsupervised methods
     - _Internal Note_: Mention also other types such as Reinforcement learning, Deep learning & semi-supervised learning
 4. State the different categories of ML techniques
     - list some ML techniques: Linear Regression, Logistic Regression, K-Nearest Neighbors, Support Vector Machines, Naive Bayes, Decision Tree, Random Forest, K-means Clustering 
-5. Explain the difference between classification and regression
+5. Explain the difference between classification and regression #
 6. Explain the difference between clustering and dimensionality reduction
-7. Explain the difference between continuous and discrete space
+7. Explain the difference between continuous and discrete space #
 8. Explain the difference between linear and non-linear methods
 9. Explain the difference between structured vs. unstructured data
 
@@ -196,11 +196,15 @@ boston_houses = load_boston()
 # Converting to data frame
 boston_houses_df = pd.DataFrame(boston_houses.data, columns=boston_houses.feature_names)
 prices_df = pd.DataFrame(boston_houses.target, columns = ['Av. Price'])
-print(boston_houses_df.head())
 ~~~
 {: .language-python}
 
-Probably too many questions so let's analyze the code. In the first line of code we import the `load_boston()` function, which lies inside `datasets` subpackage, which in turn belongs to the `scikit-learn` main package. Apart from `scikit-learn` package, we also import [pandas](https://pandas.pydata.org/), which will be discussed in a bit. After that, we call the function and store its result to the `boston_houses` variable. The function returns an object of class `sklearn.utils.Bunch`; however we would prefer our data to be stored in a `DataFrame` object, that contains a bunch of functionalities. For this reason, we import `pandas` package as `pd`, meaning that whenever we want to return an attribute function of the package, we can call it by just typing `pd.function()` instead of `pandas.function()`. Pandas is another widely used library in python that contains many useful functionalitites to handle `DataFrames`. In the last line we use the `Dataframe()` function of `pandas` package to transform our data into `DataFrame` format. Targets in this example are stored in `prices_df` object as well. The output looks like this.
+Probably too many questions so let's analyze the code. In the first line of code we import the `load_boston()` function, which lies inside `datasets` subpackage, which in turn belongs to the `scikit-learn` main package. Apart from `scikit-learn` package, we also import [pandas](https://pandas.pydata.org/), which will be discussed in a bit. After that, we call the function and store its result to the `boston_houses` variable. The function returns an object of class `sklearn.utils.Bunch`; however we would prefer our data to be stored in a `DataFrame` object, that contains a bunch of functionalities. For this reason, we import `pandas` package as `pd`, meaning that whenever we want to return an attribute function of the package, we can call it by just typing `pd.function()` instead of `pandas.function()`. Pandas is another widely used library in python that contains many useful functionalitites to handle `DataFrames`. In the last line we use the `Dataframe()` function of `pandas` package to transform our data into `DataFrame` format. Targets in this example are stored in `prices_df` object as well. The input data looks like this.
+
+~~~
+print(boston_houses_df.head())
+~~~
+{: .language-python}
 
 ~~~
       CRIM    ZN  INDUS  CHAS    NOX     RM   AGE     DIS  RAD    TAX  \
@@ -222,4 +226,39 @@ Probably too many questions so let's analyze the code. In the first line of code
 ~~~
 {: .output}
 
-Full details concerning this dataset could be found [here](https://scikit-learn.org/stable/datasets/toy_dataset.html#boston-house-prices-dataset). 
+Where as the targets data.
+
+~~~
+print(prices_df.head())
+~~~
+{: .language-python}
+
+~~~
+   Av. Price
+0       24.0
+1       21.6
+2       34.7
+3       33.4
+4       36.2
+
+[506 rows x 13 columns]
+
+~~~
+{: .output}
+
+Full details concerning this dataset could be found [here](https://scikit-learn.org/stable/datasets/toy_dataset.html#boston-house-prices-dataset). Actually, we are refering to this specific dataset to mention that the target values might certainly take continuous values, like the average price of the house in thousand dollars. These are called **Regression Problems** and our goal is to define a set of rules to connect inputs with outputs; in other words, we attempt to define an optimized function, such that given a house with specific features to predict its expected price. \
+Apparently,  this discretion - continuity property can be passed into our feature space, meaning that the values of each feature could be either a continuous or a discrete value. For instance, a parient in our data could be either a smoker or non-smoker, hence this attribute is a boolean one. The size of his/her tumor, thouhg, is definetely a feature that can take any value inside a continuous interval. Keep in mind, however, that the discretion - continuity of feature space does not denote anything about the category of our problem; this can be only implied by the target values.\
+In the rest of this first episode, we will introduce some basic machine learning terminology, in order to examine it more emphatically in the following episodes. The first significant emphasize is the difference betewwn machine learning algorithms and models. When we talk about an **algorithm** in machine learning, we mean a procedure that is run on data to create a machine learning model. So actually, the **model** is the output of the function, in other words the set of rules/parameters that link input with output data. In classification problems, a model could be function that takes as inputs feature vectors (i.e. vectors of the same dimensionality as the number of columns of input data matrix) and these vectors are classified into the corresponding groups based on whether the output of the functon is greater of lesser than zero. In regression problems, on the other hand, the output of the function is the predicted value, in our case, the average price of the house. \
+Evidently, to define this optimized model that fits well in our data, we first need to apply a machine learning algorithm. In fact, there are many machine learning algorithms. Some of them are:
+- Linear Regression
+- Logistic Regression
+- K-Nearest Neighbors
+- Support Vector Machines
+- Naive Bayes 
+- Decision Tree
+- Random Forest 
+- K-means
+
+There is no need to deepen more into them at this point, as we will analyze most of them in the following episodes.
+
+
