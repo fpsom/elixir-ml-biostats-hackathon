@@ -2,16 +2,18 @@
 
 ## Learning outcomes
 1. Mention the components of machine learning (data, features and models) #
-2. Argue what the role of statistics is in AI/DL/ML
-3. Explain the difference between supervised and unsupervised methods
+2. Argue what the role of statistics is in AI/DL/ML #
+3. Explain the difference between supervised and unsupervised methods #
     - _Internal Note_: Mention also other types such as Reinforcement learning, Deep learning & semi-supervised learning
-4. State the different categories of ML techniques
+4. State the different categories of ML techniques #
     - list some ML techniques: Linear Regression, Logistic Regression, K-Nearest Neighbors, Support Vector Machines, Naive Bayes, Decision Tree, Random Forest, K-means Clustering 
 5. Explain the difference between classification and regression #
-6. Explain the difference between clustering and dimensionality reduction
+6. Explain the difference between clustering and dimensionality reduction #
 7. Explain the difference between continuous and discrete space #
-8. Explain the difference between linear and non-linear methods
+8. Explain the difference between linear and non-linear methods #
 9. Explain the difference between structured vs. unstructured data
+
+## Data Pre-processing
 
 In general, machine learning (ML) is a category of algorithms that allows software applications to become more accurate in predicting outcomes without being explicitly programmed. The basic premise of machine learning is to build algorithms that can receive input data and use statistical analysis to predict an output, while updating outputs as new data becomes available. Let's take it step by step to explain what this actually means in practise.\
 We are going to download the [Breast Cancer Wisconsin (Diagnostic) Data Set](http://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+%28diagnostic%29) from the [UCI Machine Learning repository](http://archive.ics.uci.edu/ml/index.php) to see how it looks like. You need to switch to your working directory and open up a new Python 3 Jupyter Notebook. The first thing we need to do is to import the [dataset](https://pypi.org/project/dataset/) toolkit in our code, which will help us read datasets from online databases.
@@ -70,29 +72,38 @@ pandas.core.frame.DataFrame
 ~~~
 {: .output}
 
-The `DataFrame` class is pretty useful in handling data tables in Python and is widely used for this purpose. Hence, we'll constantly refer to it as the course goes on. Now, let's have a look at our `data` object.
+The `DataFrame` class is pretty useful in handling data tables in Python and is widely used for this purpose. Hence, we'll constantly refer to it as the course goes on. Now, let's have a look at our `data` object. By typing `print(data.head())` we print only the first rows of our data table in our console.
 
 ~~~
 # Printing data table
-data
+print(data.head())
 ~~~
 {: .language-python}
 
 ~~~
- 	x0 	x1 	x2 	x3 	x4 	x5 	x6 	x7 	x8 	x9 	... 	x22 	x23 	x24 	x25 	x26 	x27 	x28 	x29 	x30 	x31
-0 	842302.0 	M 	17.99 	10.38 	122.80 	1001.0 	0.11840 	0.27760 	0.30010 	0.14710 	... 	25.380 	17.33 	184.60 	2019.0 	0.16220 	0.66560 	0.7119 	0.2654 	0.4601 	0.11890
-1 	842517.0 	M 	20.57 	17.77 	132.90 	1326.0 	0.08474 	0.07864 	0.08690 	0.07017 	... 	24.990 	23.41 	158.80 	1956.0 	0.12380 	0.18660 	0.2416 	0.1860 	0.2750 	0.08902
-2 	84300903.0 	M 	19.69 	21.25 	130.00 	1203.0 	0.10960 	0.15990 	0.19740 	0.12790 	... 	23.570 	25.53 	152.50 	1709.0 	0.14440 	0.42450 	0.4504 	0.2430 	0.3613 	0.08758
-3 	84348301.0 	M 	11.42 	20.38 	77.58 	386.1 	0.14250 	0.28390 	0.24140 	0.10520 	... 	14.910 	26.50 	98.87 	567.7 	0.20980 	0.86630 	0.6869 	0.2575 	0.6638 	0.17300
-4 	84358402.0 	M 	20.29 	14.34 	135.10 	1297.0 	0.10030 	0.13280 	0.19800 	0.10430 	... 	22.540 	16.67 	152.20 	1575.0 	0.13740 	0.20500 	0.4000 	0.1625 	0.2364 	0.07678
-... 	... 	... 	... 	... 	... 	... 	... 	... 	... 	... 	... 	... 	... 	... 	... 	... 	... 	... 	... 	... 	...
-564 	926424.0 	M 	21.56 	22.39 	142.00 	1479.0 	0.11100 	0.11590 	0.24390 	0.13890 	... 	25.450 	26.40 	166.10 	2027.0 	0.14100 	0.21130 	0.4107 	0.2216 	0.2060 	0.07115
-565 	926682.0 	M 	20.13 	28.25 	131.20 	1261.0 	0.09780 	0.10340 	0.14400 	0.09791 	... 	23.690 	38.25 	155.00 	1731.0 	0.11660 	0.19220 	0.3215 	0.1628 	0.2572 	0.06637
-566 	926954.0 	M 	16.60 	28.08 	108.30 	858.1 	0.08455 	0.10230 	0.09251 	0.05302 	... 	18.980 	34.12 	126.70 	1124.0 	0.11390 	0.30940 	0.3403 	0.1418 	0.2218 	0.07820
-567 	927241.0 	M 	20.60 	29.33 	140.10 	1265.0 	0.11780 	0.27700 	0.35140 	0.15200 	... 	25.740 	39.42 	184.60 	1821.0 	0.16500 	0.86810 	0.9387 	0.2650 	0.4087 	0.12400
-568 	92751.0 	B 	7.76 	24.54 	47.92 	181.0 	0.05263 	0.04362 	0.00000 	0.00000 	... 	9.456 	30.37 	59.16 	268.6 	0.08996 	0.06444 	0.0000 	0.0000 	0.2871 	0.07039
+           x0 x1     x2     x3      x4      x5       x6       x7      x8  \
+0    842302.0  M  17.99  10.38  122.80  1001.0  0.11840  0.27760  0.3001   
+1    842517.0  M  20.57  17.77  132.90  1326.0  0.08474  0.07864  0.0869   
+2  84300903.0  M  19.69  21.25  130.00  1203.0  0.10960  0.15990  0.1974   
+3  84348301.0  M  11.42  20.38   77.58   386.1  0.14250  0.28390  0.2414   
+4  84358402.0  M  20.29  14.34  135.10  1297.0  0.10030  0.13280  0.1980   
 
-569 rows × 32 columns
+        x9  ...    x22    x23     x24     x25     x26     x27     x28     x29  \
+0  0.14710  ...  25.38  17.33  184.60  2019.0  0.1622  0.6656  0.7119  0.2654   
+1  0.07017  ...  24.99  23.41  158.80  1956.0  0.1238  0.1866  0.2416  0.1860   
+2  0.12790  ...  23.57  25.53  152.50  1709.0  0.1444  0.4245  0.4504  0.2430   
+3  0.10520  ...  14.91  26.50   98.87   567.7  0.2098  0.8663  0.6869  0.2575   
+4  0.10430  ...  22.54  16.67  152.20  1575.0  0.1374  0.2050  0.4000  0.1625   
+
+      x30      x31  
+0  0.4601  0.11890  
+1  0.2750  0.08902  
+2  0.3613  0.08758  
+3  0.6638  0.17300  
+4  0.2364  0.07678  
+
+[5 rows x 32 columns]
+
 ~~~
 {: .output}
 
@@ -106,7 +117,7 @@ col_names = breastCancerDataColNames.features.iloc[:,0].tolist()
 ~~~
 {: .language-python}
 
-The `.iloc()` attribute-function of a `DataFrame` object locates a specified area inside a data matrix. For more details, you can check out the documentation [here](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.iloc.html). In order to store the elements of this area to a list, we need to use the `.tolist()` function. Now, the `col_names` list contains the headers of our data, and we use the following command for them to be assigned on the table. By typing `print(data.head())` we print only the first rows of our data table in our console.
+The `.iloc()` attribute-function of a `DataFrame` object locates a specified area inside a data matrix. For more details, you can check out the documentation [here](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.iloc.html). In order to store the elements of this area to a list, we need to use the `.tolist()` function. Now, the `col_names` list contains the headers of our data, and we use the following command for them to be assigned on the table. 
 
 ~~~
 # Specifying data column names
@@ -181,7 +192,10 @@ X, y = data, tumors
 {: .language-python}
 
 In machine learning, we often refer to the `X` table as the samples/features table and to the `y` table as the labels/outputs. So, the reason for the renaming is more or less symbolic, to follow the conventional ML terminology. \
-At this stage we should define the two main categories of ML problems: supervised and unsupervised. Generally speaking, supervised problems are those that include `y` table and unsupervised are those that do not. **Unsupervised learning** (which will be addressed later in depth), is the machine learning task of uncovering hidden patterns and structures from unlabeled data. For example, a researcher might want to group their samples into distinct groups, based on their gene expression data without in advance what these categories maybe. This is known as clustering, one branch of unsupervised learning. Another example would be, in our case, to have only information about the characteristics of the tumors (`X` table), but no information about their nature (`y` table), so we would have to detect patterns in our data by ourselves and attempt to cluster them into groups. \
+
+## Supervised and Unsupervised Machine learning
+
+At this stage we should define the two basic categories of ML problems that will concern us: supervised and unsupervised. Generally speaking, supervised problems are those that include `y` table and unsupervised are those that do not. **Unsupervised learning** (which will be addressed later in depth), is the machine learning task of uncovering hidden patterns and structures from unlabeled data. For example, a researcher might want to group their samples into distinct groups, based on their gene expression data without in advance what these categories maybe. This is known as clustering, one branch of unsupervised learning. Another common aspect of unsupervised learning is feature selection. Both clustering and feature selection will discussed later. \
 On the other hand, **Supervised learning**  is the branch of machine learning that involves predicting discrete labels or continuous values given samples as inputs. Supervised learning problems are generally divided into two groups: Regression and Classification problems. Our problem here focuses on finding patterns to distinguish malignant from benign tumors and, moreover, on the assessment of a tumor based on its features and patterns detected. In other words, we want to classify tumors into groups and, thus, we are talking about a **classification problem**.
 The second wide category of problems are those trying to predict continuous output values and are called Regression problems. In order to have a look at them, we're going to load the Boston house-prices dataset from [scikit-learn](https://scikit-learn.org/stable/) package in Python. `Scikit-learn` package is a set of simple and efficient tools or predictive data analysis, implemented in Python; this package is widely used in Machine Learning applications and, thus, we will find it really useful throughout this tutorial. We are using the following lines of code.
 
@@ -199,7 +213,7 @@ prices_df = pd.DataFrame(boston_houses.target, columns = ['Av. Price'])
 ~~~
 {: .language-python}
 
-Probably too many questions so let's analyze the code. In the first line of code we import the `load_boston()` function, which lies inside `datasets` subpackage, which in turn belongs to the `scikit-learn` main package. Apart from `scikit-learn` package, we also import [pandas](https://pandas.pydata.org/), which will be discussed in a bit. After that, we call the function and store its result to the `boston_houses` variable. The function returns an object of class `sklearn.utils.Bunch`; however we would prefer our data to be stored in a `DataFrame` object, that contains a bunch of functionalities. For this reason, we import `pandas` package as `pd`, meaning that whenever we want to return an attribute function of the package, we can call it by just typing `pd.function()` instead of `pandas.function()`. Pandas is another widely used library in python that contains many useful functionalitites to handle `DataFrames`. In the last line we use the `Dataframe()` function of `pandas` package to transform our data into `DataFrame` format. Targets in this example are stored in `prices_df` object as well. The input data looks like this.
+Probably too many questions so let's analyze the code. In the first line of code we import the `load_boston()` function, which lies inside `datasets` subpackage, which in turn belongs to the `scikit-learn` main package. Apart from `scikit-learn` package, we also import [pandas](https://pandas.pydata.org/), which will be discussed in a bit. After that, we call the function and store its result to the `boston_houses` variable. The function returns an object of class `sklearn.utils.Bunch`; however we would prefer our data to be stored in a `DataFrame` object, that contains a bunch of useful functionalities. For this reason, we import `pandas` package as `pd`, meaning that after the initial import, rather than writing `pandas.function(...)`, you can now write `pd.function(...)`. . Some people prefer this as it is quicker to type and results in shorter lines of code - especially for libraries with long names! You will frequently see Python code online using a Pandas function with `pd`, and it's because they've used this shortcut. Pandas is another widely used library in python that contains many useful functionalitites to handle `DataFrames`. In the last line we use the `Dataframe()` function of `pandas` package to transform our data into `DataFrame` format. Targets in this example are stored in `prices_df` object as well. The input data looks like this.
 
 ~~~
 print(boston_houses_df.head())
@@ -248,7 +262,21 @@ print(prices_df.head())
 
 Full details concerning this dataset could be found [here](https://scikit-learn.org/stable/datasets/toy_dataset.html#boston-house-prices-dataset). Actually, we are refering to this specific dataset to mention that the target values might certainly take continuous values, like the average price of the house in thousand dollars. These are called **Regression Problems** and our goal is to define a set of rules to connect inputs with outputs; in other words, we attempt to define an optimized function, such that given a house with specific features to predict its expected price. \
 Apparently,  this discretion - continuity property can be passed into our feature space, meaning that the values of each feature could be either a continuous or a discrete value. For instance, a parient in our data could be either a smoker or non-smoker, hence this attribute is a boolean one. The size of his/her tumor, thouhg, is definetely a feature that can take any value inside a continuous interval. Keep in mind, however, that the discretion - continuity of feature space does not denote anything about the category of our problem; this can be only implied by the target values.\
-In the rest of this first episode, we will introduce some basic machine learning terminology, in order to examine it more emphatically in the following episodes. The first significant emphasize is the difference betewwn machine learning algorithms and models. When we talk about an **algorithm** in machine learning, we mean a procedure that is run on data to create a machine learning model. So actually, the **model** is the output of the function, in other words the set of rules/parameters that link input with output data. In classification problems, a model could be function that takes as inputs feature vectors (i.e. vectors of the same dimensionality as the number of columns of input data matrix) and these vectors are classified into the corresponding groups based on whether the output of the functon is greater of lesser than zero. In regression problems, on the other hand, the output of the function is the predicted value, in our case, the average price of the house. \
+
+> ## Other types of Machine Learning
+>
+> Apart from supervised and unsupervised methods, there are also other types of Machine learning problems, such as Semi-supervised learning, Deep learning and Reinforcement learning. To illustrate,
+> **Semi-supervised learning** is an approach to machine learning that combines a small amount of labeled data with a large amount of unlabeled data during training. Semi-supervised learning falls
+> between unsupervised learning (with no labeled training data) and supervised learning (with only labeled training data). Moreover, **Deep learning** (also known as deep structured learning) is 
+> part of a broader family of machine learning methods based on artificial neural networks, in which learning can be supervised, semi-supervised or unsupervised. It uses multiple layers to 
+> progressively extract higher-level features from the raw input. For example, in image processing, lower layers may identify edges, while higher layers may identify the concepts relevant to 
+> a human such as digits or letters or faces. Lastly, **Reinforcement learning** is concerned with how intelligent agents ought to take actions in an environment in order to maximize the notion 
+> of cumulative reward. The agent learns to achieve a goal in an uncertain, potentially complex environment and make a sequence of decisions. A typical example of reinforcement learning problems is 
+> an autonomous driving car.
+
+## What is a model?
+
+In the rest of this first episode, we will introduce some basic machine learning terminology and techniques, in order to examine it more emphatically in the following episodes. The first significant thing to emphasize is the difference betewwn machine learning algorithms and models. When we talk about an **algorithm** in machine learning, we mean a procedure that is run on data to create a machine learning model. So actually, the **model** is the output of the algorithm, in other words the set of rules/parameters that link input with output data. In classification problems, a model could be function that takes as inputs feature vectors (i.e. vectors of the same dimensionality as the number of columns of input data matrix) and these vectors are classified into the corresponding groups based on the output's sign. In regression problems, on the other hand, the output of the function is the predicted value, in our case, the average price of the house. \
 Evidently, to define this optimized model that fits well in our data, we first need to apply a machine learning algorithm. In fact, there are many machine learning algorithms. Some of them are:
 - Linear Regression
 - Logistic Regression
@@ -259,6 +287,27 @@ Evidently, to define this optimized model that fits well in our data, we first n
 - Random Forest 
 - K-means
 
-There is no need to deepen more into them at this point, as we will analyze most of them in the following episodes.
+A **linear model** uses a linear function for its prediction function or as a crucial part of its prediction function. A linear function takes a fixed number of numerical inputs, let's call them x1,x2,…,xn (which in our case are the feature values of the sample) and returns y = w0+∑ni=1wixi where the weights w0,…,wn are the parameters of the model. \
+If the prediction function is a linear function, we can perform regression, i.e. predicting a numerical label. We can also take a linear function, return the sign of the result (whether the result is positive or not) and perform binary classification that way, as it was previously described: all samples with a positive output receive label A, all others receive label B. There are various other (more complex) options for a response function on top of the linear function, the logistic function is very commonly used (which leads to logistic regression, predicting a number between 0 and 1, typically used to learn the probability of a binary outcome in a noisy setting). \
+A **non-linear model** is a model which is not a linear model, and it evidently contains more complex rules. Typically these are more powerful (they can represent a larger class of functions) but much harder to train.
+
+## Clustering and Dimensionality Reduction
+As already mentioned, both clustering and feature selection are aspects of unsupervised leanring. **Clustering** is the assignment of objects to homogeneous groups (called clusters) while making sure that objects in different groups are not similar. Clustering is considered an unsupervised task as it aims to describe the hidden structure of the objects. Defining an adequate distance measure between samples is crucial for the success of the clustering process. Moreover, most of the times the number of clusters isn't obvious at all, so its important to select a sufficient metric to measure the stability of classes and extract an optimal number.\ 
+Another form of unsupervised learning, is **dimensionality reduction**.
 
 
+## Role of statistics in Machine learning
+
+Statistics is generally considered a prerequisite to the field of applied machine learning. Statistical methods are required to find answers to the questions that we have about data. Data raises questions, such as:
+
+- What is the most common or expected observation?
+- What are the limits on the observations?
+- What does the data look like?
+
+Although they appear simple, these questions must be answered in order to turn raw observations into information that we can use and share. Beyond raw data, we may design experiments in order to collect observations. From these experimental results we may have more sophisticated questions, such as:
+
+- What variables are most relevant?
+- What is the difference in an outcome between two experiments?
+- Are the differences real or the result of noise in the data?
+
+Questions of this type are important. The results matter to the project, to stakeholders, and to effective decision making. We can see that in order to both understand the data used to train a machine learning model and to interpret the results of testing different machine learning models, that statistical methods are required.
