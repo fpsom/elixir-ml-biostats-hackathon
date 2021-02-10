@@ -8,14 +8,14 @@
 4. State the different categories of ML techniques #
     - list some ML techniques: Linear Regression, Logistic Regression, K-Nearest Neighbors, Support Vector Machines, Naive Bayes, Decision Tree, Random Forest, K-means Clustering 
 5. Explain the difference between classification and regression #
-6. Explain the difference between clustering and dimensionality reduction #
+6. Explain the difference between clustering and dimensionality reduction #dc 
 7. Explain the difference between continuous and discrete space #
 8. Explain the difference between linear and non-linear methods #
 9. Explain the difference between structured vs. unstructured data
 
 ## Data Pre-processing
 
-In general, machine learning (ML) is a category of algorithms that allows software applications to become more accurate in predicting outcomes without being explicitly programmed. The basic premise of machine learning is to build algorithms that can receive input data and use statistical analysis to predict an output, while updating outputs as new data becomes available. Let's take it step by step to explain what this actually means in practise.\
+In general, machine learning (ML) is a category of algorithms that allows software applications to become more accurate in predicting outcomes without being explicitly programmed. The basic premise of machine learning is to build algorithms that can receive input data and use statistical analysis to predict an output, while updating outputs as new data becomes available. [[1]](#1) Let's take it step by step to explain what this actually means in practise.\
 We are going to download the [Breast Cancer Wisconsin (Diagnostic) Data Set](http://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+%28diagnostic%29) from the [UCI Machine Learning repository](http://archive.ics.uci.edu/ml/index.php) to see how it looks like. You need to switch to your working directory and open up a new Python 3 Jupyter Notebook. The first thing we need to do is to import the [dataset](https://pypi.org/project/dataset/) toolkit in our code, which will help us read datasets from online databases.
 
 ~~~
@@ -267,12 +267,12 @@ Apparently,  this discretion - continuity property can be passed into our featur
 >
 > Apart from supervised and unsupervised methods, there are also other types of Machine learning problems, such as Semi-supervised learning, Deep learning and Reinforcement learning. To illustrate,
 > **Semi-supervised learning** is an approach to machine learning that combines a small amount of labeled data with a large amount of unlabeled data during training. Semi-supervised learning falls
-> between unsupervised learning (with no labeled training data) and supervised learning (with only labeled training data). Moreover, **Deep learning** (also known as deep structured learning) is 
+> between unsupervised learning (with no labeled training data) and supervised learning (with only labeled training data)[[2]](#2). **Deep learning** (also known as deep structured learning) is 
 > part of a broader family of machine learning methods based on artificial neural networks, in which learning can be supervised, semi-supervised or unsupervised. It uses multiple layers to 
 > progressively extract higher-level features from the raw input. For example, in image processing, lower layers may identify edges, while higher layers may identify the concepts relevant to 
-> a human such as digits or letters or faces. Lastly, **Reinforcement learning** is concerned with how intelligent agents ought to take actions in an environment in order to maximize the notion 
-> of cumulative reward. The agent learns to achieve a goal in an uncertain, potentially complex environment and make a sequence of decisions. A typical example of reinforcement learning problems is 
-> an autonomous driving car.
+> a human such as digits or letters or faces[[3]](#3). Lastly, **Reinforcement learning** is concerned with how intelligent agents ought to take actions in an environment in order to maximize the
+>  notion of cumulative reward. The agent learns to achieve a goal in an uncertain, potentially complex environment and make a sequence of decisions. A typical example of reinforcement learning 
+>  problems is an autonomous driving car.[[4]](#4)
 
 ## What is a model?
 
@@ -311,3 +311,22 @@ Although they appear simple, these questions must be answered in order to turn r
 - Are the differences real or the result of noise in the data?
 
 Questions of this type are important. The results matter to the project, to stakeholders, and to effective decision making. We can see that in order to both understand the data used to train a machine learning model and to interpret the results of testing different machine learning models, that statistical methods are required.
+
+## References
+
+<a id="1">[1]</a> 
+Ayush Pant (2019
+Introduction to Machine Learning for Beginners
+Towards Data Science, [Link](https://towardsdatascience.com/introduction-to-machine-learning-for-beginners-eed6024fdb08)
+
+<a id="2">[2]</a> 
+https://en.wikipedia.org/wiki/Semi-supervised_learning#cite_ref-1
+
+<a id="3">[3]</a> 
+https://en.wikipedia.org/wiki/Deep_learning
+
+<a id="4">[4]</a> 
+https://en.wikipedia.org/wiki/Deep_learning
+
+<a id="5">[5]</a> 
+https://en.wikipedia.org/wiki/Reinforcement_learning
