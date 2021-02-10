@@ -1,19 +1,19 @@
 # Episode 1: Introduction to Machine Learning
 
 ## Learning outcomes
-1. Mention the components of machine learning (data, features and models) #
-2. Argue what the role of statistics is in AI/DL/ML #
-3. Explain the difference between supervised and unsupervised methods #
+1. Mention the components of machine learning (data, features and models)
+2. Argue what the role of statistics is in AI/DL/ML
+3. Explain the difference between supervised and unsupervised methods
     - _Internal Note_: Mention also other types such as Reinforcement learning, Deep learning & semi-supervised learning
-4. State the different categories of ML techniques #
+4. State the different categories of ML techniques
     - list some ML techniques: Linear Regression, Logistic Regression, K-Nearest Neighbors, Support Vector Machines, Naive Bayes, Decision Tree, Random Forest, K-means Clustering 
-5. Explain the difference between classification and regression #
-6. Explain the difference between clustering and dimensionality reduction #dc 
-7. Explain the difference between continuous and discrete space #
-8. Explain the difference between linear and non-linear methods #
+5. Explain the difference between classification and regression
+6. Explain the difference between clustering and dimensionality reduction 
+7. Explain the difference between continuous and discrete space
+8. Explain the difference between linear and non-linear methods
 9. Explain the difference between structured vs. unstructured data
 
-## Data Pre-processing
+## Data
 
 In general, machine learning (ML) is a category of algorithms that allows software applications to become more accurate in predicting outcomes without being explicitly programmed. The basic premise of machine learning is to build algorithms that can receive input data and use statistical analysis to predict an output, while updating outputs as new data becomes available. [[1]](#1) Let's take it step by step to explain what this actually means in practise.\
 We are going to download the [Breast Cancer Wisconsin (Diagnostic) Data Set](http://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+%28diagnostic%29) from the [UCI Machine Learning repository](http://archive.ics.uci.edu/ml/index.php) to see how it looks like. You need to switch to your working directory and open up a new Python 3 Jupyter Notebook. The first thing we need to do is to import the [dataset](https://pypi.org/project/dataset/) toolkit in our code, which will help us read datasets from online databases.
@@ -195,7 +195,7 @@ In machine learning, we often refer to the `X` table as the samples/features tab
 
 ## Supervised and Unsupervised Machine learning
 
-At this stage we should define the two basic categories of ML problems that will concern us: supervised and unsupervised. Generally speaking, supervised problems are those that include `y` table and unsupervised are those that do not. **Unsupervised learning** (which will be addressed later in depth), is the machine learning task of uncovering hidden patterns and structures from unlabeled data. For example, a researcher might want to group their samples into distinct groups, based on their gene expression data without in advance what these categories maybe. This is known as clustering, one branch of unsupervised learning. Another common aspect of unsupervised learning is feature selection. Both clustering and feature selection will discussed later. \
+At this stage we should define the two basic categories of ML problems that will concern us: supervised and unsupervised. Generally speaking, supervised problems are those that include `y` table and unsupervised are those that do not. **Unsupervised learning** (which will be addressed later in depth), is the machine learning task of uncovering hidden patterns and structures from unlabeled data. For example, a researcher might want to group their samples into distinct groups, based on their gene expression data without in advance what these categories maybe. This is known as clustering, one branch of unsupervised learning. Another common aspect of unsupervised learning is dimensionality reduction. Both [clustering and dimensionality reduction](#clustering-and-dimensionality-reduction) will be discussed later. \
 On the other hand, **Supervised learning**  is the branch of machine learning that involves predicting discrete labels or continuous values given samples as inputs. Supervised learning problems are generally divided into two groups: Regression and Classification problems. Our problem here focuses on finding patterns to distinguish malignant from benign tumors and, moreover, on the assessment of a tumor based on its features and patterns detected. In other words, we want to classify tumors into groups and, thus, we are talking about a **classification problem**.
 The second wide category of problems are those trying to predict continuous output values and are called Regression problems. In order to have a look at them, we're going to load the Boston house-prices dataset from [scikit-learn](https://scikit-learn.org/stable/) package in Python. `Scikit-learn` package is a set of simple and efficient tools or predictive data analysis, implemented in Python; this package is widely used in Machine Learning applications and, thus, we will find it really useful throughout this tutorial. We are using the following lines of code.
 
@@ -259,11 +259,11 @@ print(prices_df.head())
 
 ~~~
 {: .output}
-
+in
 Full details concerning this dataset could be found [here](https://scikit-learn.org/stable/datasets/toy_dataset.html#boston-house-prices-dataset). Actually, we are refering to this specific dataset to mention that the target values might certainly take continuous values, like the average price of the house in thousand dollars. These are called **Regression Problems** and our goal is to define a set of rules to connect inputs with outputs; in other words, we attempt to define an optimized function, such that given a house with specific features to predict its expected price. \
 Apparently,  this discretion - continuity property can be passed into our feature space, meaning that the values of each feature could be either a continuous or a discrete value. For instance, a parient in our data could be either a smoker or non-smoker, hence this attribute is a boolean one. The size of his/her tumor, thouhg, is definetely a feature that can take any value inside a continuous interval. Keep in mind, however, that the discretion - continuity of feature space does not denote anything about the category of our problem; this can be only implied by the target values.\
 
-> ## Other types of Machine Learning
+> ## Note 1: Other types of Machine Learning
 >
 > Apart from supervised and unsupervised methods, there are also other types of Machine learning problems, such as Semi-supervised learning, Deep learning and Reinforcement learning. To illustrate,
 > **Semi-supervised learning** is an approach to machine learning that combines a small amount of labeled data with a large amount of unlabeled data during training. Semi-supervised learning falls
@@ -274,9 +274,21 @@ Apparently,  this discretion - continuity property can be passed into our featur
 >  notion of cumulative reward. The agent learns to achieve a goal in an uncertain, potentially complex environment and make a sequence of decisions. A typical example of reinforcement learning 
 >  problems is an autonomous driving car.[[4]](#4)
 
+
+> ## Note 2: Structured vs Unstructured Data
+> So far, we have been though two datasets, Breast Cancer Wisconsin (Diagnostic) and and Boston houses price Data Set. Both were well defined and pretty organized, meaning that they were stored in
+> a data table format, matrices `X` and `y` were well specified, we had no missing values, linear dependencies between features had been possibly removed (we will check that in the following
+> episodes) etc. In most cases, this is the latest version of datasets, because in fact we are one step before applying machine learning algorithms to it. A few prior steps are (raw) data 
+> collection, feature extraction and data filtering. Concerning collecting data, there is a bunch it on the internet, from videos to audio tracks, from websites to online articles, from genome
+> databases to Google images. And at this point the difference between structured and unstructered data is detected. **Structured data** is comprised of clearly defined data types whose pattern
+> makes them easily searchable. It is usually resides in relational databases ([RDBMS](https://www.goskills.com/Development/Resources/RDBMS-basics)). This format is eminently searchable both with
+> human generated queries and via algorithms using type of data and field names, such as alphabetical or numeric, currency or date. **Unstructured data** is essentially everything else. Unstructured
+> data has internal structure but is not structured via pre-defined data models or schema. It may be textual or non-textual, and human- or machine-generated. It may also be stored within a 
+> non-relational database like NoSQL. Typical human-generated unstructured data includes: emails, text files, websites, etc. [[5]](#5)
+
 ## What is a model?
 
-In the rest of this first episode, we will introduce some basic machine learning terminology and techniques, in order to examine it more emphatically in the following episodes. The first significant thing to emphasize is the difference betewwn machine learning algorithms and models. When we talk about an **algorithm** in machine learning, we mean a procedure that is run on data to create a machine learning model. So actually, the **model** is the output of the algorithm, in other words the set of rules/parameters that link input with output data. In classification problems, a model could be function that takes as inputs feature vectors (i.e. vectors of the same dimensionality as the number of columns of input data matrix) and these vectors are classified into the corresponding groups based on the output's sign. In regression problems, on the other hand, the output of the function is the predicted value, in our case, the average price of the house. \
+For beginners, this is very confusing as often “machine learning algorithm” is used interchangeably with “machine learning model.” Are they the same thing or something different?. When we talk about an **algorithm** in machine learning, we mean a procedure that is run on data to create a machine learning model. So actually, the **model** is the output of the algorithm, in other words the set of rules/parameters that link input with output data.[[6]](#6) In classification problems, a model could be function that takes as inputs feature vectors (i.e. vectors of the same dimensionality as the number of columns of input data matrix) and these vectors are classified into the corresponding groups based on the output's sign. In regression problems, on the other hand, the output of the function is the predicted value, in our case, the average price of the house. \
 Evidently, to define this optimized model that fits well in our data, we first need to apply a machine learning algorithm. In fact, there are many machine learning algorithms. Some of them are:
 - Linear Regression
 - Logistic Regression
@@ -289,7 +301,7 @@ Evidently, to define this optimized model that fits well in our data, we first n
 
 A **linear model** uses a linear function for its prediction function or as a crucial part of its prediction function. A linear function takes a fixed number of numerical inputs, let's call them x1,x2,…,xn (which in our case are the feature values of the sample) and returns y = w0+∑ni=1wixi where the weights w0,…,wn are the parameters of the model. \
 If the prediction function is a linear function, we can perform regression, i.e. predicting a numerical label. We can also take a linear function, return the sign of the result (whether the result is positive or not) and perform binary classification that way, as it was previously described: all samples with a positive output receive label A, all others receive label B. There are various other (more complex) options for a response function on top of the linear function, the logistic function is very commonly used (which leads to logistic regression, predicting a number between 0 and 1, typically used to learn the probability of a binary outcome in a noisy setting). \
-A **non-linear model** is a model which is not a linear model, and it evidently contains more complex rules. Typically these are more powerful (they can represent a larger class of functions) but much harder to train.
+A **non-linear model** is a model which is not a linear model, and it evidently contains more complex rules. Typically these are more powerful (they can represent a larger class of functions) but much harder to train.[[7]](#7)
 
 ## Clustering and Dimensionality Reduction
 As already mentioned, both clustering and feature selection are aspects of unsupervised leanring. **Clustering** is the assignment of objects to homogeneous groups (called clusters) while making sure that objects in different groups are not similar. Clustering is considered an unsupervised task as it aims to describe the hidden structure of the objects. Defining an adequate distance measure between samples is crucial for the success of the clustering process. Moreover, most of the times the number of clusters isn't obvious at all, so its important to select a sufficient metric to measure the stability of classes and extract an optimal number.\ 
@@ -310,12 +322,12 @@ Although they appear simple, these questions must be answered in order to turn r
 - What is the difference in an outcome between two experiments?
 - Are the differences real or the result of noise in the data?
 
-Questions of this type are important. The results matter to the project, to stakeholders, and to effective decision making. We can see that in order to both understand the data used to train a machine learning model and to interpret the results of testing different machine learning models, that statistical methods are required.
+Questions of this type are important. The results matter to the project, to stakeholders, and to effective decision making. We can see that in order to both understand the data used to train a machine learning model and to interpret the results of testing different machine learning models, that statistical methods are required.[[8]](#8)
 
 ## References
 
 <a id="1">[1]</a> 
-Ayush Pant (2019
+Ayush Pant (2019)
 Introduction to Machine Learning for Beginners
 Towards Data Science, [Link](https://towardsdatascience.com/introduction-to-machine-learning-for-beginners-eed6024fdb08)
 
@@ -326,7 +338,24 @@ https://en.wikipedia.org/wiki/Semi-supervised_learning#cite_ref-1
 https://en.wikipedia.org/wiki/Deep_learning
 
 <a id="4">[4]</a> 
-https://en.wikipedia.org/wiki/Deep_learning
+https://en.wikipedia.org/wiki/Reinforcement_learning
 
 <a id="5">[5]</a> 
-https://en.wikipedia.org/wiki/Reinforcement_learning
+Christine Taylor (2018)
+Structured vs. Unstructured Data
+Datamation, [Link](https://machinelearningmastery.com/difference-between-algorithm-and-model-in-machine-learning/)
+
+<a id="6">[6]</a> 
+Jason Brownlee (2020)
+Difference Between Algorithm and Model in Machine Learning
+Machine Learning Mastery, [Link](https://www.datamation.com/big-data/structured-vs-unstructured-data/)
+
+<a id="7">[7]</a> 
+Michael Ashcroft
+Linear Models, Non-Linear Models & Feature Transformations
+Future Learn, [Link](https://www.futurelearn.com/info/courses/advanced-machine-learning/0/steps/49532)
+
+<a id="8">[8]</a> 
+Jason Brownlee (2018)
+What is Statistics (and why is it important in machine learning)?
+Machine Learning Mastery, [Link](https://machinelearningmastery.com/what-is-statistics/)
