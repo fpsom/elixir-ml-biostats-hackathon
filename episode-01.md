@@ -304,9 +304,59 @@ If the prediction function is a linear function, we can perform regression, i.e.
 A **non-linear model** is a model which is not a linear model, and it evidently contains more complex rules. Typically these are more powerful (they can represent a larger class of functions) but much harder to train.[[7]](#7)
 
 ## Clustering and Dimensionality Reduction
-As already mentioned, both clustering and feature selection are aspects of unsupervised leanring. **Clustering** is the assignment of objects to homogeneous groups (called clusters) while making sure that objects in different groups are not similar. Clustering is considered an unsupervised task as it aims to describe the hidden structure of the objects. Defining an adequate distance measure between samples is crucial for the success of the clustering process. Moreover, most of the times the number of clusters isn't obvious at all, so its important to select a sufficient metric to measure the stability of classes and extract an optimal number.\ 
-Another form of unsupervised learning, is **dimensionality reduction**.
+As already mentioned, both clustering and dimensionality reduction are aspects of unsupervised leanring. **Clustering** is the assignment of objects to homogeneous groups (called clusters) while making sure that objects in different groups are not similar. Clustering is considered an unsupervised task as it aims to describe the hidden structure of the objects. Defining an adequate distance measure between samples is crucial for the success of the clustering process. Moreover, most of the times the number of clusters isn't obvious at all, so its important to select a sufficient metric to measure the stability of them and extract an optimal number.\ 
+Another form of unsupervised learning, is **dimensionality reduction**. We will attempt to explain this subject by writing some more code to give the reader a practical sense. The purpose of this process is to reduce the number of features under consideration, where each feature is a dimension that partly represents the objects[[8]](#8). For instance, in the Breast Cancer Dataset, the input data table consists of 30 features; so let's say that we want project each sample in a 2-dimensional space. And why is dimensionality reduction important? The technical answer is that as more features are added, the data becomes very sparse and analysis suffers from the curse of dimensionality. Additionally, it is easier to process smaller data sets. A more intuitive answer, however, is that the lower the number of dimensions, the easier is to visualise them. In fact, if data lie in a 2D space, they can definetely be visualised in a 2D plot. \
+The main technique for feature extraction is the Principle Component Analysis (PCA). PCA guarantees finding the best linear transformation that reduces the number of dimensions with a minimum loss of information. We will not deepen more into the this topic at the moment, but let's take a look at the following code. 
 
+~~~
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+
+# You start by Standardizing the data. 
+# PCA's output is influenced based on the scale of the features of the data.
+X_scaled = StandardScaler().fit_transform(X)
+
+# Dimensionality Reduction, PCA
+pca = PCA(n_components = 2 , svd_solver = 'auto')
+X_pca = pca.fit_transform(X_scaled)
+
+# Principal components as data frame
+X_pca_df = pd.DataFrame(data = X_pca, columns = ['principal component 1', 'principal component 2'])
+
+# Categorical to numeric variables
+y_category = y.astype('category')
+y_numeric = y_category.cat.codes # It assigns 1 for Malignant, 0 for Benign
+
+# Plotting
+plt.figure(figsize=(10,10))
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=14)
+plt.xlabel('Principal Component 1',fontsize=20)
+plt.ylabel('Principal Component 2',fontsize=20)
+plt.title("Principal Component Analysis of Breast Cancer Dataset",fontsize=20)
+cancer_types = ['B', 'M']
+legend_list = ['Benign', 'Malignant']
+colors = ['g', 'r']
+for cancer_type, color in zip(cancer_types,colors):
+    indicesToKeep = y == cancer_type
+    plt.scatter(X_pca_df.loc[indicesToKeep, 'principal component 1'], X_pca_df.loc[indicesToKeep, 'principal component 2'], c = color, s = 50)
+
+plt.legend(legend_list,prop={'size': 15})
+plt.show()
+~~~
+{: .language-python}
+
+At first we load `PCA` and `StandardScaler` functions from `sklearn` package (*scikit-learn*) and `matplotlib.pyplot` function as `plt`. Then we scale our input data by utilizing `StandardScaler`, becuase PCA's output is influenced based on the scale of the feature. We initialize our PCA algorithm with the parameter `n_components = 2`, meaning that the algorithm should project our samples in a 2D space. PCA is applied in our data; the output of PCA algorithm is a `numpy.array` object, so we convert it, for our convenience, to a `pandas.DataFrame` object. Then we transform the labels of the output vector into numerical values, assigning 1 for Malignant, 0 for Benign (for plotting reasons). The rest of the code constructs the following plot. 
+
+~~~
+<p align="center">
+  <img width="720" height="720" src="images/breast_cancer_pca_01.png">
+</p>
+~~~
+{: .output}
+
+It's clear that our data are separated, in some way, into two groups. The two axis refer to the first and second principal components. These two components are a linear combinations of our initial features and are constructed, in such a way, so that the maximun of the initial variance of the features is maintained. We will definetely analyze PCA with further detail later in the course. Finally, we have to mention here that a big chapter of dimensionality reduction is **feature selection**. The key difference is that feature selection is simply selecting and excluding the most informative features (whatever does it mean) without changing them, while dimensionality reduction transforms features into a lower dimension. The decision whether we should use dimensionality reduction or feature seleciton essentially depends on many parameters, such as the problem itself and the nature of features.
 
 ## Role of statistics in Machine learning
 
@@ -322,7 +372,7 @@ Although they appear simple, these questions must be answered in order to turn r
 - What is the difference in an outcome between two experiments?
 - Are the differences real or the result of noise in the data?
 
-Questions of this type are important. The results matter to the project, to stakeholders, and to effective decision making. We can see that in order to both understand the data used to train a machine learning model and to interpret the results of testing different machine learning models, that statistical methods are required.[[8]](#8)
+Questions of this type are important. The results matter to the project, to stakeholders, and to effective decision making. We can see that in order to both understand the data used to train a machine learning model and to interpret the results of testing different machine learning models, that statistical methods are required.[[9]](#9)
 
 ## References
 
@@ -356,6 +406,11 @@ Linear Models, Non-Linear Models & Feature Transformations
 Future Learn, [Link](https://www.futurelearn.com/info/courses/advanced-machine-learning/0/steps/49532)
 
 <a id="8">[8]</a> 
+Guy Shtar, Shiri Margel (2017)
+Clustering and Dimensionality Reduction: Understanding the “Magic” Behind Machine Learning
+Imperva, [Link](https://www.imperva.com/blog/clustering-and-dimensionality-reduction-understanding-the-magic-behind-machine-learning/)
+
+<a id="9">[9]</a> 
 Jason Brownlee (2018)
 What is Statistics (and why is it important in machine learning)?
 Machine Learning Mastery, [Link](https://machinelearningmastery.com/what-is-statistics/)
