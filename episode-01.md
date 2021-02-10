@@ -349,12 +349,9 @@ plt.show()
 
 At first we load `PCA` and `StandardScaler` functions from `sklearn` package (*scikit-learn*) and `matplotlib.pyplot` function as `plt`. Then we scale our input data by utilizing `StandardScaler`, becuase PCA's output is influenced based on the scale of the feature. We initialize our PCA algorithm with the parameter `n_components = 2`, meaning that the algorithm should project our samples in a 2D space. PCA is applied in our data; the output of PCA algorithm is a `numpy.array` object, so we convert it, for our convenience, to a `pandas.DataFrame` object. Then we transform the labels of the output vector into numerical values, assigning 1 for Malignant, 0 for Benign (for plotting reasons). The rest of the code constructs the following plot. 
 
-~~~
 <p align="center">
   <img width="720" height="720" src="images/breast_cancer_pca_01.png">
 </p>
-~~~
-{: .output}
 
 It's clear that our data are separated, in some way, into two groups. The two axis refer to the first and second principal components. These two components are a linear combinations of our initial features and are constructed, in such a way, so that the maximun of the initial variance of the features is maintained. We will definetely analyze PCA with further detail later in the course. Finally, we have to mention here that a big chapter of dimensionality reduction is **feature selection**. The key difference is that feature selection is simply selecting and excluding the most informative features (whatever does it mean) without changing them, while dimensionality reduction transforms features into a lower dimension. The decision whether we should use dimensionality reduction or feature seleciton essentially depends on many parameters, such as the problem itself and the nature of features.
 
