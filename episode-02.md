@@ -114,7 +114,75 @@ Quick answer: Normalization vs. standardization is an eternal question among mac
 - Normalization is good to use when you know that the distribution of your data does not follow a Gaussian distribution. This can be useful in algorithms that do not assume any distribution of the data like K-Nearest Neighbors and Neural Networks.
 - Standardization, on the other hand, can be helpful in cases where the data follows a Gaussian distribution. However, this does not have to be necessarily true. Also, unlike normalization, standardization does not have a bounding range. So, even if you have outliers in your data, they will not be affected by standardization.[[5]](#5)
 
+Remember last lecture we used Standarization in the same dataset, before applying PCA algorithm, and it seemed to work pretty well. This time, however, we're going to normalize our data, because we don't know the distribution of it, and so it's a safer choice. Feature normalization in Python is accomplished by `MinMaxScaler()` function in `sklearn.preprocessing` library:
 
+~~~
+from sklearn.preprocessing import MinMaxScaler
+
+# Feature Normalization
+min_max_scaler = MinMaxScaler()
+X_normalized = min_max_scaler.fit_transform(X)
+
+# The output of MinMaxScaler() is a numpy array
+# So we convert it to pandas.DataFrame
+X_normalized = pd.DataFrame(X_normalized, columns = feature_names)
+~~~
+{: .language-python}
+
+After running this code, each element in the data matrix will definetely lie inside the interval [0,1]. The last step of data pre-processing is getting a better sense of the relationship between the features themselves or features and targets. This can be achieved either by calculating some statistical metrics (e.g. ANOVA, Interquantile Analysis) or by vizualizing the data. For now, we are going to visualize some stuff, as an image worths a thousand words. We'll return to the statistical part in the Feature Selection section.
+
+The following code stores the values of `Radius.Mean` and `Symmetry.Worst` columns in objects `x1` and `x2` respectively. After that, the PDF's are plotted (Probability Density Functions) in the form of histogramms, for Benign and Malignant samples separately. 
+
+~~~
+import matplotlib.pyplot as plt
+
+# Features Selected
+x1 = X_normalized['Radius.Mean']
+x2 = X_normalized['Symmetry.Worst']
+
+# Plotting the two pdf's in the same plot for feature 'Radius.Mean'
+plt.figure(figsize=(10,8))
+plt.xlabel('Radius Mean',fontsize=20)
+plt.ylabel('Probability',fontsize=20)
+plt.title("Probability Density Functions",fontsize=20)
+plt.xlim([0,1])
+plt.ylim([0,8])
+cancer_types = ['B', 'M']
+legend_list = ['Benign', 'Malignant']
+colors = ['g', 'r']
+for cancer_type, color in zip(cancer_types,colors):
+    indicesToKeep = y == cancer_type
+    plt.hist(x1.loc[indicesToKeep], color = color, bins = 50, density=True)
+
+plt.legend(legend_list,prop={'size': 15})
+plt.show()
+
+# Plotting the two pdf's in the same plot for feature 'Symmetry.Worst'
+plt.figure(figsize=(10,8))
+plt.xlabel('Symmetry Worst',fontsize=20)
+plt.ylabel('Probability',fontsize=20)
+plt.title("Probability Density Functions",fontsize=20)
+plt.xlim([0,1])
+plt.ylim([0,8])
+cancer_types = ['B', 'M']
+legend_list = ['Benign', 'Malignant']
+colors = ['g', 'r']
+for cancer_type, color in zip(cancer_types,colors):
+    indicesToKeep = y == cancer_type
+    plt.hist(x2.loc[indicesToKeep], color = color, bins = 50, density=True)
+
+plt.legend(legend_list,prop={'size': 15})
+plt.show()
+~~~
+: .language-python}
+
+<p align="center">
+  <img width="720" height="576" src="images/hist_radius_mean_02.png">
+</p>
+
+<p align="center">
+  <img width="720" height="576" src="images/hist_symmetry_worst_02.png">
+</p>
 
 ## References
 
