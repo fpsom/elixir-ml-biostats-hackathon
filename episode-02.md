@@ -17,21 +17,21 @@ The pipeline of an ML procedure isn't always constant. It varies, depending on t
 *How beautiful would be if I had a picture here to insert! :/*
 
 # Data pre-processing
-Before thinking about modeling, let's have a look at our data. There is no point in throwing a 10000 layer convolutional neural network (whatever that means) at our data before we even know what we’re dealing with.[[2]](#2). So let's load again the Bearst Cancer Data set from the CSV file created in the first episode.
+Before thinking about modeling, let's have a look at our data. There is no point in throwing a 10000 layer convolutional neural network (whatever that means) at our data before we even know what we’re dealing with.[[2]](#2). So let's load again the Breast Cancer Data set from the CSV file created in the first episode.
 
 ~~~
 # Importing pandas package
 import pandas as pd
 
 # Loading file
-bearst_cancer_data = pd.read_csv('breast_cancer_data.csv', header=0, index_col=0)
+breast_cancer_data = pd.read_csv('breast_cancer_data.csv', header=0, index_col=0)
 
 # Removing the first column (ID)
-bearst_cancer_data = bearst_cancer_data.iloc[:,1:]
+breast_cancer_data = breast_cancer_data.iloc[:,1:]
 
 # separating X and Y matrix
-tumors = bearst_cancer_data.pop('Diagnosis')
-X, y = bearst_cancer_data, tumors
+tumors = breast_cancer_data.pop('Diagnosis')
+X, y = breast_cancer_data, tumors
 ~~~
 {: .language-python}
 
@@ -129,7 +129,7 @@ X_normalized = pd.DataFrame(X_normalized, columns = feature_names)
 ~~~
 {: .language-python}
 
-After running this code, each element in the data matrix will definetely lie inside the interval (0,1). The last step of data pre-processing is getting a better sense of the relationship between the features themselves or features and targets. This can be achieved either by applying some statistical tests (e.g. ANOVA, Interquantile Analysis) or by vizualizing the data. For now, we are going to visualize some stuff, as an image worths a thousand words. We'll return to the statistical part in the [Feature Selection](#feature-selection) section.
+After running this code, each element in the data matrix will definetely lie inside the interval (0,1) (ISSUE 2, HAVE TO FIX THIS). The last step of data pre-processing is getting a better sense of the relationship between the features themselves or features and targets. This can be achieved either by applying some statistical tests (e.g. ANOVA, Interquantile Analysis) or by vizualizing the data. For now, we are going to visualize some stuff, as an image worths a thousand words. We'll return to the statistical part in the [Feature Selection](#feature-selection) section.
 
 The following code stores the values of `Radius.Mean` and `Symmetry.Worst` columns in objects `x1` and `x2` respectively (The two features were carefully picked for the purpose of the following example). After that, we are going to plot the Probability Density Functions (PDFs) for the values of the two columns (features) for both Benign and Malignant samples. The PDFs are plotted in a histogram form. The point here is that we would like to check whether, for example, the `Radius.Mean` values for Benign samples and for Malignant ones lie in different intervals, because in that case, data are perfectly separated. Obviosly, this scenario rarely happens in ML applications. but let's check how lucky we are.
 
@@ -190,10 +190,36 @@ plt.show()
 Answer: Take a look at the overlapping region between the two PDFs in both plots. This regionn brings us ambiguity, meaning that unclassified samples -samples without labels, in this case, new patients - that happen to fall inside this region are hard to be categorized. The smaller this region is, the better the confidence. Regarding the previous plots, the overlapping region is much shorter in `Radius.Mean` feature than `Symmetry.Worst`. So, if for some reason we had to select only between the two features to classify our data, we would definetely choose `Radius.Mean`. And that's the point of feature selection.
 
 ## Feature Selection
+As discussed in the previous episode, feature seleciton is the process of identifying an "optimal" subset of them that describe the initial dataset. Quotation marks around the word optimal highlight that the word is being somehow misused; there is no one-size-fits-all approach to reducing the features that can be applied to any dataset. The way optithe mal is defined depends on the size of dataset, the problem itself, the nature and significance of features, how flexible we are and many other parameters.
 
+Moreover, feature selection process varies significantly when talking about Supervised and Unsupervised problems. Just to refresh some stuff, in the previos episode we made a decent attempt to reduce dimensions in the Breast Cancer dataset by applying PCA. There are two comments here. The first one is that the principal components occured were a linear combination of the initial features; hence, we talk about a dimensionality reduction technique rather than feature selection. The second thing is that we faced the problem completely un-supervisely (this is what PCA does by the way). The only moment that we utilized the information from targets was during the plotting process, for coloring purposes. In contrast, here we will attempt to detect the most significant features by taking into consideration the targets' information. Feature seleciton may also work for unsupervised problems, but we'll deepen more into this field in the fourth episode.
 
+Let's present some **theory** stuff at first, concerning **feature selection in supervised problems**, and then we'll proceed to the application. Feature selection methods in supervised problems can be summarized into three categories:
+- Wrapper Methods: Wrapper feature selection methods create many models with different subsets of input features and select those features that result in the best performing model according to a performance metric. These methods are unconcerned with the variable types, although they can be computationally expensive. RFE is a good example of a wrapper feature selection method.
+- Filter Methods: Filter feature selection methods use statistical techniques to evaluate the relationship between each input variable and the target variable, and these scores are used as the basis to choose (filter) those input variables that will be used in the model.
+- Intrinsic: There are some machine learning algorithms that perform feature selection automatically as part of learning the model. We might refer to these techniques as intrinsic feature selection methods.[[6]](#6)
 
+In this lecture we will mainly focus on filter based methods, which are are the most popular and widely used techniques. In fact, there are a bunch of statistical tests that can measure the correlation of features with target values. The disadvantage here is that different tests should be applied in different variable types. In order to avoid confusion, it's important to memorize the following graph:
 
+<p align="center">
+  <img width="1071" height="566" src="images/filter_based_methods_e02.png">
+</p>
+
+The features table of Breast Cancer dataset (`X` table) consists only of numerical values, while the output vector values are categorical. So, the proposed statistical tests are ANOVA and Kendall's ones. We are going to use analyze and use ANOVA in this episode.
+
+**ANOVA** is an acronym for “analysis of variance” and is a parametric statistical hypothesis test for determining whether the means from two or more samples of data (often three or more) come from the same distribution or not. An F-statistic, or **F-test**, is a class of statistical tests that calculate the ratio between variances values, such as the variance from two different samples or the explained and unexplained variance by a statistical test, like ANOVA. The ANOVA method is a type of F-statistic referred to here as an ANOVA f-test.[[7]](#7)
+
+Intuitively, let's think of a scenario that we have two classes and we want to find a score for each feature saying "how well this feature discriminates between two classes". Now look at the figure bellow. There are two classes red and blue and two features on x and y axes.
+
+<p align="center">
+  <img width="725" height="706" src="images/annova_e02.png">
+</p>
+
+Evidently, as we previously discussed, `x` feature is a better separator than `y`. But What makes `x` better than `y`? As you see in the figure above:
+- In `x` axis the two classes are far from each other. (*Math Translation: The distance between means of class distributions on x is greater than on y*)
+- In `x` axis, there is no overlap between the two classes, something that does not hold for `y` axis (*Math Translation: The variance of each single class according to x is less than those of y.*)
+
+Now we can easily the **F-score** as F = distance_between_classes / compactness_of_classes! The higher this score is, the better the classes are discriminated by the corresponding feature[[8]](#8).
 
 ## References
 
@@ -219,3 +245,17 @@ Medium, [Link](https://medium.com/@rahul77349/feature-scaling-why-it-is-required
 Aniruddha Bhandari (2020)
 Feature Scaling for Machine Learning: Understanding the Difference Between Normalization vs. Standardization
 Analytics Vidhya, [Link](https://www.analyticsvidhya.com/blog/2020/04/feature-scaling-machine-learning-normalization-standardization/)
+
+<a id="6">[6]</a>
+Jason Brownlee (2019)
+How to Choose a Feature Selection Method For Machine Learning
+Machine Learning Mastery, [Link](https://machinelearningmastery.com/feature-selection-with-real-and-categorical-data/)
+
+<a id="7">[7]</a>
+Jason Brownlee (2020)
+How to Perform Feature Selection With Numerical Input Data
+Machine Learning Mastery, [Link](https://machinelearningmastery.com/feature-selection-with-numerical-input-data/)
+
+<a id="7">[7]</a>
+https://datascience.stackexchange.com/questions/74465/how-to-understand-anova-f-for-feature-selection-in-python-sklearn-selectkbest-w
+
