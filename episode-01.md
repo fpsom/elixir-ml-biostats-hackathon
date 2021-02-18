@@ -307,6 +307,8 @@ Evidently, to define this optimized model that fits well in our data, we first n
 
 A **linear model** uses a linear function for its prediction function or as a crucial part of its prediction function. A linear function takes a fixed number of numerical inputs, let's call them x1,x2,…,xn (which in our case are the feature values of the sample) and returns y = w0+∑ni=1wixi where the weights w0,…,wn are the parameters of the model.
 
+Test: $y = w_0 + \sum_{i=1}^{N}{n_{i} w_{i}} $
+
 If the prediction function is a linear function, we can perform regression, i.e. predicting a numerical label. We can also take a linear function, return the sign of the result (whether the result is positive or not) and perform binary classification that way, as it was previously described: all samples with a positive output receive label A, all others receive label B. There are various other (more complex) options for a response function on top of the linear function, the logistic function is very commonly used (which leads to logistic regression, predicting a number between 0 and 1, typically used to learn the probability of a binary outcome in a noisy setting). 
 
 A **non-linear model** is a model which is not a linear model, and it evidently contains more complex rules. Typically these are more powerful (they can represent a larger class of functions) but much harder to train.[[7]](#7)

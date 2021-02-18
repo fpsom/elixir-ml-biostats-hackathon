@@ -37,7 +37,7 @@ X, y = bearst_cancer_data, tumors
 
 Data Pre-Processing is a bit fuzzy term. That's because it involves a bunch of different processes, either used or not, with the aim to understanding our data. Usually, the first step of data pre-prosessing is Data Clensing. **Data cleansing** or data cleaning is the process of detecting and correcting (or removing) corrupt or inaccurate records from a record set, table, or database and refers to identifying incomplete, incorrect, inaccurate or irrelevant parts of the data and then replacing, modifying, or deleting the dirty or coarse data [[3]](#3). Luckily, there is no need to perform this step here, at least in terms of deleting corrupt records, because our data table seems complete; however, it's pretty possible to detect inaccurate samples as we proceed further in the analysis.
 
-The next important step that should never be ignored is **Feature Scaling**. There two different methods to scale our features: **Normalization** and **Standardization**. To understand the need of scaling our features, let's use the following code to calculate the mean value and standard deviation of each feature separately: (In the following code, we set the parameter `axis = 0` to indicate that we want to calculate the means and STDs of columns. If we wanted do the same calculation for the rows, we should set `axis = 1`, which is obviously meaningless.)
+The next important step that should never be ignored is **Feature Scaling**. There two different methods to scale our features: **Normalization** and **Standardization**. To understand the need of scaling our features, let's use the following code to calculate the mean value and standard deviation of each feature separately: (In the following code, we set the parameter `axis = 0` to indicate that we want to calculate the means and STDs of columns. If we wanted do the same calculation for rows, we should set `axis = 1`, which is however meaningless.)
 
 ~~~
 # Names of features
@@ -129,9 +129,9 @@ X_normalized = pd.DataFrame(X_normalized, columns = feature_names)
 ~~~
 {: .language-python}
 
-After running this code, each element in the data matrix will definetely lie inside the interval [0,1]. The last step of data pre-processing is getting a better sense of the relationship between the features themselves or features and targets. This can be achieved either by calculating some statistical metrics (e.g. ANOVA, Interquantile Analysis) or by vizualizing the data. For now, we are going to visualize some stuff, as an image worths a thousand words. We'll return to the statistical part in the Feature Selection section.
+After running this code, each element in the data matrix will definetely lie inside the interval (0,1). The last step of data pre-processing is getting a better sense of the relationship between the features themselves or features and targets. This can be achieved either by applying some statistical tests (e.g. ANOVA, Interquantile Analysis) or by vizualizing the data. For now, we are going to visualize some stuff, as an image worths a thousand words. We'll return to the statistical part in the [Feature Selection](#feature-selection) section.
 
-The following code stores the values of `Radius.Mean` and `Symmetry.Worst` columns in objects `x1` and `x2` respectively. After that, the PDF's are plotted (Probability Density Functions) in the form of histogramms, for Benign and Malignant samples separately. 
+The following code stores the values of `Radius.Mean` and `Symmetry.Worst` columns in objects `x1` and `x2` respectively (The two features were carefully picked for the purpose of the following example). After that, we are going to plot the Probability Density Functions (PDFs) for the values of the two columns (features) for both Benign and Malignant samples. The PDFs are plotted in a histogram form. The point here is that we would like to check whether, for example, the `Radius.Mean` values for Benign samples and for Malignant ones lie in different intervals, because in that case, data are perfectly separated. Obviosly, this scenario rarely happens in ML applications. but let's check how lucky we are.
 
 ~~~
 import matplotlib.pyplot as plt
@@ -176,8 +176,6 @@ plt.show()
 ~~~
 : .language-python}
 
-overlapping region!
-
 <p align="center">
   <img width="720" height="576" src="images/hist_radius_mean_02.png">
 </p>
@@ -185,6 +183,17 @@ overlapping region!
 <p align="center">
   <img width="720" height="576" src="images/hist_symmetry_worst_02.png">
 </p>
+
+
+*How would you interpret the two plots?*
+
+Answer: Take a look at the overlapping region between the two PDFs in both plots. This regionn brings us ambiguity, meaning that unclassified samples -samples without labels, in this case, new patients - that happen to fall inside this region are hard to be categorized. The smaller this region is, the better the confidence. Regarding the previous plots, the overlapping region is much shorter in `Radius.Mean` feature than `Symmetry.Worst`. So, if for some reason we had to select only between the two features to classify our data, we would definetely choose `Radius.Mean`. And that's the point of feature selection.
+
+## Feature Selection
+
+
+
+
 
 ## References
 
