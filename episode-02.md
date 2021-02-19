@@ -2,7 +2,7 @@
 
 _Learning Outcomes_
 1. Explain the different steps in an ML pipeline
-    - _Internal Note_: Pre-processing / Feature Selection / Training /Testing / Evaluation / Validation
+    - _Internal Note_: Pre-processing / Feature Selection / Training/ Validation /Testing / Evaluation
 2. Explain and critically argue about the criteria for evaluating an ML model
     - _Internal Note_: Referring to F-measure, accuracy, recall, specificity, sensitivity, silhouette, confusion matrix, etc
 3. Evaluate and compare ML models for a particular dataset;  what could you do to improve your model ?
@@ -12,11 +12,11 @@ _Learning Outcomes_
 ## What is a pipeline?
 In computer science, a pipeline is a set of data processing elements connected in series, where the output of one element is the input of the next one. The elements of a pipeline are often executed in parallel or in time-sliced fashion. Some amount of buffer storage is often inserted between elements. Pipelining is a commonly used concept in everyday life. For example, in the assembly line of a car factory, each specific task is often done by a separate work station. Suppose that assembling a car requires three tasks that take 20, 10, and 15 minutes, respectively. Then, if all three tasks were performed by a single station, the factory would output one car every 45 minutes. By using a pipeline of three stations, the factory would output the first car in 45 minutes, and then a new one every 20 minutes. [[1]](#1)
 
-The pipeline of an ML procedure isn't always constant. It varies, depending on the problem, the dataset, the algorithms used etc. The diagram of the pipeline that we'll mostly use in this course consists of the following steps: Data Pre-processing, Feature Selection, Model Training, Model Testing, Model Evaluation, Model Validation.
+The pipeline of an ML procedure isn't always constant. It varies, depending on the problem, the dataset, the algorithms used etc. The diagram of the pipeline that we'll mostly use in this course consists of the following steps: Data Pre-processing, Feature Selection, Model Training, Model Validation, Model Testing, Model Evaluation.
 
 *How beautiful would be if I had a picture here to insert! :/*
 
-# Data pre-processing
+## Data pre-processing
 Before thinking about modeling, let's have a look at our data. There is no point in throwing a 10000 layer convolutional neural network (whatever that means) at our data before we even know what we’re dealing with.[[2]](#2). So let's load again the Breast Cancer Data set from the CSV file created in the first episode.
 
 ```python
@@ -290,11 +290,70 @@ Symmetry.SE : 0.024117406686585498
   <img width="1080" height="720" src="images/features_scores_e02.png">
 </p>
 
-We have sorted features based on their scores and printed them in our console. Moreover, the barplot visualizes the information from scores. The next step is to determine a threshold in scores, to decides which features to keep. Based on our data, a decent choice would be to select features with score higher than `500`, meaning the top-9 features. This is accomplished by the following code:
+We have sorted features based on their scores and printed them in our console. Moreover, the barplot visualizes the information from scores. The next step is to determine a threshold in scores, to decide which features to keep. Based on our data, a decent choice would be to select features with score higher than `500`, meaning the top-9 features. This is accomplished by the following code:
 
-test:
+```python
+# ANOVA: setting score cutoff = 500
+score_threshold = 500
+selected_features = [feature_names[i] for i in indices if fs.scores_[i] > score_threshold]
+X_selected = X[selected_features]
+print(X_selected)
+```
 
-`math $x \cdot y = z$`
+~~~
+     Concave.Points.Worst  Perimeter.Worst  Concave.Points.Mean  Radius.Worst  \
+0                  0.2654           184.60              0.14710        25.380   
+1                  0.1860           158.80              0.07017        24.990   
+2                  0.2430           152.50              0.12790        23.570   
+3                  0.2575            98.87              0.10520        14.910   
+4                  0.1625           152.20              0.10430        22.540   
+..                    ...              ...                  ...           ...   
+564                0.2216           166.10              0.13890        25.450   
+565                0.1628           155.00              0.09791        23.690   
+566                0.1418           126.70              0.05302        18.980   
+567                0.2650           184.60              0.15200        25.740   
+568                0.0000            59.16              0.00000         9.456   
+
+     Perimeter.Mean  Area.Worst  Radius.Mean  Area.Mean  Concavity.Mean  
+0            122.80      2019.0        17.99     1001.0         0.30010  
+1            132.90      1956.0        20.57     1326.0         0.08690  
+2            130.00      1709.0        19.69     1203.0         0.19740  
+3             77.58       567.7        11.42      386.1         0.24140  
+4            135.10      1575.0        20.29     1297.0         0.19800  
+..              ...         ...          ...        ...             ...  
+564          142.00      2027.0        21.56     1479.0         0.24390  
+565          131.20      1731.0        20.13     1261.0         0.14400  
+566          108.30      1124.0        16.60      858.1         0.09251  
+567          140.10      1821.0        20.60     1265.0         0.35140  
+568           47.92       268.6         7.76      181.0         0.00000  
+
+[569 rows x 9 columns]
+~~~
+
+
+## Training - Validation - Testing - Evaluation
+The next parts of ML pipeline are fully interactive with each other and that's why they are analyzed in the same section. At first, data are randomly shuffled and splitted in three subsets: Training, Validation and Test sets:
+
+1. The model is initially fit on a **training dataset**, which is a set of examples used to fit the parameters of the model. The model is trained on the training dataset using a supervised learning method (example using optimization methods). The current model is run with the training dataset and produces a result, which is then compared with the target, for each input vector in the training dataset. Based on the result of the comparison and the specific learning algorithm being used, the parameters of the model are adjusted.
+2. Successively, the fitted model is used to predict the responses for the observations in a second dataset called the **validation dataset**. The validation dataset provides an unbiased evaluation of a model fit on the training dataset while tuning the model's hyperparameters (e.g. the number of hidden layers and units in a neural network). Validation datasets can be used for regularization by early stopping (stopping training when the error on the validation dataset increases, as this is a sign of overfitting to the training dataset).
+3. Finally, the **test dataset** is a dataset used to provide an unbiased evaluation of a final model fit on the training dataset. If the data in the test dataset has never been used in training (for example in cross-validation), the test dataset is also called a holdout dataset. The term "validation set" is sometimes used instead of "test set" in some literature (e.g., if the original dataset was partitioned into only two subsets, the test set might be referred to as the validation set). [[9]](#9)
+
+A standard way to separate main dataset into the above subsets is: training set (60% of samples), validation set (20% of samples), and test set (20% of samples). The hyperparameter that's going to be tuned with validation dataset is the order of an SVM model. An advantage of Breast Cancer data set is that the distribution of output labels is more or less uniform; around 50% of data are labeled as 'Benign' the rest of it as 'Malignant'. This gives us the benefit to define training, validation and test dataset only once in the beginning of the process (definetely after shufflng) and not particularly worry about the how representative the distributions of these subsets are (meaning how similar their distributions are to the initial one). In most of the cases, however, we have to be really careful about the case of representative subsets. A technique that is widely used to overcome this limitation is k-fold cross validation.
+
+### SVM
+In machine learning, **support-vector** machines (SVMs) are supervised learning models with associated learning algorithms that analyze data for classification and regression analysis. Suppose some given data points each belong to one of two classes, and the goal is to decide which class a new data point will be in. In the case of support-vector machines, a data point is viewed as a p-dimensional vector, and we want to know whether we can separate such points with a (p − 1)-dimensional hyperplane. This is called a linear classifier[[10]](#10). Now let's check the following figure. The goal is to "draw" the optimal (straight) line that separates the classes of the 2D points. As we can see, L2 separates our data pretty good (much better than L1), but L3 is actually the best choice. The optimal line is determined by how far it is from the nearest points of the classes; the furthest it is, the better the choice. As we talk about straight lines, the **parameters** that have to be tuned are the positinion and slope. Parameters of models are tuned utilizing training set. Linear SVD can be generalized in more dimensions, where instead of straight lines as separators, we have planes and hyper-planes.
+
+<p align="center">
+  <img width="820" height="700" src="images/linear_svm_02.png">
+</p>
+
+However, data is not always linearly separable, like data in the figure on the left. In these cases, it's better either to seach for a non-linear separator, or to map features into a higher dimesnional space, where they are linearly separable. **Kernels** are widely used in Support Vector Machines (SVM) model to bridge linearity and non-linearity. They converts non-linear lower dimension space to a higher dimension space thereby we can get a linear classification. So, we are projecting the data with some extra features so that it can convert to a higher dimension space (figure on the right)[[11]](#11). 
+
+<p align="center">
+  <img width="700" height="300" src="images/kernel-svm_eo2.png">
+</p>
+
+The higher the dimension that features are mapped, the higher the order of Kernel we use. In our case, the order of kernel is the **hyperparameter** that is going to be tuned. Hyperparameters of models are tuned utilizing validation set.
 
 ## References
 
@@ -331,6 +390,18 @@ Jason Brownlee (2020)
 How to Perform Feature Selection With Numerical Input Data
 Machine Learning Mastery, [Link](https://machinelearningmastery.com/feature-selection-with-numerical-input-data/)
 
-<a id="7">[7]</a>
+<a id="8">[8]</a>
 https://datascience.stackexchange.com/questions/74465/how-to-understand-anova-f-for-feature-selection-in-python-sklearn-selectkbest-w
+
+<a id="9">[9]</a>
+https://en.wikipedia.org/wiki/Training,_validation,_and_test_sets
+
+<a id="10">[10]</a>
+https://en.wikipedia.org/wiki/Support-vector_machine
+
+<a id="11">[11]</a>
+Siddhartha Sharma (2019)
+Kernel Trick in SVM
+Medium, [Link](https://medium.com/analytics-vidhya/how-to-classify-non-linear-data-to-linear-data-bb2df1a6b781)
+
 
