@@ -19,7 +19,7 @@ The pipeline of an ML procedure isn't always constant. It varies, depending on t
 # Data pre-processing
 Before thinking about modeling, let's have a look at our data. There is no point in throwing a 10000 layer convolutional neural network (whatever that means) at our data before we even know what we’re dealing with.[[2]](#2). So let's load again the Breast Cancer Data set from the CSV file created in the first episode.
 
-~~~
+``` python
 # Importing pandas package
 import pandas as pd
 
@@ -32,7 +32,8 @@ breast_cancer_data = breast_cancer_data.iloc[:,1:]
 # separating X and Y matrix
 tumors = breast_cancer_data.pop('Diagnosis')
 X, y = breast_cancer_data, tumors
-~~~
+```
+
 {: .language-python}
 
 Data Pre-Processing is a bit fuzzy term. That's because it involves a bunch of different processes, either used or not, with the aim to understanding our data. Usually, the first step of data pre-prosessing is Data Clensing. **Data cleansing** or data cleaning is the process of detecting and correcting (or removing) corrupt or inaccurate records from a record set, table, or database and refers to identifying incomplete, incorrect, inaccurate or irrelevant parts of the data and then replacing, modifying, or deleting the dirty or coarse data [[3]](#3). Luckily, there is no need to perform this step here, at least in terms of deleting corrupt records, because our data table seems complete; however, it's pretty possible to detect inaccurate samples as we proceed further in the analysis.
@@ -221,7 +222,7 @@ Evidently, as we previously discussed, `x` feature is a better separator than `y
 
 Now we can easily define the **F-score** as F = distance_between_classes / compactness_of_classes (ISSUE 3: HAVE TO FIX THIS)! The higher this score is, the better the corresponding feature discriminates between classes[[8]](#8).
 
-The `scikit-learn` machine library provides an implementation of the ANOVA f-test in the `f_classif()` function. This function can be used in a feature selection strategy, such as selecting the top k most relevant features (largest values) via the `SelectKBest` class. At first, we set the k parameter `k='all'`, just to return the scores of all features.
+The `scikit-learn` machine library provides an implementation of the ANOVA f-test in the `f_classif()` function. This function can be used in a feature selection strategy, such as selecting the top k most relevant features (largest values) via the `SelectKBest` class. At first, we set the k parameter `k ='all'`, just to return the scores of all features.
 
 ~~~
 from sklearn.feature_selection import SelectKBest
@@ -238,6 +239,7 @@ fs = SelectKBest(score_func=f_classif, k = 'all')
 # Applying the model (calculating scores basically)
 X_new = fs.fit_transform(X_normalized.values, y.values)
 
+#-------- The rest of the code is for printing and plotting purposes ------------------------
 # Sorting features based on scores
 indices, scores_sorted = zip(*sorted(enumerate(fs.scores_), key=itemgetter(1), reverse=True))
 features_sorted = [feature_names[i] for i in indices]
@@ -292,6 +294,8 @@ Symmetry.SE : 0.024117406686585498
 <p align="center">
   <img width="1080" height="720" src="images/features_scores_e02.png">
 </p>
+
+We have sorted features based on their scores
 
 ## References
 
