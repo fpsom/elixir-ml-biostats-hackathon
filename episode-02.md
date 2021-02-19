@@ -236,7 +236,8 @@ fs = SelectKBest(score_func=f_classif, k = 'all')
 X_new = fs.fit_transform(X_normalized.values, y.values)
 
 #-------- The rest of the code is for printing and plotting purposes ------------------------
-# Sorting features based on scores
+
+# Sorting features based on scores, indices variable keeps the order of sorted features
 indices, scores_sorted = zip(*sorted(enumerate(fs.scores_), key=itemgetter(1), reverse=True))
 features_sorted = [feature_names[i] for i in indices]
 
@@ -289,7 +290,11 @@ Symmetry.SE : 0.024117406686585498
   <img width="1080" height="720" src="images/features_scores_e02.png">
 </p>
 
-We have sorted features based on their scores
+We have sorted features based on their scores and printed them in our console. Moreover, the barplot visualizes the information from scores. The next step is to determine a threshold in scores, to decides which features to keep. Based on our data, a decent choice would be to select features with score higher than `500`, meaning the top-9 features. This is accomplished by the following code:
+
+test:
+
+`math $x \cdot y = z$`
 
 ## References
 
