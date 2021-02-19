@@ -19,7 +19,7 @@ The pipeline of an ML procedure isn't always constant. It varies, depending on t
 # Data pre-processing
 Before thinking about modeling, let's have a look at our data. There is no point in throwing a 10000 layer convolutional neural network (whatever that means) at our data before we even know what we’re dealing with.[[2]](#2). So let's load again the Breast Cancer Data set from the CSV file created in the first episode.
 
-``` python
+```python
 # Importing pandas package
 import pandas as pd
 
@@ -34,13 +34,12 @@ tumors = breast_cancer_data.pop('Diagnosis')
 X, y = breast_cancer_data, tumors
 ```
 
-{: .language-python}
 
 Data Pre-Processing is a bit fuzzy term. That's because it involves a bunch of different processes, either used or not, with the aim to understanding our data. Usually, the first step of data pre-prosessing is Data Clensing. **Data cleansing** or data cleaning is the process of detecting and correcting (or removing) corrupt or inaccurate records from a record set, table, or database and refers to identifying incomplete, incorrect, inaccurate or irrelevant parts of the data and then replacing, modifying, or deleting the dirty or coarse data [[3]](#3). Luckily, there is no need to perform this step here, at least in terms of deleting corrupt records, because our data table seems complete; however, it's pretty possible to detect inaccurate samples as we proceed further in the analysis.
 
 The next important step that should never be ignored is **Feature Scaling**. There two different methods to scale our features: **Normalization** and **Standardization**. To understand the need of scaling our features, let's use the following code to calculate the mean value and standard deviation of each feature separately: (In the following code, we set the parameter `axis = 0` to indicate that we want to calculate the means and STDs of columns. If we wanted do the same calculation for rows, we should set `axis = 1`, which is however meaningless.)
 
-~~~
+```python
 # Names of features
 feature_names = X.columns
 
@@ -58,8 +57,7 @@ for i in range(len(mv_vector)):
     
     # String Alignment
     print("{0:<30}{1:<30}{2:<30}".format(feature_name, mv_str, std_str))
-~~~
-{: .language-python}
+```
 
 ~~~
 Radius.Mean                   Mean: 14.127291739894563      STD: 3.524048826212078        
@@ -93,7 +91,7 @@ Concave.Points.Worst          Mean: 0.11460622319859404     STD: 0.0657323411959
 Symmetry.Worst                Mean: 0.29007557117750454     STD: 0.06186746753751869      
 Fractal.Dimension.Worst       Mean: 0.08394581722319855     STD: 0.01806126734889399      
 ~~~
-{: .output}
+
 
 **Feature scaling** refers to putting the values in the same range or same scale so that no variable is dominated by the other. And why this is important? Because, most of the times like here, your dataset will contain features highly varying in magnitudes, units and range. But since, most of the machine learning algorithms use Euclidean distance between two data points in their computations, this is a problem. The features with high magnitudes will weigh in a lot more in the distance calculations than features with low magnitudes. To suppress this effect, we need to bring all features to the same level of magnitudes. [[4]](#4) 
 
@@ -117,7 +115,7 @@ Quick answer: Normalization vs. standardization is an eternal question among mac
 
 Remember last lecture we used Standarization in the same dataset, before applying PCA algorithm, and it seemed to work pretty well. This time, however, we're going to normalize our data, because we don't know the distribution of it, and so it's a safer choice. Feature normalization in Python is accomplished by `MinMaxScaler()` function in `sklearn.preprocessing` library:
 
-~~~
+```python
 from sklearn.preprocessing import MinMaxScaler
 
 # Feature Normalization
@@ -127,14 +125,13 @@ X_normalized = min_max_scaler.fit_transform(X)
 # The output of MinMaxScaler() is a numpy array
 # So we convert it to pandas.DataFrame
 X_normalized = pd.DataFrame(X_normalized, columns = feature_names)
-~~~
-{: .language-python}
+```
 
 After running this code, each element in the data matrix will definetely lie inside the interval (0,1) (ISSUE 2, HAVE TO FIX THIS). The last step of data pre-processing is getting a better sense of the relationship between the features themselves or features and targets. This can be achieved either by applying some statistical tests (e.g. ANOVA, Interquantile Analysis) or by vizualizing the data. For now, we are going to visualize some stuff, as an image worths a thousand words. We'll return to the statistical part in the [Feature Selection](#feature-selection) section.
 
 The following code stores the values of `Radius.Mean` and `Symmetry.Worst` columns in objects `x1` and `x2` respectively (The two features were carefully picked for the purpose of the following example). After that, we are going to plot the Probability Density Functions (PDFs) for the values of the two columns (features) for both Benign and Malignant samples. The PDFs are plotted in a histogram form. The point here is that we would like to check whether, for example, the `Radius.Mean` values for Benign samples and for Malignant ones lie in different intervals, because in that case, data are perfectly separated. Obviosly, this scenario rarely happens in ML applications. but let's check how lucky we are.
 
-~~~
+```python
 import matplotlib.pyplot as plt
 
 # Features Selected
@@ -174,8 +171,7 @@ for cancer_type, color in zip(cancer_types,colors):
 
 plt.legend(legend_list,prop={'size': 15})
 plt.show()
-~~~
-: .language-python}
+```
 
 <p align="center">
   <img width="720" height="576" src="images/hist_radius_mean_02.png">
@@ -224,7 +220,7 @@ Now we can easily define the **F-score** as F = distance_between_classes / compa
 
 The `scikit-learn` machine library provides an implementation of the ANOVA f-test in the `f_classif()` function. This function can be used in a feature selection strategy, such as selecting the top k most relevant features (largest values) via the `SelectKBest` class. At first, we set the k parameter `k ='all'`, just to return the scores of all features.
 
-~~~
+```python
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import f_classif
 from operator import itemgetter
@@ -254,8 +250,7 @@ plt.bar(feature_names, fs.scores_)
 plt.xticks(rotation = 'vertical')
 plt.title('Featues vs Scores', fontsize = 20)
 plt.show()
-~~~
-{: .language-python}
+```
 
 ~~~
 Concave.Points.Worst : 964.3853934517127
@@ -289,7 +284,6 @@ Fractal.Dimension.Mean : 0.09345929487514902
 Texture.SE : 0.03909470231275527
 Symmetry.SE : 0.024117406686585498
 ~~~
-{: .output}
 
 <p align="center">
   <img width="1080" height="720" src="images/features_scores_e02.png">

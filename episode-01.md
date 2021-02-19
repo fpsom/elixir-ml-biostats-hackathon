@@ -19,68 +19,59 @@ In general, machine learning (ML) is a category of algorithms that allows softwa
 
 We are going to download the [Breast Cancer Wisconsin (Diagnostic) Data Set](http://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+%28diagnostic%29) from the [UCI Machine Learning repository](http://archive.ics.uci.edu/ml/index.php) to see how it looks like. You need to switch to your working directory and open up a new Python 3 Jupyter Notebook. The first thing we need to do is to import the [dataset](https://pypi.org/project/dataset/) toolkit in our code, which will help us read datasets from online databases.
 
-~~~
+```python
 import dataset
-~~~
-{: .language-python}
+```
 
 In fact, we only need a single function from the toolkit, so it's better to use the following code instead.
 
-~~~
+```python
 from dataset import Dataset
-~~~
-{: .language-python}
+```
 
 In this way, we only import the `Dataset()` function from `dataset` toolkit. In order to download our data, we use the following lines of code. - Note that if we don't specify which function to load from `dataset` toolkit, we need to call the `Dataset()` function in this way: `dataset.Dataset()` -
 
-~~~
+```python
 # Downloading data file
 URL_data = "https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data"
 breastCancerData = Dataset(URL_data, delimiter=',', header=None)
-~~~
-{: .language-python}
+```
 
 In the first line of our code we state the [URL](https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data) from which the data will be dowloaded. Basically, if you attempt open up the specified URL in your browser, you will notice that data is separated by comma `,` character. So, in the second line, we use the `Dataset()` function to download data. Apart from URL argument, `Dataset()` function takes two more arguements (basically, it may take more than those, you can check its documentation [here](https://dataset.readthedocs.io/en/latest/)). The first one is the `delimiter` argument, which specifies the character that separates the data. The second argument specifies whether the first row should be read as headers. Actually, this dataset contains no headers, so we pass the `None` value and we're going to dowload the corresponding headers from a different URL.
 
 The output of the `Dataset()` function is an object of class `Dataset`. In order to check this up, we need to use the `type()` command:
 
-~~~
+```python
 type(breastCancerData)
-~~~
-{: .language-python}
+```
 
 ~~~
 dataset.dataset.Dataset
 ~~~
-{: .output}
 
 Our data table is stored inside `.features` attribute of `breastCancerData` object. In order to store the data table at a different variable, we need to use the following line of code.
 
-~~~
+```python
 # assigning .features attribute to separate variable
 data = breastCancerData.features
-~~~
-{: .language-python}
+```
 
 The new `data` object is a `DataFrame` object.
 
-~~~
+```python
 type(data)
-~~~
-{: .language-python}
+```
 
 ~~~
 pandas.core.frame.DataFrame
 ~~~
-{: .output}
 
 The `DataFrame` class is pretty useful in handling data tables in Python and is widely used for this purpose. Hence, we'll constantly refer to it as the course goes on. Now, let's have a look at our `data` object. By typing `print(data.head())` we print only the first rows of our data table in our console.
 
-~~~
+```python
 # Printing data table
 print(data.head())
-~~~
-{: .language-python}
+```
 
 ~~~
            x0 x1     x2     x3      x4      x5       x6       x7      x8  \
@@ -107,28 +98,25 @@ print(data.head())
 [5 rows x 32 columns]
 
 ~~~
-{: .output}
 
 If all goes well, we can see that our dataset contains 569 observations across 32 variables. As it was previously mentioned, this data table doesn't contain any header at all, and the default headers are `x0, x1 ... x31`. We need to download the headers from a different URL. We use the following commands for this purpose.
 
-~~~
+```python
 # Downloading headers
 URL_colnames = "https://raw.githubusercontent.com/fpsom/IntroToMachineLearning/gh-pages/data/wdbc.colnames.csv"
 breastCancerDataColNames = Dataset(URL_colnames, delimiter = '\n', header = None)
 col_names = breastCancerDataColNames.features.iloc[:,0].tolist()
-~~~
-{: .language-python}
+```
 
 The `.iloc()` attribute-function of a `DataFrame` object locates a specified area inside a data matrix. For more details, you can check out the documentation [here](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.iloc.html). In order to store the elements of this area to a list, we need to use the `.tolist()` function. Now, the `col_names` list contains the headers of our data, and we use the following command for them to be assigned on the table. 
 
-~~~
+```python
 # Specifying data column names
 data.columns = col_names
 
 # Printing data table
 print(data.head())
-~~~
-{: .language-python}
+```
 
 ~~~
   Diagnosis  Radius.Mean  Texture.Mean  Perimeter.Mean  Area.Mean  \
@@ -168,21 +156,19 @@ print(data.head())
 
 [5 rows x 31 columns]
 ~~~
-{: .output}
 
 Basically, this dataset will be widely used in this tutorial and, thus, we are going to save it in our working direcoty at a CSV (Comma Separated Value) format, using the following command.
 
-~~~
+```python
 # storing data frame to csv file
 data.to_csv('breast_cancer_data.csv')
-~~~
-{: .language-python}
+```
 
 Now, let's analyze our data set. The Breast Cancer data set is a real-valued multivariate data that consists of 569 samples (patients) that are classified into two classes, where each class signifies whether a patient is diagnosed with breast cancer or not. The two categories are malignant (M) and benign (B). Each row of the data matrix refers to a single patient. while the columns of each row are the characteristics (features) of our patient. The `Diagnosis` column is the one that indicates the nature of tumor, where M stands for malignant and B stands for benign.
 
 We will first remove the `ID` column, which is the unique identifier of each row. The reason for this is that the ID of each sample is given randomly during the sampling process (in most cases even prior to the analyis) and does not determine anything about the characteristics of the tumor - More or less like the name of a person -. Then we will separate the `Diagnosis` column from the main matrix and rename them as `X` and `y` tables respectively.
 
-~~~
+```python
 # Removing the first column
 data = data.iloc[:,1:]
 
@@ -191,8 +177,7 @@ tumors = data.pop('Diagnosis')
 
 # Renaming
 X, y = data, tumors
-~~~
-{: .language-python}
+```
 
 In machine learning, we often refer to the `X` table as the samples/features table and to the `y` table as the labels/outputs. So, the reason for the renaming is more or less symbolic, to follow the conventional ML terminology.
 
@@ -203,7 +188,7 @@ At this stage we should define the two basic categories of ML problems that will
 On the other hand, **Supervised learning**  is the branch of machine learning that involves predicting discrete labels or continuous values given samples as inputs. Supervised learning problems are generally divided into two groups: Regression and Classification problems. Our problem here focuses on finding patterns to distinguish malignant from benign tumors and, moreover, on the assessment of a tumor based on its features and patterns detected. In other words, we want to classify tumors into groups and, thus, we are talking about a **classification problem**.
 The second wide category of problems are those trying to predict continuous output values and are called Regression problems. In order to have a look at them, we're going to load the Boston house-prices dataset from [scikit-learn](https://scikit-learn.org/stable/) package in Python. `Scikit-learn` package is a set of simple and efficient tools or predictive data analysis, implemented in Python; this package is widely used in Machine Learning applications and, thus, we will find it really useful throughout this tutorial. We are using the following lines of code.
 
-~~~
+```python
 # Packages
 from sklearn.datasets import load_boston
 import pandas as pd
@@ -214,15 +199,13 @@ boston_houses = load_boston()
 # Converting to data frame
 boston_houses_df = pd.DataFrame(boston_houses.data, columns=boston_houses.feature_names)
 prices_df = pd.DataFrame(boston_houses.target, columns = ['Av. Price'])
-~~~
-{: .language-python}
+```
 
 Probably too many questions so let's analyze the code. In the first line of code we import the `load_boston()` function, which lies inside `datasets` subpackage, which in turn belongs to the `scikit-learn` main package. Apart from `scikit-learn` package, we also import [pandas](https://pandas.pydata.org/), which will be discussed in a bit. After that, we call the function and store its result to the `boston_houses` variable. The function returns an object of class `sklearn.utils.Bunch`; however we would prefer our data to be stored in a `DataFrame` object, that contains a bunch of useful functionalities. For this reason, we import `pandas` package as `pd`, meaning that after the initial import, rather than writing `pandas.function(...)`, you can now write `pd.function(...)`. . Some people prefer this as it is quicker to type and results in shorter lines of code - especially for libraries with long names! You will frequently see Python code online using a Pandas function with `pd`, and it's because they've used this shortcut. Pandas is another widely used library in python that contains many useful functionalitites to handle `DataFrames`. In the last line we use the `Dataframe()` function of `pandas` package to transform our data into `DataFrame` format. Targets in this example are stored in `prices_df` object as well. The input data looks like this.
 
-~~~
+```python
 print(boston_houses_df.head())
-~~~
-{: .language-python}
+```
 
 ~~~
       CRIM    ZN  INDUS  CHAS    NOX     RM   AGE     DIS  RAD    TAX  \
@@ -242,14 +225,12 @@ print(boston_houses_df.head())
 [506 rows x 13 columns]
 
 ~~~
-{: .output}
 
 Where as the targets data.
 
-~~~
+```python
 print(prices_df.head())
-~~~
-{: .language-python}
+```
 
 ~~~
    Av. Price
@@ -262,7 +243,6 @@ print(prices_df.head())
 [506 rows x 13 columns]
 
 ~~~
-{: .output}
 
 Full details concerning this dataset could be found [here](https://scikit-learn.org/stable/datasets/toy_dataset.html#boston-house-prices-dataset). Actually, we are refering to this specific dataset to mention that the target values might certainly take continuous values, like the average price of the house in thousand dollars. These are called **Regression Problems** and our goal is to define a set of rules to connect inputs with outputs; in other words, we attempt to define an optimized function, such that given a house with specific features to predict its expected price. 
 
@@ -318,7 +298,7 @@ Another form of unsupervised learning, is **dimensionality reduction**. We will 
 
 The main technique for feature extraction is the Principle Component Analysis (PCA). PCA guarantees finding the best linear transformation that reduces the number of dimensions with a minimum loss of information. We will not deepen more into the this topic at the moment, but let's take a look at the following code. 
 
-~~~
+```python
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
@@ -354,8 +334,7 @@ for cancer_type, color in zip(cancer_types,colors):
 
 plt.legend(legend_list,prop={'size': 15})
 plt.show()
-~~~
-{: .language-python}
+```
 
 At first we load `PCA` and `StandardScaler` functions from `sklearn` package (*scikit-learn*) and `matplotlib.pyplot` function as `plt`. Then we scale our input data by utilizing `StandardScaler`, becuase PCA's output is influenced based on the scale of the feature. We initialize our PCA algorithm with the parameter `n_components = 2`, meaning that the algorithm should project our samples in a 2D space. PCA is applied in our data; the output of PCA algorithm is a `numpy.array` object, so we convert it, for our convenience, to a `pandas.DataFrame` object. Then we transform the labels of the output vector into numerical values, assigning 1 for Malignant, 0 for Benign (for plotting reasons). The rest of the code constructs the following plot. 
 
