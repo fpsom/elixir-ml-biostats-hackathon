@@ -205,7 +205,7 @@ In this lecture we will mainly focus on filter based methods, which are are the 
   <img width="1071" height="566" src="images/filter_based_methods_e02.png">
 </p>
 
-The features table of Breast Cancer dataset (`X` table) consists only of numerical values, while the output vector values are categorical. So, the proposed statistical tests are ANOVA and Kendall's ones. We are going to use analyze and use ANOVA in this episode.
+The features table of Breast Cancer dataset (`X` table) consists only of numerical values, while the output vector values are categorical. So, the proposed statistical tests are ANOVA and Kendall's ones. We are going to analyze and use ANOVA in this episode.
 
 **ANOVA** is an acronym for “analysis of variance” and is a parametric statistical hypothesis test for determining whether the means from two or more samples of data (often three or more) come from the same distribution or not. An F-statistic, or **F-test**, is a class of statistical tests that calculate the ratio between variances values, such as the variance from two different samples or the explained and unexplained variance by a statistical test, like ANOVA. The ANOVA method is a type of F-statistic referred to here as an ANOVA f-test.[[7]](#7)
 
@@ -219,7 +219,79 @@ Evidently, as we previously discussed, `x` feature is a better separator than `y
 - In `x` axis the two classes are far from each other. (*Math Translation: The distance between means of class distributions on x is greater than on y*)
 - In `x` axis, there is no overlap between the two classes, something that does not hold for `y` axis (*Math Translation: The variance of each single class according to x is less than those of y.*)
 
-Now we can easily the **F-score** as F = distance_between_classes / compactness_of_classes! The higher this score is, the better the classes are discriminated by the corresponding feature[[8]](#8).
+Now we can easily define the **F-score** as F = distance_between_classes / compactness_of_classes (ISSUE 3: HAVE TO FIX THIS)! The higher this score is, the better the corresponding feature discriminates between classes[[8]](#8).
+
+The `scikit-learn` machine library provides an implementation of the ANOVA f-test in the `f_classif()` function. This function can be used in a feature selection strategy, such as selecting the top k most relevant features (largest values) via the `SelectKBest` class. At first, we set the k parameter `k='all'`, just to return the scores of all features.
+
+~~~
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import f_classif
+from operator import itemgetter
+
+
+# ANOVA - Returning all features, just to calculate their scores
+
+# score_func: Which statistical test to use, f_classif == ANOVA
+# k: how many features to select
+fs = SelectKBest(score_func=f_classif, k = 'all')
+
+# Applying the model (calculating scores basically)
+X_new = fs.fit_transform(X_normalized.values, y.values)
+
+# Sorting features based on scores
+indices, scores_sorted = zip(*sorted(enumerate(fs.scores_), key=itemgetter(1), reverse=True))
+features_sorted = [feature_names[i] for i in indices]
+
+# Printing scores of features
+for i in range(len(scores_sorted)):
+    print('{0} : {1}'.format(features_sorted[i], scores_sorted[i]))
+
+# plot the scores
+plt.figure(figsize=(15,10))
+plt.bar(feature_names, fs.scores_)
+plt.xticks(rotation = 'vertical')
+plt.title('Featues vs Scores', fontsize = 20)
+plt.show()
+~~~
+{: .language-python}
+
+~~~
+Concave.Points.Worst : 964.3853934517127
+Perimeter.Worst : 897.9442188597812
+Concave.Points.Mean : 861.6760200073088
+Radius.Worst : 860.7817069850568
+Perimeter.Mean : 697.2352724765157
+Area.Worst : 661.6002055336236
+Radius.Mean : 646.9810209786384
+Area.Mean : 573.0607465682353
+Concavity.Mean : 533.793126203546
+Concavity.Worst : 436.6919394030541
+Compactness.Mean : 313.2330785676416
+Compactness.Worst : 304.3410629037628
+Radius.SE : 268.8403269673444
+Perimeter.SE : 253.89739178268033
+Area.SE : 243.6515857777416
+Texture.Worst : 149.5969046860536
+Smoothness.Worst : 122.47288045844547
+Symmetry.Worst : 118.86023213619839
+Texture.Mean : 118.09605934498053
+Concave.Points.SE : 113.26275994492457
+Smoothness.Mean : 83.65112340842326
+Symmetry.Mean : 69.52744350046054
+Fractal.Dimension.Worst : 66.44396064959992
+Compactness.SE : 53.2473391281205
+Concavity.SE : 39.01448155684741
+Fractal.Dimension.SE : 3.4682747570423906
+Smoothness.SE : 2.5579678031857522
+Fractal.Dimension.Mean : 0.09345929487514902
+Texture.SE : 0.03909470231275527
+Symmetry.SE : 0.024117406686585498
+~~~
+{: .output}
+
+<p align="center">
+  <img width="1080" height="720" src="images/features_scores_e02.png">
+</p>
 
 ## References
 
