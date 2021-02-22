@@ -332,7 +332,7 @@ print(X_selected)
 
 
 ## Training - Validation - Testing - Evaluation
-The next parts of ML pipeline are fully interactive with each other and that's why they are analyzed in the same section. At first, data are randomly shuffled and splitted in three subsets: Training, Validation and Test sets:
+The next parts of ML pipeline are fully interconnected and that's why they are analyzed at the same section. At first, data are randomly shuffled and splitted in three subsets: Training, Validation and Test sets:
 
 1. The model is initially fit on a **training dataset**, which is a set of examples used to fit the parameters of the model. The model is trained on the training dataset using a supervised learning method (example using optimization methods). The current model is run with the training dataset and produces a result, which is then compared with the target, for each input vector in the training dataset. Based on the result of the comparison and the specific learning algorithm being used, the parameters of the model are adjusted.
 2. Successively, the fitted model is used to predict the responses for the observations in a second dataset called the **validation dataset**. The validation dataset provides an unbiased evaluation of a model fit on the training dataset while tuning the model's hyperparameters (e.g. the number of hidden layers and units in a neural network). Validation datasets can be used for regularization by early stopping (stopping training when the error on the validation dataset increases, as this is a sign of overfitting to the training dataset).
@@ -341,19 +341,69 @@ The next parts of ML pipeline are fully interactive with each other and that's w
 A standard way to separate main dataset into the above subsets is: training set (60% of samples), validation set (20% of samples), and test set (20% of samples). The hyperparameter that's going to be tuned with validation dataset is the order of an SVM model. An advantage of Breast Cancer data set is that the distribution of output labels is more or less uniform; around 50% of data are labeled as 'Benign' the rest of it as 'Malignant'. This gives us the benefit to define training, validation and test dataset only once in the beginning of the process (definetely after shufflng) and not particularly worry about the how representative the distributions of these subsets are (meaning how similar their distributions are to the initial one). In most of the cases, however, we have to be really careful about the case of representative subsets. A technique that is widely used to overcome this limitation is k-fold cross validation.
 
 ### SVM
-In machine learning, **support-vector** machines (SVMs) are supervised learning models with associated learning algorithms that analyze data for classification and regression analysis. Suppose some given data points each belong to one of two classes, and the goal is to decide which class a new data point will be in. In the case of support-vector machines, a data point is viewed as a p-dimensional vector, and we want to know whether we can separate such points with a (p − 1)-dimensional hyperplane. This is called a linear classifier[[10]](#10). Now let's check the following figure. The goal is to "draw" the optimal (straight) line that separates the classes of the 2D points. As we can see, L2 separates our data pretty good (much better than L1), but L3 is actually the best choice. The optimal line is determined by how far it is from the nearest points of the classes; the furthest it is, the better the choice. As we talk about straight lines, the **parameters** that have to be tuned are the positinion and slope. Parameters of models are tuned utilizing training set. Linear SVD can be generalized in more dimensions, where instead of straight lines as separators, we have planes and hyper-planes.
+In machine learning, **support-vector** machines (SVMs) are supervised learning models with associated learning algorithms that analyze data for classification and regression analysis. Suppose some given data points each belong to one of two classes, and the goal is to decide which class a new data point will be in. In the case of support-vector machines, a data point is viewed as a p-dimensional vector, and we want to know whether we can separate such points with a (p − 1)-dimensional hyperplane. This is called a linear classifier[[10]](#10). Now let's check the following figure. The goal is to "draw" the optimal (straight) line that separates the classes of the 2D points. As we can see, L2 separates our data pretty good (much better than L1), but L3 is actually the best choice. The optimal line is determined by how far it is from the nearest points of the classes; the furthest it is, the better the choice. As we talk about straight lines, the **parameters** that have to be tuned are the positinion and slope. Parameters of models are tuned by utilizing training set (training process). Linear SVD can be generalized in more dimensions, where instead of straight lines as separators, we have planes and hyper-planes.
 
 <p align="center">
   <img width="820" height="700" src="images/linear_svm_02.png">
 </p>
 
-However, data is not always linearly separable, like data in the figure on the left. In these cases, it's better either to seach for a non-linear separator, or to map features into a higher dimesnional space, where they are linearly separable. **Kernels** are widely used in Support Vector Machines (SVM) model to bridge linearity and non-linearity. They converts non-linear lower dimension space to a higher dimension space thereby we can get a linear classification. So, we are projecting the data with some extra features so that it can convert to a higher dimension space (figure on the right)[[11]](#11). 
+However, data is not always linearly separable, like data in the figure on the left. In these cases, it's better either to search for a non-linear separator, or to map features into a higher dimesnional space, where they are linearly separable. **Kernels** are widely used in Support Vector Machines (SVM) model to bridge linearity and non-linearity. They converts non-linear lower dimension space to a higher dimension space thereby we can get a linear classification. So, we are projecting the data with some extra features so that it can convert to a higher dimension space (figure on the right)[[11]](#11). 
 
 <p align="center">
   <img width="700" height="300" src="images/kernel-svm_eo2.png">
 </p>
 
-The higher the dimension that features are mapped, the higher the order of Kernel we use. In our case, the order of kernel is the **hyperparameter** that is going to be tuned. Hyperparameters of models are tuned utilizing validation set.
+The higher the dimension that features are mapped, the higher the order of Kernel we use. In our case, the order of kernel is the **hyperparameter** that is going to be tuned. Hyperparameters of models are tuned by utilizing validation set.
+
+## Model Evaluation
+The evaluation of the model is strictly connected with its nature; diyourfferent methods suit for different types of problems. If we talk about **regression problems**, for example, the simplest way for evaluation is to apply the model to the test dataset and measure the **Mean Square Error (MSE)** between the outputs and the actual values; the lower the value, the better the model. Moreover, if we talk about unsupervised probelms and, in particular **clustering**, a sufficient evaluation method is to measure the stability of classes, by calculating some metrics like **silhouette**, **Davies–Bouldin index** etc. Hopefully, we'll talk about it later in the course.
+
+The most interesting type of problems for evaluation are supervised learning problems, because there are a bunch of different metrics to calculate. It's important to mention here that an unsupervised problem can be easily turned into a supervised one, by combining outputs (clusters) with metadata; hence, all these metrics that will be presented here could potentially be used in unsupervised problems too. So, everything starts from the confusion matrix.
+
+A **confusion matrix** is a specific table layout that allows visualization of the performance of an algorithm, typically a supervised learning one (in unsupervised learning it is usually called a matching matrix). Each row of the matrix represents the instances in a predicted class, while each column represents the instances in an actual class (or vice versa)[[12]](#12). The standard structure of a confusion matrix is presented in the following picture[[13]](#13): *-Note: the confusion matrix can be easily generalized into multi-class matrix, check [here](https://stats.stackexchange.com/questions/179835/how-to-build-a-confusion-matrix-for-a-multiclass-classifier)-*
+
+<p align="center">
+  <img width="700" height="184" src="images/confusion_matrix_e02.png">
+</p>
+
+True positive and true negatives are the observations that are correctly predicted and therefore shown in green. We want to minimize false positives and false negatives so they are shown in red color. On the other hand, false positives and false negatives, these values occur when your actual class contradicts with the predicted class. More explicitly:
+- **True Positives (TP)**: These are the correctly predicted "positive" values which means that the value of actual class is M (malignant) and the value of predicted class is also M.
+- **True Negatives (TN)**: These are the correctly predicted "negative" values which means that the value of actual class is B (Benign) and value of predicted class is also B.
+- **False Positives (FP)**: When actual class is B and predicted class is M.
+- **False Negatives (FN)**: When actual class is M but predicted class in B.
+
+Now, let's analyze the standard metrics used in supervised ML problems:
+
+- **Accuracy** : Accuracy is the most intuitive performance measure and it is simply a ratio of correctly predicted observation to the total observations. One may think that, if we have high accuracy then our model is best. Yes, accuracy is a great measure but only when you have symmetric datasets where values of false positive and false negatives are almost same. It is calculated by the following formula:
+
+<p align="center">
+  <img width="320" height="72" src="images/accuracy_e02.png">
+</p>
+
+- **Precision**: Precision is the ratio of correctly predicted positive observations to the total predicted positive observations. The question that this metric answer is of all tumors that labeled as malignants, how many actually are malignant? High precision relates to the low false positive rate. It is calculated by the following formula:
+
+<p align="center">
+  <img width="272" height="57" src="images/precision_e02.png">
+</p>
+ 
+- **Recall (Sensitivity)**: Recall is the ratio of correctly predicted positive observations to the all observations in actual class - yes. The question recall answers is: Of all the passengers that truly survived, how many did we label? It is calculated by the following formula:
+
+<p align="center">
+  <img width="278" height="63" src="images/recall_e02.png">
+</p>
+
+- **Specificity**: Specificity measures the proportion of negatives (Benign) that are correctly identified (i.e. the proportion of those who do not have the condition (unaffected) who are correctly identified as not having the condition)
+
+<p align="center">
+  <img width="273" height="61" src="images/specificity_e02.png">
+</p>
+
+- **F-measure**: A measure that combines precision and recall is the harmonic mean of precision and recall, the traditional F-measure or balanced F-score:
+
+<p align="center">
+  <img width="284" height="81" src="images/f-measure_e02.png">
+</p>
+
 
 ## References
 
@@ -404,4 +454,10 @@ Siddhartha Sharma (2019)
 Kernel Trick in SVM
 Medium, [Link](https://medium.com/analytics-vidhya/how-to-classify-non-linear-data-to-linear-data-bb2df1a6b781)
 
+<a id="12">[12]</a>
+https://en.wikipedia.org/wiki/Confusion_matrix
 
+<a id="13">[13]</a>
+Renuka Joshi (2016)
+Accuracy, Precision, Recall & F1 Score: Interpretation of Performance Measures
+Exsilio Solutions, [Link](https://blog.exsilio.com/all/accuracy-precision-recall-f1-score-interpretation-of-performance-measures/)
