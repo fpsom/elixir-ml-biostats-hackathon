@@ -342,10 +342,10 @@ In fact, the score during training and validation of data is much different from
 
 The training of the model is basically an optimization problem. The main idea of optimization is to find an optimal set of parameters that minimize a specific function, called **loss function**. So, when validating our data and measuring the fitness of the model occured in the validation dataset, its important to use the same "metric" as used in training, in order two values to be instantly comparable. Hence, we use the loss function again. By repeatedly training our dataset with various values for hyperparameters, we can conclude to an optimal hyperparameter-set which minimizes the loss function for the validation dataset. The advantage of using Python is that, for every algorithm in the `scikit-learn` package, it's provided a well-organized documentation, where the hyperparameters of the model are specified. There are also analytical desciptions and mathimatical stuff regarding loss functions that are automatically used when calling ML algorithms. Furthermore, the user can instantly calculate the value of Loss Function for the validation dataset, using the `.score()` attribute-function of almost every model-object. 
 
-In order to obtain some practical experience of all the things discussed, we are going to apply [SVM algorithm](#svm) in our data. A standard way to separate main dataset is: training set (60% of samples), validation set (20% of samples), and test set (20% of samples). An advantage of Breast Cancer data set is that the distribution of output labels is more or less uniform; around 50% of data are labeled as 'Benign' the rest of it as 'Malignant'. This gives us the benefit to define training, validation and test dataset only once in the beginning of the process (definetely after shufflng) and not particularly worry about how representative the distributions of these subsets are (meaning how similar their distributions are to the initial one). In most of the cases, however, we have to be really careful about the case of representative subsets. A technique that is widely used to overcome this limitation is k-fold cross validation.
+In order to obtain some practical experience of all the things discussed, we are going to apply [SVM algorithm](#svm) in our data. A standard way to separate main dataset is: training set (60% of samples), validation set (20% of samples), and test set (20% of samples). An advantage of Breast Cancer data set is that the distribution of output labels is more or less uniform; around 50% of data are labeled as 'Benign' the rest of it as 'Malignant'. This gives us the benefit to determine training, validation and test dataset only once in the beginning of the process (definetely after shufflng) and not particularly worry about how representative the distributions of these subsets are (meaning how similar their distributions are to the initial one). In most of the cases, however, we have to be really careful about the case of representative subsets. A technique that is widely used to overcome this limitation is k-fold cross validation.
 
 ### SVM
-In machine learning, **support-vector** machines (SVMs) are supervised learning models with associated learning algorithms that analyze data for classification and regression analysis. Suppose some given data points each belong to one of two classes, and the goal is to decide which class a new data point will be in. In the case of support-vector machines, a data point is viewed as a p-dimensional vector, and we want to know whether we can separate such points with a (p − 1)-dimensional hyperplane. This is called a linear classifier[[10]](#10). Now let's check the following figure. The goal is to "draw" the optimal (straight) line that separates the classes of the 2D points. As we can see, L2 separates our data pretty good (much better than L1), but L3 is actually the best choice. The optimal line is determined by how far it is from the nearest points of the classes; the furthest it is, the better the choice. As we talk about straight lines, the **parameters** that have to be tuned are the positinion and slope. Parameters of models are tuned by utilizing training set (training process). Linear SVD can be generalized in more dimensions, where instead of straight lines as separators, we have planes and hyper-planes.
+In machine learning, **support-vector** machines (SVMs) are supervised learning models with associated learning algorithms that analyze data for classification and regression analysis. Suppose some given data points each belong to one of two classes, and the goal is to decide which class a new data point will be in. In the case of support-vector machines, a data point is viewed as a p-dimensional vector, and we want to know whether we can separate such points with a (p − 1)-dimensional hyperplane. This is called a linear classifier[[10]](#10). Now let's check the following figure. The goal is to "draw" the optimal (straight) line that separates the classes of the 2D points. As we can see, L2 separates our data pretty good (much better than L1), but L3 is actually the best choice. The optimal line is determined by how far it is from the nearest points of the classes; the furthest it is, the better the choice. As we talk about straight lines, the **parameters** that have to be tuned are the positinion and slope. Linear SVD can be generalized in more dimensions, where instead of straight lines as separators, we have planes and hyper-planes.
 
 <p align="center">
   <img width="820" height="700" src="images/linear_svm_02.png">
@@ -357,7 +357,61 @@ However, data is not always linearly separable, like data in the figure on the l
   <img width="700" height="300" src="images/kernel-svm_eo2.png">
 </p>
 
-The higher the dimension that features are mapped, the higher the order of Kernel we use. In our case, the order of kernel is the **hyperparameter** that is going to be tuned. Hyperparameters of models are tuned by utilizing validation set.
+The higher the dimension that features are mapped, the higher the order of Kernel we use. In our case, the order of kernel is one **hyperparameter** that is going to be tuned. The second hyperparameter we are focusing on is the regularization parameter `C`. Generally, the regularization parameter determines the contribution of higher-dimensional features in the final result, so as to avoid overfitting (we'll discuss this scenario in the next episode).
+
+## Coding Time
+At the beginning of the following code, we import `train_test_split()` and `SVC()` functions from `scikit-learn` package. The `train_test_split()` function splits the initial dataset into a training a testing subset; the test size percentage is defined in `test_size` parameter, while the `shuffle` parameter indicates whether data should be shuffled or not. The `random_state` parameter is connected with the shuffle process, and the randomness of eah function in general. In fact, to simulate randomness in computers, we use pseudorandom functions that produce pseudorandom sequences. These functions start with an initial number and gradually produce the rest of the sequence. In this way we are telling the algorithm that the initial number in the pseudorandom sequence should be zero, so as the reader to be able to reproduce exactly the same results as the following code does (if we don't set any value here, the pseudorandom sequence uses time as its input argument). The next step is to reuse the `train_test_split()` function to separate train from validation dataaset. This time we set `test_size = 0.25`, because we want validation dataset to be the 20% of total samples and, hence, 20%/80% = 25%. In addition, we define `degrees` and `c_values` sets so as to detect the optimal hyperparameters tuple. Finally, we calculate the value of loss function for validation set. using the `score()` attribute function of the model.
+
+```python
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+import numpy as np
+
+# Specifying test set
+X_train_validation, X_test, y_train_validation, y_test = \
+    train_test_split(X_selected, y, test_size=0.2, shuffle = True, random_state = 0)
+
+# Specifying train and validation set
+X_train, X_val, y_train, y_val = \
+    train_test_split(X_train_validation, y_train_validation, test_size=0.25, shuffle = True, random_state = 0)
+
+# degreees
+degrees = [1,2,3,4,5]
+
+# C-values
+c_values = [0.01, 0.1, 0.5, 1, 2, 5, 10]
+
+# Validation
+scores_table = np.zeros(shape=(len(degrees),len(c_values)), dtype=float)
+
+# Iterate over degree values
+for i, deg in enumerate(degrees):
+    
+    # Iterate over c values:
+    for j, c in enumerate(c_values):
+        
+        # Train
+        model = SVC(kernel = 'poly', degree = deg, C = c, random_state = 0)
+        model.fit(X_train, y_train)
+        
+        # Calculating validation score 
+        this_score = model.score(X_val, y_val)
+        scores_table[i][j] = this_score
+
+# Converting to data frame for plotting reasons
+col_names = ['c = {0}'.format(str(c)) for c in c_values]
+row_names = ['degree = {0}'.format(deg) for deg in degrees]
+scores_table_df = pd.DataFrame(scores_table, index = row_names, columns=col_names)
+
+# Printing
+scores_table_df
+```
+
+<p align="center">
+  <img width="565" height="188" src="images/scores_validation_e02.png">
+</p>
+
+Obviously, the optimal hyperparameters tuple is `(degree, C) = (1, 0.01)`, because the corresponding element of the above table is the minimum one.
 
 ## Model Evaluation
 The evaluation of the model is strictly connected with its nature; diyourfferent methods suit for different types of problems. If we talk about **regression problems**, for example, the simplest way for evaluation is to apply the model to the test dataset and measure the **Mean Square Error (MSE)** between the outputs and the actual values; the lower the value, the better the model. Moreover, if we talk about unsupervised probelms and, in particular **clustering**, a sufficient evaluation method is to measure the stability of classes, by calculating some metrics like **silhouette**, **Davies–Bouldin index** etc. Hopefully, we'll talk about it later in the course.
