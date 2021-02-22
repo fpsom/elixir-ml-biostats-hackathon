@@ -340,7 +340,7 @@ The next parts of ML pipeline are fully interconnected and that's why they are a
 
 In fact, the score during training and validation of data is much different from the final evaluation in the testing process. Let's discuss a little about how the parameters and hyperparameters are tuned (training and validation), and we'll talk about the final evaluation later, in the correspoding [section](#model-evaluation).
 
-The training of the model is basically an optimization problem. The main idea of optimization is to find an optimal set of parameters that minimize a specific function, called **loss function**. So, when validating our data and measuring the fitness of the model occured in the validation dataset, its important to use the same "metric" as used in training, in order two values to be instantly comparable. Hence, we use the loss function again. By repeatedly training our dataset with various values for hyperparameters, we can conclude to an optimal hyperparameter-set which minimizes the loss function for the validation dataset. The advantage of using Python is that, for every algorithm in the `scikit-learn` package, it's provided a well-organized documentation, where the hyperparameters of the model are specified. There are also analytical desciptions and mathimatical stuff regarding loss functions that are automatically used when calling ML algorithms. Furthermore, the user can instantly calculate the value of Loss Function for the validation dataset, using the `.score()` attribute-function of almost every model-object. 
+The training of the model is basically an optimization problem. The main idea of optimization is to find an optimal set of parameters that minimize a specific function, called **loss function**. So, when validating our data and measuring the fitness of the model occured in the validation dataset, most of the times its important to use the same "metric" as used in training, in order two values to be instantly comparable. Hence, we often use the loss function again. By repeatedly training our dataset with various values for hyperparameters, we can conclude to an optimal hyperparameter-set which minimizes the loss function for the validation dataset. The advantage of using Python is that, for every algorithm in the `scikit-learn` package, it's provided a well-organized documentation, where the hyperparameters of the model are specified. There are also analytical desciptions and mathimatical stuff regarding loss functions that are automatically used when calling ML algorithms. In the next episode we'll deepen more into this topic and explain some stuff concernig  **Learning curves**. For now, the SVM class-model in Python offers `.score()`, a gift-function that returns the mean accuracy on the given validation data and labels (this is how SVM is evaluated). 
 
 In order to obtain some practical experience of all the things discussed, we are going to apply [SVM algorithm](#svm) in our data. A standard way to separate main dataset is: training set (60% of samples), validation set (20% of samples), and test set (20% of samples). An advantage of Breast Cancer data set is that the distribution of output labels is more or less uniform; around 50% of data are labeled as 'Benign' the rest of it as 'Malignant'. This gives us the benefit to determine training, validation and test dataset only once in the beginning of the process (definetely after shufflng) and not particularly worry about how representative the distributions of these subsets are (meaning how similar their distributions are to the initial one). In most of the cases, however, we have to be really careful about the case of representative subsets. A technique that is widely used to overcome this limitation is k-fold cross validation.
 
@@ -360,7 +360,7 @@ However, data is not always linearly separable, like data in the figure on the l
 The higher the dimension that features are mapped, the higher the order of Kernel we use. In our case, the order of kernel is one **hyperparameter** that is going to be tuned. The second hyperparameter we are focusing on is the regularization parameter `C`. Generally, the regularization parameter determines the contribution of higher-dimensional features in the final result, so as to avoid overfitting (we'll discuss this scenario in the next episode).
 
 ## Coding Time
-At the beginning of the following code, we import `train_test_split()` and `SVC()` functions from `scikit-learn` package. The `train_test_split()` function splits the initial dataset into a training a testing subset; the test size percentage is defined in `test_size` parameter, while the `shuffle` parameter indicates whether data should be shuffled or not. The `random_state` parameter is connected with the shuffle process, and the randomness of eah function in general. In fact, to simulate randomness in computers, we use pseudorandom functions that produce pseudorandom sequences. These functions start with an initial number and gradually produce the rest of the sequence. In this way we are telling the algorithm that the initial number in the pseudorandom sequence should be zero, so as the reader to be able to reproduce exactly the same results as the following code does (if we don't set any value here, the pseudorandom sequence uses time as its input argument). The next step is to reuse the `train_test_split()` function to separate train from validation dataaset. This time we set `test_size = 0.25`, because we want validation dataset to be the 20% of total samples and, hence, 20%/80% = 25%. In addition, we define `degrees` and `c_values` sets so as to detect the optimal hyperparameters tuple. Finally, we calculate the value of loss function for validation set. using the `score()` attribute function of the model.
+At the beginning of the following code, we import `train_test_split()` and `SVC()` functions from `scikit-learn` package. The `train_test_split()` function splits the initial dataset into a training a testing subset; the test size percentage is defined in `test_size` parameter, while the `shuffle` parameter indicates whether data should be shuffled or not. The `random_state` parameter is connected with the shuffle process, and the randomness of eah function in general. In fact, to simulate randomness in computers, we use pseudorandom functions that produce pseudorandom sequences. These functions start with an initial number and gradually produce the rest of the sequence. In this way we are telling the algorithm that the initial number in the pseudorandom sequence should be zero, so as the reader to be able to reproduce exactly the same results as the following code does (if we don't set any value here, the pseudorandom sequence uses time as its input argument). The next step is to reuse the `train_test_split()` function to separate train from validation dataaset. This time we set `test_size = 0.25`, because we want validation dataset to be the 20% of total samples and, hence, 20%/80% = 25%. In addition, we define `degrees` and `c_values` sets so as to detect the optimal hyperparameters tuple. Finally, we calculate the score using the `score()` attribute function of the model.
 
 ```python
 from sklearn.model_selection import train_test_split
@@ -398,7 +398,7 @@ for i, deg in enumerate(degrees):
         this_score = model.score(X_val, y_val)
         scores_table[i][j] = this_score
 
-# Converting to data frame for plotting reasons
+# Converting to data frame for printing purposes
 col_names = ['c = {0}'.format(str(c)) for c in c_values]
 row_names = ['degree = {0}'.format(deg) for deg in degrees]
 scores_table_df = pd.DataFrame(scores_table, index = row_names, columns=col_names)
@@ -411,7 +411,7 @@ scores_table_df
   <img width="565" height="188" src="images/scores_validation_e02.png">
 </p>
 
-Obviously, the optimal hyperparameters tuple is `(degree, C) = (1, 0.01)`, because the corresponding element of the above table is the minimum one.
+Evidently, an optimal hyperparameters tuple is `(degree, C) = (2, 2)`, because the corresponding element of the above table has a maximum value.
 
 ## Model Evaluation
 The evaluation of the model is strictly connected with its nature; diyourfferent methods suit for different types of problems. If we talk about **regression problems**, for example, the simplest way for evaluation is to apply the model to the test dataset and measure the **Mean Square Error (MSE)** between the outputs and the actual values; the lower the value, the better the model. Moreover, if we talk about unsupervised probelms and, in particular **clustering**, a sufficient evaluation method is to measure the stability of classes, by calculating some metrics like **silhouette**, **Davies–Bouldin index** etc. Hopefully, we'll talk about it later in the course.
@@ -462,6 +462,37 @@ Now, let's analyze the standard metrics used in supervised ML problems:
   <img width="284" height="81" src="images/f-measure_e02.png">
 </p>
 
+Fortunately, most of these measures are calculated automatically in Python, using `classification_report()` function. The following code builds again the model for the optimal hyperparameter set and prints the classification report. For your convenience, there is no need to validate your model this time.
+
+```python
+from sklearn.metrics import classification_report
+
+opt_degree = 2
+opt_C = 2
+
+# Train, validation and test sets are specified previously
+# No need to validate the model this time
+opt_model = SVC(kernel = 'poly', degree = opt_degree, C = opt_C, random_state = 0)
+opt_model.fit(X_train, y_train)
+y_pred = opt_model.predict(X_test)
+
+# Print classification report
+print(classification_report(y_pred=y_pred, y_true=y_test))
+```
+
+~~~
+              precision    recall  f1-score   support
+
+           B       0.89      0.99      0.94        67
+           M       0.97      0.83      0.90        47
+
+    accuracy                           0.92       114
+   macro avg       0.93      0.91      0.92       114
+weighted avg       0.93      0.92      0.92       114
+~~~
+
+## Discussion: Ways to improve your model
+bla bla bla
 
 ## References
 
