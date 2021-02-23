@@ -492,7 +492,19 @@ weighted avg       0.93      0.92      0.92       114
 ~~~
 
 ## Discussion: Ways to improve your model
-bla bla bla
+This is a bit tricky question. Improving in terms of what? Of accuracy? Well, that's what an amateur data analyst would suggest, but accuracy is not always the answer in our problems. Just think of a multi-class problem with non-uniform distribution in labels. Supposse that our dataset contains a very short number of samples with label A (5 or 10) and a relatively large number of samples of label B (100 or 1000). If we set our model to classify every sample in class B, our accuracy would be almost 100%; in this way, however, we wouln't find any optimal way to distinguish the two classes. So to succeed that, somebody would think to force the algorithm to strictly fit on our training dataset. This might lead, on the other hand, to overfitting. **Overfitting** happens when a machine learning model has become too attuned to the data on which it was trained and therefore loses its applicability to any other dataset. The opposite scenario of overfitting is **underfitting**, in which the model chosen to get optimized is less complex that it was practically needed. Overfitting and underfitting are visualized in the following plot[[14]].
+
+<p align="center">
+  <img width="1377" height="342" src="images/overfitting_underfitting_e02.png">
+</p>
+
+Well, the concept of improving our model isn't as obvious as it may seem. Below we are listing some general hints that are necessary to keep in our minds:
+
+1. More data: Having more data is always a good idea. It allows the “data to tell for itself,” instead of relying on assumptions and weak correlations. Try to add more data in classes that have lower percentage of features.
+2. Treat missing and Outlier values: The unwanted presence of missing and outlier values in the training data often reduces the accuracy of a model or leads to a biased model. It leads to inaccurate predictions. This is because we don’t analyse the behavior and relationship with other variables correctly. So, it is important to treat missing and outlier values well.
+3. Feature Engineering This step helps to extract more information from existing data. New information is extracted in terms of new features. These features may have a higher ability to explain the variance in the training data. More features add definetely more noise. On the other hand, keeping one more dimension (e.g. reducing to 4 rather than 3 dimensions) may have an explicit impact in the performance of the model.
+4. Multiple algorithms: Hitting at the right machine learning algorithm is the ideal approach to achieve higher accuracy. But, it is easier said than done.This intuition comes with experience and incessant practice. Some algorithms are better suited to a particular type of data sets than others. Hence, we should apply all relevant models and check the performance.
+5. Cross Validation: To find the right answer of this question, we must use cross validation technique. Cross Validation is one of the most important concepts in data modeling. In general, it says: try to leave a sample on which you do not train the model and test the model on this sample before finalizing the model. We'll check this up in the following episode[[15]](#15).
 
 ## References
 
@@ -550,3 +562,12 @@ https://en.wikipedia.org/wiki/Confusion_matrix
 Renuka Joshi (2016)
 Accuracy, Precision, Recall & F1 Score: Interpretation of Performance Measures
 Exsilio Solutions, [Link](https://blog.exsilio.com/all/accuracy-precision-recall-f1-score-interpretation-of-performance-measures/)
+
+<a id="14">[14]</a>
+Underfitting
+DataRoot, [Link](https://www.datarobot.com/wiki/underfitting/)
+
+<a id="15">[15]</a>
+Sanil Ray (2015)
+8 Proven Ways for improving the “Accuracy” of a Machine Learning Model
+Analytics Vidhya, [Link](https://www.analyticsvidhya.com/blog/2015/12/improve-machine-learning-results/)
