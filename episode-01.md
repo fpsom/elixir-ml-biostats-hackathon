@@ -1,6 +1,6 @@
 # Episode 1: Introduction to Machine Learning
 
-## Learning outcomes
+_Learning outcomes_:
 1. Mention the components of machine learning (data, features and models)
 2. Argue what the role of statistics is in AI/DL/ML
 3. Explain the difference between supervised and unsupervised methods

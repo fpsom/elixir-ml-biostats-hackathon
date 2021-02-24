@@ -1,4 +1,4 @@
-# Episode 2: **Components and Evaluation of a Machine Learning Pipeline**
+# Episode 2: Components and Evaluation of a Machine Learning Pipeline
 
 _Learning Outcomes_
 1. Explain the different steps in an ML pipeline
@@ -505,6 +505,7 @@ Well, the concept of improving our model isn't as obvious as it may seem. Below 
 3. Feature Engineering This step helps to extract more information from existing data. New information is extracted in terms of new features. These features may have a higher ability to explain the variance in the training data. More features add definetely more noise. On the other hand, keeping one more dimension (e.g. reducing to 4 rather than 3 dimensions) may have an explicit impact in the performance of the model.
 4. Multiple algorithms: Hitting at the right machine learning algorithm is the ideal approach to achieve higher accuracy. But, it is easier said than done.This intuition comes with experience and incessant practice. Some algorithms are better suited to a particular type of data sets than others. Hence, we should apply all relevant models and check the performance.
 5. Cross Validation: To find the right answer of this question, we must use cross validation technique. Cross Validation is one of the most important concepts in data modeling. In general, it says: try to leave a sample on which you do not train the model and test the model on this sample before finalizing the model. We'll check this up in the following episode[[15]](#15).
+6. Data dredging: Data dredging (also data fishing, data snooping, data butchery, and p-hacking) is the misuse of data analysis to find patterns in data that can be presented as statistically significant, thus dramatically increasing and understating the risk of false positives. This is done by performing many statistical tests on the data and only reporting those that come back with significant results [[16]](#16).
 
 ## References
 
@@ -571,3 +572,6 @@ DataRoot, [Link](https://www.datarobot.com/wiki/underfitting/)
 Sanil Ray (2015)
 8 Proven Ways for improving the “Accuracy” of a Machine Learning Model
 Analytics Vidhya, [Link](https://www.analyticsvidhya.com/blog/2015/12/improve-machine-learning-results/)
+
+<a id="16">[16]</a>
+https://en.wikipedia.org/wiki/Data_dredging
