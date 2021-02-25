@@ -45,8 +45,7 @@ Following up the, more or less, standard routine established in the previous epi
 2. Now instead of using a Gaussian distribution we use a Student t-distribution with one degree of freedom, which is also known as the Cauchy distribution. This gives us a second set of probabilities (Qij) in the low dimensional space.
 3. The last step is that we want these set of probabilities from the low-dimensional space (Qij) to reflect those of the high dimensional space (Pij) as best as possible. This is implemented by using the KLD divergence as a cost function.
 
-*Question: PCA or t-sne?*
-
+*Question: PCA or t-sne?* \ 
 PCA is a linear dimension reduction technique that seeks to maximize variance and preserves large pairwise distances. In other words, things that are different end up far apart. This can lead to poor visualization especially when dealing with non-linear manifold structures. T-SNE differs from PCA by preserving only small pairwise distances or local similarities whereas PCA is concerned with preserving large pairwise distances to maximize variance[[1]](#1).
 
 So, this time we are going to apply t-sne in our dataset. The hyperparameter we would like to tune is **perplexity**; for this reason we'll utilize silhouette coefficient.
@@ -64,8 +63,16 @@ where a(i) is the mean distance between i {\displaystyle i} i and all other data
   <img width="218" height="53" src="images/silhouette_inequality_e03.png">
 </p>
 
-Thus an s(i) close to one means that the data is appropriately clustered. If s(i) is close to negative one, then by the same logic we see that i would be more appropriate if it was clustered in its neighbouring cluster. An s(i) near zero means that the datum is on the border of two natural clusters. The mean s(i) over all points of a cluster is a measure of how tightly grouped all the points in the cluster are. Thus the mean s (i) over all data of the entire dataset is a measure of how appropriately the data have been clustered.
- 
+Thus an s(i) close to one means that the data is appropriately clustered. If s(i) is close to negative one, then by the same logic we see that i would be more appropriate if it was clustered in its neighbouring cluster. An s(i) near zero means that the datum is on the border of two natural clusters. The mean s(i) over all points of a cluster is a measure of how tightly grouped all the points in the cluster are. Thus the mean s(i) over all data of the entire dataset is a measure of how appropriately the data have been clustered[[2]](#2).
+
+In the following code, we are using the mean s(i) - which is calculated by the `sklearn.metrics.silhouette_score()` function - as a metric to evaluate the consistensy of classes and, hence, tune the `perplexity` hyperparameter of t-sne. Additionally, for the optimal perplexity value, we are projecting the data points in the 2D space and plot them. The t-sne algorithm is implemented in `sklearn.manifold` package:
+
+```python
+
+```
+
+
+
 ## Multi-class problem: kNN vs Decision Trees
 
 
@@ -75,3 +82,8 @@ Thus an s(i) close to one means that the data is appropriately clustered. If s(i
 Andre Violante (2018)
 An Introduction to t-SNE with Python Example
 Towards data science, [Link](https://towardsdatascience.com/an-introduction-to-t-sne-with-python-example-5a3a293108d1)
+
+<a id="2">[2]</a> 
+https://en.wikipedia.org/wiki/Silhouette_(clustering)
+
+
