@@ -300,7 +300,7 @@ Another form of unsupervised learning, is **dimensionality reduction**. We will 
 Principal Component Analysis (PCA) is the most standard dimensionality-reduction method that is used to reduce the dimensionality of large data sets, by transforming a large set of variables into a smaller one that still contains most of the information in the large set. Intuitively, the basic steps of PCA are the following:
 1. Normalization or Standardization: The aim of this step is to normalize (standardize) the range of the continuous initial variables so that each one of them contributes equally to the analysis. Both techniques are going to be analyzed in the next episode.
 2. Covariance Matrix computation: The aim of this step is to understand how the variables of the input data set are varying from the mean with respect to each other, or in other words, to see if there is any relationship between them. Briefly, the covariance matrix is a p × p symmetric matrix (where p is the number of dimensions) that has as entries the covariances associated with all possible pairs of the initial variables. The main diagonial contains the variances of the corresponding variables.
-3. Compute the eigenvectors/eigenvalues of the covariance matrix to identify the principal components: Eigenvectors and eigenvalues are the linear algebra concepts that we need to compute from the covariance matrix in order to determine the principal components of the data. Principal components are new variables that are constructed as linear combinations or mixtures of the initial variables. These combinations are done in such a way that the new variables (i.e., principal components) are uncorrelated and most of the information within the initial variables is squeezed or compressed into the first components. Geometrically speaking, principal components represent the directions of the data that explain a maximal amount of variance, that is to say, the lines that capture most information of the data.
+3. Compute the eigenvectors/eigenvalues of the covariance matrix to identify the principal components: Eigenvectors and eigenvalues are the linear algebra concepts that we need to compute from the covariance matrix in order to determine the principal components of the data. Principal components are new variables that are constructed as linear combinations or mixtures of the initial variables. These combinations are done in such a way that the new variables (i.e., principal components) are uncorrelated and most of the information within the initial variables is squeezed or compressed into the first components. Geometrically speaking, principal components represent the directions of the data that explain a maximal amount of variance, that is to say, the lines that capture most information of the data[[9]](#9).
 
 There is no need to deepen more into mathematical formulas. In a nutshell, PCA guarantees finding the best **linear transformation** that reduces the number of dimensions with a minimum loss of information. Let's take a look at the following code. 
 
@@ -348,7 +348,30 @@ At first we load `PCA` and `StandardScaler` functions from `sklearn` package (*s
   <img width="720" height="720" src="images/breast_cancer_pca_01.png">
 </p>
 
-It's clear that our data are separated, in some way, into two groups. The two axis refer to the first and second principal components. These two components are a linear combinations of our initial features and are constructed, in such a way, so that the maximun of the initial variance of the features is maintained. We will definetely analyze PCA with further detail later in the course. Finally, we have to mention here that a big chapter of dimensionality reduction is **feature selection**. The key difference is that feature selection is simply selecting and excluding the most informative features (whatever does it mean) without changing them, while dimensionality reduction transforms features into a lower dimension. The decision whether we should use dimensionality reduction or feature seleciton essentially depends on many parameters, such as the problem itself and the nature of features.
+It's clear that our data are separated, in some way, into two groups. The two axis refer to the first and second principal components. These two components are a linear combinations of our initial features and are constructed, in such a way, so that the maximun of the initial variance of the features is maintained. If we want to check the percentage of the total variance that every principal component has, we neet to apply PCA without specifying the `n_components` attribute, for the algorithm to return all principal components. This is done by the following code. Remember that sometimes is better to initially create all principal comppnents and, afterwards, select which of them to keep. The `explained_variance_ratio_` attribute returns the ratio of variance of each component. In our case, the first PC includes approximately 44% of total variance, the second PC 18% and so on. 
+
+```python
+# Checking variance of principal components
+# We don't specify n_components, so as to return all the PC's
+pca = PCA(svd_solver='auto')
+X_pca_full = pca.fit_transform(X_scaled)
+
+# Printing variance ratio
+print(pca.explained_variance_ratio_)
+```
+
+~~~
+[4.42720256e-01 1.89711820e-01 9.39316326e-02 6.60213492e-02
+ 5.49576849e-02 4.02452204e-02 2.25073371e-02 1.58872380e-02
+ 1.38964937e-02 1.16897819e-02 9.79718988e-03 8.70537901e-03
+ 8.04524987e-03 5.23365745e-03 3.13783217e-03 2.66209337e-03
+ 1.97996793e-03 1.75395945e-03 1.64925306e-03 1.03864675e-03
+ 9.99096464e-04 9.14646751e-04 8.11361259e-04 6.01833567e-04
+ 5.16042379e-04 2.72587995e-04 2.30015463e-04 5.29779290e-05
+ 2.49601032e-05 4.43482743e-06]
+~~~
+
+Finally, we have to mention here that a big chapter of dimensionality reduction is **feature selection**. The key difference is that feature selection is simply selecting and excluding the most informative features (whatever does it mean) without changing them, while dimensionality reduction transforms features into a lower dimension. The decision whether we should use dimensionality reduction or feature seleciton essentially depends on many parameters, such as the problem itself and the nature of features.
 
 ## Role of statistics in Machine learning
 
@@ -364,7 +387,7 @@ Although they appear simple, these questions must be answered in order to turn r
 - What is the difference in an outcome between two experiments?
 - Are the differences real or the result of noise in the data?
 
-Questions of this type are important. The results matter to the project, to stakeholders, and to effective decision making. We can see that in order to both understand the data used to train a machine learning model and to interpret the results of testing different machine learning models, that statistical methods are required.[[9]](#9)
+Questions of this type are important. The results matter to the project, to stakeholders, and to effective decision making. We can see that in order to both understand the data used to train a machine learning model and to interpret the results of testing different machine learning models, that statistical methods are required.[[10]](#10)
 
 ## References
 
@@ -403,6 +426,11 @@ Clustering and Dimensionality Reduction: Understanding the “Magic” Behind Ma
 Imperva, [Link](https://www.imperva.com/blog/clustering-and-dimensionality-reduction-understanding-the-magic-behind-machine-learning/)
 
 <a id="9">[9]</a> 
+Zakaria Jaadi (2019)
+A Step-by-Step Explanation of Principal Component Analysis?
+Built in, [Link](https://builtin.com/data-science/step-step-explanation-principal-component-analysis)
+
+<a id="10">[10]</a> 
 Jason Brownlee (2018)
 What is Statistics (and why is it important in machine learning)?
 Machine Learning Mastery, [Link](https://machinelearningmastery.com/what-is-statistics/)
