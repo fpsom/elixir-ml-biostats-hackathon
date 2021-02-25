@@ -45,7 +45,8 @@ Following up the, more or less, standard routine established in the previous epi
 2. Now instead of using a Gaussian distribution we use a Student t-distribution with one degree of freedom, which is also known as the Cauchy distribution. This gives us a second set of probabilities (Qij) in the low dimensional space.
 3. The last step is that we want these set of probabilities from the low-dimensional space (Qij) to reflect those of the high dimensional space (Pij) as best as possible. This is implemented by using the KLD divergence as a cost function.
 
-*Question: PCA or t-sne?* \ 
+*Question: PCA or t-sne?*
+
 PCA is a linear dimension reduction technique that seeks to maximize variance and preserves large pairwise distances. In other words, things that are different end up far apart. This can lead to poor visualization especially when dealing with non-linear manifold structures. T-SNE differs from PCA by preserving only small pairwise distances or local similarities whereas PCA is concerned with preserving large pairwise distances to maximize variance[[1]](#1).
 
 So, this time we are going to apply t-sne in our dataset. The hyperparameter we would like to tune is **perplexity**; for this reason we'll utilize silhouette coefficient.
@@ -57,7 +58,7 @@ Silhouette refers to a method of interpretation and validation of consistency wi
   <img width="313" height="96" src="images/silhouette_e03.png">
 </p>
 
-where a(i) is the mean distance between i {\displaystyle i} i and all other data points in the same cluster and b(i) the munimum mean distance of i to all points in any other cluster, of which i is not a member. From the above definition it is clear that:
+where a(i) is the mean distance between i and all other data points in the same cluster and b(i) the munimum mean distance of i to all points in any other cluster, of which i is not a member. From the above definition it is clear that:
 
 <p align="center">
   <img width="218" height="53" src="images/silhouette_inequality_e03.png">
@@ -65,11 +66,80 @@ where a(i) is the mean distance between i {\displaystyle i} i and all other data
 
 Thus an s(i) close to one means that the data is appropriately clustered. If s(i) is close to negative one, then by the same logic we see that i would be more appropriate if it was clustered in its neighbouring cluster. An s(i) near zero means that the datum is on the border of two natural clusters. The mean s(i) over all points of a cluster is a measure of how tightly grouped all the points in the cluster are. Thus the mean s(i) over all data of the entire dataset is a measure of how appropriately the data have been clustered[[2]](#2).
 
-In the following code, we are using the mean s(i) - which is calculated by the `sklearn.metrics.silhouette_score()` function - as a metric to evaluate the consistensy of classes and, hence, tune the `perplexity` hyperparameter of t-sne. Additionally, for the optimal perplexity value, we are projecting the data points in the 2D space and plot them. The t-sne algorithm is implemented in `sklearn.manifold` package:
+In the following code, we are using the mean s(i) - which is calculated by the `sklearn.metrics.silhouette_score()` function - as a metric to evaluate the consistensy of classes and, hence, we are attempting to tune the `perplexity` hyperparameter of t-sne. T-sne algorithm is inmplemented in `sklearn.manifold` library. In the following code, we are facing every positive integer that lie inside [1,100] as a possible perplexity value and we are calculating the corresponding average silhouette score. Let's check the output plot.
 
 ```python
+# This code may take up to 2 minutes
 
+#-------- Tuning peplexity/
+from sklearn.manifold import TSNE
+import matplotlib.pyplot as plt
+from sklearn.metrics import silhouette_score
+
+# Perplexity values
+perplexities = list(range(1,101))
+
+# silhouette scores initialization
+silh_matrix = []
+
+for perp in perplexities:
+    # Model
+    tsne = TSNE(n_components=2, perplexity=perp)
+    X_tsne = tsne.fit_transform(X_normalized)
+
+    # t-sne components as data frame
+    X_tsne_df = pd.DataFrame(data = X_tsne, columns = ['Tsne component 1', 'Tsne component 2'])
+    
+    # append score to matrix
+    silh_matrix.append(silhouette_score(X_tsne, y))
+
+# Plot
+plt.figure(figsize=(10,7))
+plt.plot(perplexities, silh_matrix)
+plt.title('Av. Silhouette coefficient over perplexity value ')
+plt.xlabel('Perplexity')
+plt.ylabel('Silhouette')
+plt.show()
 ```
+<p align="center">
+  <img width="720" height="500" src="images/tsne_silh_03.png">
+</p>
+
+Silhouette starts from a very low score but almost immediately rises up to 0.5 value. Furthermore, score seems to gradually increase up to 0.6 and find a peak for perplexities around [20,25]. After that, score seems to fall with a very slow rate. The information extracted from the plot is that the perplexity value doesn't play any significant role, as long as it is higher than (around) 5 and lower than (around) 40. The selected value seems to have negligible effect on the final distribution of data in the 2D plot. So, we choose `perplexity = 25` and reduce dimensions:
+
+```python
+# Perplexity
+perp = 25
+
+# Model
+tsne = TSNE(n_components=2, perplexity=perp)
+X_tsne = tsne.fit_transform(X_normalized)
+
+# t-sne components as data frame
+X_tsne_df = pd.DataFrame(data = X_tsne, columns = ['Tsne component 1', 'Tsne component 2'])
+
+# Plotting - more or less the same code as PCA
+plt.figure(figsize=(10,10))
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=14)
+plt.xlabel('t-sne Component 1',fontsize=20)
+plt.ylabel('t-sne Component 2',fontsize=20)
+plt.title("t-sne , perplexity = 25",fontsize=20)
+wine_types = [0,1,2]
+legend_list = ['Wine 1', 'Wine 2', 'Wine 3']
+colors = ['g', 'r', 'b']
+for wine_type, color in zip(wine_types,colors):
+    indicesToKeep = y.values == wine_type
+    plt.scatter(X_tsne_df.loc[indicesToKeep, 'Tsne component 1'], X_tsne_df.loc[indicesToKeep, 'Tsne component 2'], c = color, s = 50)
+
+plt.legend(legend_list,prop={'size': 15})
+plt.tight_layout()
+plt.savefig('images/tsne_perp_25_03.png')
+plt.show()
+```
+<p align="center">
+  <img width="720" height="720" src="images/tsne_perp_25_03.png">
+</p>
 
 
 
