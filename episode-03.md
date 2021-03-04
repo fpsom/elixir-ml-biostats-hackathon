@@ -16,7 +16,7 @@ _Learning Outcomes_ :
 
 ## Multi-class problem
 
-In the first part of this lecture we are going to focus on a multi-class dataset and examine some more algorithms: t-sne (dimensionality reduction, visualization), kNN and Decision Trees (supervised problems), while in the second part we'll mainly focus on a regression problem. In the in-between stages we'll introduce more terminology so as to overcome various limitations that might occur. At first, we are going to load [Wine Recognition Dataset](https://scikit-learn.org/stable/datasets/toy_dataset.html#wine-recognition-dataset) from `sklearn.Datasets` package. The wine dataset consists of 178 samples, 13 features each and three classes in total. The targets are [0,1,2] and correpsond to wine-type 1, type 2 and type 3 respectively. We can import and normalize our dataset using the following lines of code. By setting `return_X_y=True` and `as_frame=True` in `datasets.load_wine()` function we import the wine dataset directly in X-y matrix and `DataFrame` format. We are not goint to print the matrices in the console, so as to save some space.
+In the first part of this lecture we are going to focus on a multi-class dataset and examine some more algorithms: t-sne (dimensionality reduction, visualization), kNN and Decision Trees (supervised problems), while in the second part we'll mainly focus on a regression problem. In the in-between stages we'll introduce more terminology so as to overcome various limitations that might occur. At first, we are going to load [Wine Recognition Dataset](https://scikit-learn.org/stable/datasets/toy_dataset.html#wine-recognition-dataset) from `sklearn.Datasets` package. The wine dataset consists of 178 samples, 13 features each and three classes in total. The targets are [0,1,2] and correpsond to wine-type 1, type 2 and type 3 respectively. We can import and normalize our dataset using the following lines of code. By setting `return_X_y=True` and `as_frame=True` in `datasets.load_wine()` function we import the wine dataset directly in X-y matrix and `DataFrame` format. We are not going to print the matrices in the console, to save some space.
 
 ```python
 import pandas as pd
@@ -34,9 +34,9 @@ min_max_scaler = MinMaxScaler()
 X_normalized = min_max_scaler.fit_transform(X)
 X_normalized = pd.DataFrame(X_normalized, columns=feature_names)
 ```
-### Visualizationin
+### Understanding data
 
-Following up the, more or less, standard routine established in the previous episodes, the first thing we do when loading our dataset is to try to get a sense of it, like how well classes are separated, what's the distribution of them, what's the variance of features and other aspects. This time we will attempt to apply **t-sne** algorithm, so as to reduce dimensions and project our samples into a 2D plot (more or less like we did in the last part of the first episode with PCA). We are not going to utilize the reduced-dimensionality features, however, in the rest of the analysis, because the new features created by t-sne do not have a physical meaning; they are just mathematical objects occured from the combination of real features. This part we'll only contribute to our better understanding of data.
+Following up the, more or less, standard routine established in the previous episodes, the first thing we do when loading our dataset is to try to get a sense of it, like how well classes are separated, what's the distribution of them, what's the variance of features and other aspects. This time we will attempt to apply **t-sne** algorithm, so as to reduce dimensions and project our samples into a 2D plot (more or less like we did in the last part of the first episode with PCA). We are not going to make good use of the reduced-dimensionality features in the rest of the analysis, because the new features created by t-sne do not have a physical meaning; they are just mathematical objects created from the combination of actual features. This part we'll only contribute to our better understanding of data.
 
 *So what's t-sne?*
 
@@ -141,10 +141,42 @@ plt.show()
   <img width="720" height="720" src="images/tsne_perp_25_03.png">
 </p>
 
-
+*Comment*: MIEX, den paizei na stekei kai polu san analush.
 
 ## Multi-class problem: kNN vs Decision Trees
+So, data seem to be decently separated in high dimensional space. The next thing is to determine the rules that distringuish the three wine types. For this reason, we are going to apply two different pipelines in our dataset based on two different algorithms: kNN and Decision Trees. Let's start with a brief presentation of both algorithms.
 
+### kNN
+The K-nearest neighbors (KNN) algorithm is a type of supervised machine learning algorithms. KNN is extremely easy to implement in its most basic form, and yet performs quite complex classification tasks. It is a lazy learning algorithm since it doesn't have a specialized training phase. The intuition behind the KNN algorithm is really simple. It simply calculates the distance of a new data point to all other training data points. It then selects the K-nearest data points, where K can be any integer. Finally it assigns the data point to the class to which the majority of the K data points belong. 
+
+An advantage is that, since the algorithm requires no training before making predictions, new data can be added seamlessly. Moreover, there is technically only one **hyperparameter** to be tuned, that is the **number of neighboors** taken into account (k). The main disadvantage is that KNN algorithm doesn't work well with high dimensional data because with large number of dimensions, it becomes difficult for the algorithm to calculate distance in each dimension. Additionally, kNN faces difficulties when dealing with categorical features[[3]](#3).
+
+### Decision Trees
+
+A **decision tree** is a flowchart-like tree structure where an internal node represents a single feature (or attribute), the branch represents a decision rule, and each leaf node represents the outcome (i.e. the label). The topmost node in a decision tree is known as the root node. The algorithm learns to partition on the basis of the attribute values. It's visualization like a flowchart diagram which easily mimics the human level thinking (see example below). That is why decision trees are easy to understand and interpret. Decision Trees are **white box type of ML algorithm**,as they shares internal decision-making logic. They can also handle high dcdimensional data with good accuracy. 
+
+The basic idea behind any decision tree algorithm is as follows:
+1. Select the best attribute using Attribute Selection Measures(ASM) to split the records (some ASM measures are Information Gain, Gain Ratio and Gini index).
+2. Make that attribute a decision node and break the dataset into smaller subsets.
+3. Build the tree by repeating this process recursively for each child until one of the following conditions matches:
+ - All the remaining samples belong to the same target value (class).
+ - There are no more remaining attributes[[4]](#4).
+
+Concerning decision trees, an important **hyperparameter** is **tree depth**. The deeper the tree, the better fits on the training set; however, it's more possible to fall into the trap of overfitting. In order to avoid overfitting, in both cases we are going to apply k-fold cross validation algorithm in our sets.
+
+### K-fold Cross validation
+Suppose we have a model with one or more unknown parameters, and a data set to which the model can be fit (the training data set). The fitting process optimizes the model parameters to make the model fit the training data as well as possible. As it is already discussed, if we then take an independent sample of validation data from the same population as where the training data have been taken, it will generally turn out that the model does not fit the validation data as well as it fits the training data. The size of this difference is likely to be large especially when the size of the training data set is small, or when the number of parameters in the model is large. Cross-validation is a way to estimate the size of this effect. 
+
+Generally, two types of cross-validation can be distinguished: exhaustive and non-exhaustive cross-validation. **Exhaustive cross-validation** methods are methods which learn and test on all possible ways to divide the original sample into a training and a validation set. The most common technique when referring to exhaustive cross-validation is **Leave-p-out cross-validation (LpO CV)**, which involves using p observations as the validation set and the remaining observations as the training set. This is repeated on all ways to cut the original sample on a validation set of p observations and a training set. The process is computationally heavy.
+
+**Non-exhaustive cross validation** methods do not compute all ways of splitting the original sample. Those methods are approximations of leave-p-out cross-validation. The most common technique when referring to non-exhaustive cross-validation is **k-fold cross-validation**. In k-fold cross-validation, the original dataset is randomly partitioned into k equal sized subsamples. Of the k subsamples, a single subsample is retained as the validation data for testing the model, and the remaining k − 1 subsamples are used as training data. The cross-validation process is then repeated k times, with each of the k subsamples used exactly once as the validation data. The k results can then be averaged to produce a single estimation[[5]](#5). The most common evaluation metrics used and averaged in k-fold cross validation are Mean Squared Error (MSE) for regression problems and accuracy for classification problems. The following image gives us a visual representation of the algorithm[[6]](#6).
+
+<p align="center">
+  <img width="1080" height="416" src="images/k-fold-e_03.png">
+</p>
+
+### Decision Trees - in practice
+bla bla
 
 ## References
 
@@ -156,4 +188,18 @@ Towards data science, [Link](https://towardsdatascience.com/an-introduction-to-t
 <a id="2">[2]</a> 
 https://en.wikipedia.org/wiki/Silhouette_(clustering)
 
-cd
+<a id="3">[3]</a> 
+Scott Robinson 
+K-Nearest Neighbors Algorithm in Python and Scikit-Learn
+Stack Abuse, [Link](https://stackabuse.com/k-nearest-neighbors-algorithm-in-python-and-scikit-learn/)
+
+<a id="4">[4]</a> 
+Avinash Navlani (2018)
+Decision Tree Classification in Python
+Data Camp, [Link](https://www.datacamp.com/community/tutorials/decision-tree-classification-python)
+
+<a id="5">[5]</a> 
+https://en.wikipedia.org/wiki/Cross-validation_(statistics)
+
+<a id="6">[6]</a> 
+https://subscription.packtpub.com/book/big_data_and_business_intelligence/9781789617740/2/ch02lvl1sec14/k-fold-cross-validation
