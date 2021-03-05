@@ -176,7 +176,125 @@ Generally, two types of cross-validation can be distinguished: exhaustive and no
 </p>
 
 ### Decision Trees - in practice
-bla bla
+Now, let's check the behaviour of two algorithms when applied to our dataset. At first we are going to apply Decision Tree Classifier, which is implemented in `sklearn.tree` package ([Link](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html)). As previously mentioned, the hyperparameter that needs to be tuned is the tree depth and so does the following code. The hyperparameter gets tuned by utilizing the k-fold cross validation algorithm, implemented as `cross_val_score()` in `sklearn.model_selection` package ([Link](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html)). From the output plot, it's clear that the optimal depth equals 4.
+
+```python
+# Decision Trees
+from sklearn.model_selection import cross_val_score
+from statistics import mean 
+from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
+
+depths = [2,3,4,5,6,7]
+
+# Initialization
+av_score_table = []
+
+for depth in depths:
+    
+    # Create Decision Tree classifer object
+    clf = DecisionTreeClassifier(max_depth = depth)
+    
+    # 5-fold cross validation
+    scores = cross_val_score(clf, X_normalized, y, cv=5)
+    
+    # Appending average of scores (accuracies) to av_score_table
+    av_score_table.append(mean(scores))
+
+# Plotting
+plt.figure()
+plt.plot(depths,av_score_table)
+plt.xlabel('Tree depth')
+plt.ylabel('Score')
+plt.title('Score over Tree depth')
+plt.show()
+```
+
+<p align="center">
+  <img width="432" height="288" src="images/k-fold-cross-val-e_03.png">
+</p>
+
+Having found the optimal depth, the following code splits randomly the total dataset in a ration 70% - 30% (70% training set - 30% test set) and applies the Decision Tree Classifier again. The classification results are printed below.
+
+```python
+from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
+from sklearn.model_selection import train_test_split # Import train_test_split function
+from sklearn.metrics import classification_report
+
+# Tree depth = 4
+depth = 4
+
+# Split dataset into training set and test set
+X_train, X_test, y_train, y_test = train_test_split(X_normalized, y, test_size=0.3, random_state=1)
+
+# Create Decision Tree classifer object
+clf = DecisionTreeClassifier(max_depth=depth)
+
+# Train Decision Tree Classifer
+clf = clf.fit(X_train,y_train)
+
+#Predict the response for test dataset
+y_pred = clf.predict(X_test)
+
+print(classification_report(y_pred = y_pred, y_true=y_test))
+```
+
+~~~
+              precision    recall  f1-score   support
+
+           0       0.96      0.96      0.96        23
+           1       0.94      0.89      0.92        19
+           2       0.92      1.00      0.96        12
+
+    accuracy                           0.94        54
+   macro avg       0.94      0.95      0.95        54
+weighted avg       0.94      0.94      0.94        54
+~~~
+
+Finally, there are two important points to mention here. The first one is that Decision Trees belong to the category of **intrinsic feature selection** algorithms, because basically, at every step, the most significant feature is detected to split data. If we want to identify those features, we shall use the `.feature_importances_` attribute:
+
+```python
+print(clf.feature_importances_)
+```
+
+~~~
+array([0.06966209, 0.        , 0.        , 0.        , 0.        ,
+       0.        , 0.38102067, 0.        , 0.        , 0.02423226,
+       0.        , 0.10817973, 0.41690525])
+~~~
+
+It's clear that feature with zero or almost zero values play negligible role in the creation of the model and, thus, they can be ignored. The second one is than we can use Scikit-learn's `export_graphviz()` function for display the tree within a Jupyter notebook. At first, we need to install `graphviz` and `pydotplus` packages, by running the following cell:
+
+```python
+import os
+os.system("pip install graphviz")
+os.system("pip install pydotplus")
+```
+And then run the following code to visualize the tree and export it as an image in your working directory:
+
+```python
+# Plotting tree
+from sklearn.tree import export_graphviz
+from io import StringIO 
+from IPython.display import Image  
+import pydotplus
+
+dot_data = StringIO()
+export_graphviz(clf, out_file=dot_data,  
+                filled=True, rounded=True,
+                special_characters=True,feature_names = X.columns,class_names=['0','1', '2'])
+graph = pydotplus.graph_from_dot_data(dot_data.getvalue())  
+graph.write_png('wine_types_tree.png')
+Image(graph.create_png())
+```
+
+<p align="center">
+  <img width="874" height="736" src="images/wine_types_tree.png">
+</p>
+
+
+### kNN - in practise
+bla bla bla
+
 
 ## References
 
