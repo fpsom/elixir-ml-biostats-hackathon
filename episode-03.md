@@ -293,8 +293,77 @@ Image(graph.create_png())
 
 
 ### kNN - in practise
-bla bla bla
+Moreover, we are going to test how kNN behaves in our dataset, as well. KNN algorithm is implemented in `sklearn.neighbors` package. The only hyperparameter that needs to be tuned is the number of neighboors. The following code, which is more or less similar to the code above, applies 5-fold cross validation to our data and optimizes the hyperparameter, as the algorithm tests all positives integers within the ragne [5,30]. From the plot occured, it's clear that the optimun value of k (number of neighboors) is `k=7`.
 
+```python
+from sklearn.neighbors import KNeighborsClassifier
+
+# Initialization
+neighboors = list(range(5,30))
+av_score_table = []
+
+
+for neigh in neighboors:
+    
+    # Create Decision Tree classifer object
+    clf = KNeighborsClassifier(n_neighbors = neigh)
+    
+    # 5-fold cross validation
+    scores = cross_val_score(clf, X_normalized, y, cv=5)
+    
+    # Appending average of scores (accuracies) to av_score_table
+    av_score_table.append(mean(scores))
+
+# Plotting
+plt.figure()
+plt.plot(neighboors,av_score_table)
+plt.xlabel('Number of neighboors')
+plt.ylabel('Score')
+plt.title('Score over Number of neighboors')
+plt.show()
+```
+
+<p align="center">
+  <img width="432" height="288" src="images/5-fold-cv-knn-e_03.png">
+</p>
+
+Having found the optimal number of neighboors, the following code splits randomly the total dataset in a ration 70% - 30% (70% training set - 30% test set) and applies kNN algorithm again. The classification results are printed below.
+
+```python
+# Optimal num of neighboors - finding index that maximizes score
+opt_num_of_neighboors = neighboors[av_score_table.index(max(av_score_table))]
+
+# Splitting - train test
+X_train, X_test, y_train, y_test = train_test_split(X_normalized, y, test_size=0.3)
+
+# kNN
+classifier = KNeighborsClassifier(n_neighbors=opt_num_of_neighboors)
+classifier.fit(X_train, y_train)
+
+# Predict
+y_pred = classifier.predict(X_test)
+
+print(classification_report(y_pred = y_pred, y_true=y_test))
+```
+
+~~~
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        20
+           1       1.00      0.89      0.94        18
+           2       0.89      1.00      0.94        16
+
+    accuracy                           0.96        54
+   macro avg       0.96      0.96      0.96        54
+weighted avg       0.97      0.96      0.96        54
+~~~
+
+*Comments:*
+
+The two models seem to be more or less equivalent, as the evaluation metrics of both models are high enough. The precision metric is slightly higher in kNN algorithm. kNN seems to fit pretty well, because we only deal with numerical features and the dimensionality of features is relatively low. Otherwise, if we had a greater nunber of dimensions, we would probably need to apply feature selection process before kNN algorithm.
+
+## Regression problem
+bla bla bla
 
 ## References
 
