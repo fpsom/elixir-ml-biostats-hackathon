@@ -363,8 +363,33 @@ weighted avg       0.97      0.96      0.96        54
 The two models seem to be more or less equivalent, as the evaluation metrics of both models are high enough. The precision metric is slightly higher in kNN algorithm. kNN seems to fit pretty well, because we only deal with numerical features and the dimensionality of features is relatively low. Otherwise, if we had a greater nunber of dimensions, we would probably need to apply feature selection process before kNN algorithm.
 
 ## Regression problem
-bla bla bla
+To explain some linear regression stuff, we will use the “Boston House prices" dataset. As described in the first episode, in this dataset we are provided with multiple explanatory variables describing different aspects of some residential homes and the task is to predict the final price of each home. It's highly recommended to open up a new notebook at this point. First of all, we are going to import three libraries that we'll definitely use:
 
+```python
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+```
+
+And secondly, we are going to import the boston houses dataset in the same way we did in the first episode.
+
+```python
+# Packages
+from sklearn.datasets import load_boston
+
+# Loading boston houses
+boston_houses = load_boston(return_X_y=False)
+
+# as data frame
+X = pd.DataFrame(boston_houses.data, columns=boston_houses.feature_names)
+y = pd.DataFrame(boston_houses.target, columns = ['Av. Price'])
+```
+
+A quick reminder on how this dataset looks like: 
+
+Data             |  Prices
+:-------------------------:|:-------------------------:
+![](images/boston_houses_X_e03.png)  |  ![](images/boston_houses_y_e03.png)
 ## References
 
 <a id="1">[1]</a> 
