@@ -363,12 +363,10 @@ weighted avg       0.97      0.96      0.96        54
 The two models seem to be more or less equivalent, as the evaluation metrics of both models are high enough. The precision metric is slightly higher in kNN algorithm. kNN seems to fit pretty well, because we only deal with numerical features and the dimensionality of features is relatively low. Otherwise, if we had a greater nunber of dimensions, we would probably need to apply feature selection process before kNN algorithm.
 
 ## Regression problem
-To explain some regression stuff, we will use the “Boston House prices" dataset. As described in the first episode, in this dataset we are provided with multiple explanatory variables describing different aspects of some residential homes and the task is to predict the final price of each home. It's highly recommended to open up a new notebook at this point. First of all, we are going to import three libraries that we'll definitely use:
+To explain some regression stuff, we will use the “Boston House prices" dataset. As described in the first episode, in this dataset we are provided with multiple explanatory variables describing different aspects of some residential homes and the task is to predict the final price of each home. It's highly recommended to open up a new notebook at this point. First of all, we are going to import `pandas`:
 
 ```python
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 ```
 
 And secondly, we are going to import the boston houses dataset in the same way we did in the first episode.
@@ -414,7 +412,134 @@ Furthermore, the **coefficient of determination**, denoted as **𝑅²**, tells 
 The parameters of the algorithm are obviously the regression coefficients 𝛽₀, 𝛽₁, …, 𝛽ᵣ. The hyperparameter, in our case, is the degree of polynomial regression.
 
 ### Coding time
-bla bla bla
+First thing to do is to normalize or standarize our data. Personally, most of the times prefer to normalize the data, because the distribution of them is unknown. So, the following code, scales data within ragne [0,1].
+
+```python
+from sklearn.preprocessing import MinMaxScaler
+
+# feature names
+feature_names = X.columns
+
+# Normalize
+min_max_scaler = MinMaxScaler()
+X_normalized = min_max_scaler.fit_transform(X)
+X_normalized = pd.DataFrame(X_normalized, columns=feature_names)
+```
+
+The linear regression algorithm is implemented in `sklearn.linear_model` library as `LinearRegression()` function. When we call this function, we set the arguments `fit_intercept = True` and `copy_X = True`. `fit_intercept` is a Boolean (True by default) that decides whether to calculate the intercept 𝑏₀ (True) or consider it equal to zero (False), and `copy_X` is a Boolean (True by default) that decides whether to copy (True) or overwrite the input variables (False). Moreover, we use `PolynomialFeatures()` function from `sklearn.preprocessing` package. This function transforms the initial data array, by generating products between features and raising them to the power of specified degree. Regarding attributes, `degree` is an integer (2 by default) that represents the degree of the polynomial regression function and `include_bias` is a Boolean (True by default) that decides whether to include the bias (intercept) column of ones (True) or not (False) - actually, we don't need it at this point-. So, now, the following code splits the initial data set into training (60%), validation (20%) and testing data (20%). It attempts to optimize the `degree` hyperparameter of the model, by applying linear regression to features (either the original or the transformed ones) and calculating MSE metric, both in training and validation data. Finally, it stores the MSE metric for both training and validation set in a dataframe. Let's check the results:
+
+```python
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+
+# Split data to train, validation and test
+# Specifying test set
+X_train_validation, X_test, y_train_validation, y_test = \
+    train_test_split(X_normalized, y, test_size=0.2, shuffle = True, random_state = 0)
+
+# Specifying train and validation set
+X_train, X_val, y_train, y_val = \
+    train_test_split(X_train_validation, y_train_validation, test_size=0.25, shuffle = True, random_state = 0)
+
+# degrees list
+degrees = [1,2,3,4,5]
+
+# Initialization
+training_scores = []
+validation_scores = []
+
+# main loop
+for deg in degrees:
+    
+    if deg == 1:
+        
+        # Linear regression
+        model = LinearRegression(fit_intercept = True, copy_X=True, normalize = False)
+        model.fit(X_train, y_train)
+        
+        # Scores
+        training_scores.append(mean_squared_error(y_train, model.predict(X_train)))
+        validation_scores.append(mean_squared_error(y_val, model.predict(X_val)))
+    
+    else:
+        # Transforming features
+        model_train = PolynomialFeatures(degree=deg, include_bias = False)
+        model_train.fit(X_train)
+        X_poly_train = model_train.transform(X_train)
+        
+        # Linear regression
+        model = LinearRegression(fit_intercept = True, copy_X=True, normalize = False)
+        model.fit(X_poly_train, y_train)
+        
+        # Training Score
+        training_scores.append(mean_squared_error(y_train, model.predict(X_poly_train)))
+        
+        # Validation
+        model_val = PolynomialFeatures(degree=deg, include_bias = False)
+        model_val.fit(X_val)
+        X_poly_val = model_val.transform(X_val)
+        
+        # Validation score
+        validation_scores.append(mean_squared_error(y_val, model.predict(X_poly_val)))
+
+# Creating errors data frame and show
+errors = pd.DataFrame([training_scores, validation_scores]).T
+errors.columns = ['Training MSE', 'Validation MSE']
+errors.index = ['degree = 1','degree = 2','degree = 3','degree = 4','degree = 5' ]
+errors
+```
+
+<p align="center">
+  <img width="292" height="187" src="images/mse_regression_e_03.png">
+</p>
+
+The optimal value for our hyperparameter is **degree = 2**. The reason for this is that it has the lowest training and validation Mean Squared Error. In contrast, for values degree = 3,4 or 5, the MSE for training data seems to be pretty small (almost perfect match with training data) and, on the other hand, the validation error is way larger, which is definitely a sign of overfitting. Also, for degree = 1, the MSE metrics are relatively decent, but since the value degree = 2 fits better in both training and validation data, the model probably underfits training set. So, finally, with the following code, we create the optimized model for degree = 2 and calculate fitness metrics in the test set.
+
+```python
+# Optimal degree
+deg = 2
+
+# Transforming features
+poly_model = PolynomialFeatures(degree=deg, include_bias = False)
+poly_model.fit(X_train)
+X_poly_train = poly_model.transform(X_train)
+
+# Linear regression
+model = LinearRegression(fit_intercept = True, copy_X=True, normalize = False)
+model.fit(X_poly_train, y_train)
+
+# Test set
+poly_model = PolynomialFeatures(degree=deg, include_bias = False)
+poly_model.fit(X_test)
+X_test_poly = poly_model.transform(X_test)
+y_pred = model.predict(X_test_poly)
+
+print('Test set results:')
+
+# MSE
+mse = mean_squared_error(y_test, y_pred)
+print('MSE: ' + str(mse))
+
+# R square
+r_sq = model.score(X_test_poly, y_test)
+print('R^2: ' + str(r_sq))
+```
+
+~~~
+Test set results:
+MSE: 31.47769682939448
+R^2: 0.6134311649340822
+~~~
+
+*Comment*:
+
+𝑅² is more or less like the accuracy metric in classification problems. Here, it seems that we don't have nice "accuracy" results, however, if you check for other degree values, you'll notice that the metric is worse.
+
+
+
+
 
 ## References
 
