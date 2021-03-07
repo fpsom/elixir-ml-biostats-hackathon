@@ -363,7 +363,7 @@ weighted avg       0.97      0.96      0.96        54
 The two models seem to be more or less equivalent, as the evaluation metrics of both models are high enough. The precision metric is slightly higher in kNN algorithm. kNN seems to fit pretty well, because we only deal with numerical features and the dimensionality of features is relatively low. Otherwise, if we had a greater nunber of dimensions, we would probably need to apply feature selection process before kNN algorithm.
 
 ## Regression problem
-To explain some linear regression stuff, we will use the “Boston House prices" dataset. As described in the first episode, in this dataset we are provided with multiple explanatory variables describing different aspects of some residential homes and the task is to predict the final price of each home. It's highly recommended to open up a new notebook at this point. First of all, we are going to import three libraries that we'll definitely use:
+To explain some regression stuff, we will use the “Boston House prices" dataset. As described in the first episode, in this dataset we are provided with multiple explanatory variables describing different aspects of some residential homes and the task is to predict the final price of each home. It's highly recommended to open up a new notebook at this point. First of all, we are going to import three libraries that we'll definitely use:
 
 ```python
 import pandas as pd
@@ -385,11 +385,37 @@ X = pd.DataFrame(boston_houses.data, columns=boston_houses.feature_names)
 y = pd.DataFrame(boston_houses.target, columns = ['Av. Price'])
 ```
 
-A quick reminder on how this dataset looks like: 
+A quick reminder on how this dataset looks like: (The target values that we are going to predict refers to the average price of houses in thousand dollars)
 
 Data             |  Prices
 :-------------------------:|:-------------------------:
 ![](images/boston_houses_X_e03.png)  |  ![](images/boston_houses_y_e03.png)
+
+For now, we 're gonna intentionally skip the feature selection step and go straight to the regression stuff. The reason is that the next episode is totally dedicated to feature selection, so for now we'll work under the assumption that current features are already selected, or they are all of equal importance. This hypothesis, however, we'll probably collapse in the next episode, as we're gonna initially use the same dataset. Now let's talk about regression.
+
+### Linear regression
+Linear regression is probably one of the most important and widely used regression techniques. It’s among the simplest regression methods. When implementing linear regression of some dependent variable 𝑦 on the set of independent variables 𝐱 = (𝑥₁, …, 𝑥ᵣ), where 𝑟 is the number of predictors (features), you assume a linear relationship between 𝑦 and 𝐱: 𝑦 = 𝛽₀ + 𝛽₁𝑥₁ + ⋯ + 𝛽ᵣ𝑥ᵣ + 𝜀. This equation is the regression equation. 𝛽₀, 𝛽₁, …, 𝛽ᵣ are the regression coefficients (parameters), and 𝜀 is the random error.
+
+Linear regression calculates the estimators of the regression coefficients or simply the predicted weights, denoted with 𝑏₀, 𝑏₁, …, 𝑏ᵣ. They define the estimated regression function 𝑓(𝐱) = 𝑏₀ + 𝑏₁𝑥₁ + ⋯ + 𝑏ᵣ𝑥ᵣ. This function should capture the dependencies between the inputs and output sufficiently well.
+
+The estimated or predicted response, 𝑓(𝐱ᵢ), for each observation 𝑖 = 1, …, 𝑛, should be as close as possible to the corresponding actual response 𝑦ᵢ. The differences 𝑦ᵢ - 𝑓(𝐱ᵢ) for all observations 𝑖 = 1, …, 𝑛, are called the residuals. Regression is about determining the best predicted weights, that is the weights corresponding to the smallest residuals.
+
+### Polynomial regression
+You can regard polynomial regression as a generalized case of linear regression. You assume the polynomial dependence between the output and inputs and, consequently, the polynomial estimated regression function. In other words, in addition to linear terms like 𝑏₁𝑥₁, your regression function 𝑓 can include non-linear terms such as 𝑏₂𝑥₁², 𝑏₃𝑥₁³, or even 𝑏₄𝑥₁𝑥₂, 𝑏₅𝑥₁²𝑥₂, and so on.
+
+The simplest example of polynomial regression has a single independent variable, and the estimated regression function is a polynomial of degree 2: 𝑓(𝑥) = 𝑏₀ + 𝑏₁𝑥 + 𝑏₂𝑥². Now, remember that you want to calculate 𝑏₀, 𝑏₁, and 𝑏₂, which minimize SSR. These are your unknowns! Keeping this in mind, compare the previous regression function with the function 𝑦 = 𝛽₀ + 𝛽₁𝑥₁ + ⋯ + 𝛽ᵣ𝑥ᵣ used for linear regression. They look very similar and are both linear functions of the unknowns 𝑏₀, 𝑏₁, and 𝑏₂. This is why you can **solve the polynomial regression problem as a linear problem** with the term 𝑥² regarded as an input variable.
+
+### Optimization, metrics, parameters and hyperparameters
+
+When optimizing (linear) regression, the goal is usually to minimize the **sum of squared residuals (SSR)** for all observations 𝑖 = 1, …, 𝑛: SSR = Σᵢ(𝑦ᵢ - 𝑓(𝐱ᵢ))². This approach is called the method of ordinary least squares. Another widely used method for optimization or evaluation is the **Mean Squared Error (MSE)**, which is actually the SSE metric divided by n, where n is the number of observations: MSE = SSE/n.
+
+Furthermore, the **coefficient of determination**, denoted as **𝑅²**, tells you which amount of variation in 𝑦 can be explained by the dependence on 𝐱 using the particular regression model. Larger 𝑅² indicates a better fit and means that the model can better explain the variation of the output with different inputs. The value 𝑅² = 1 corresponds to SSR = 0, that is to the perfect fit since the values of predicted and actual responses fit completely to each other[[7]](#7).
+
+The parameters of the algorithm are obviously the regression coefficients 𝛽₀, 𝛽₁, …, 𝛽ᵣ. The hyperparameter, in our case, is the degree of polynomial regression.
+
+### Coding time
+bla bla bla
+
 ## References
 
 <a id="1">[1]</a> 
@@ -415,3 +441,8 @@ https://en.wikipedia.org/wiki/Cross-validation_(statistics)
 
 <a id="6">[6]</a> 
 https://subscription.packtpub.com/book/big_data_and_business_intelligence/9781789617740/2/ch02lvl1sec14/k-fold-cross-validation
+
+<a id="7">[7]</a> 
+Mirko Stojiljković
+Linear Regression in Python
+Real Python, [Link](https://realpython.com/linear-regression-in-python/)
