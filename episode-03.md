@@ -538,7 +538,11 @@ R^2: 0.6134311649340822
 𝑅² is more or less like the accuracy metric in classification problems. Here, it seems that we don't have nice "accuracy" results, however, if you check for other degree values, you'll notice that the metric is worse.
 
 ## Εpilogue - Theoretical stuff: Oversampling and Undersampling 
+Imbalanced datasets are those where there is a severe skew in the class distribution, such as 1:100 or 1:1000 examples in the minority class to the majority class. This bias in the training dataset can influence many machine learning algorithms, leading some to ignore the minority class entirely. This is a problem as it is typically the minority class on which predictions are most important.
 
+One approach to addressing the problem of class imbalance is to randomly resample the training dataset. The two main approaches to randomly resampling an imbalanced dataset are to delete examples from the majority class, called **undersampling**, and to duplicate examples from the minority class, called **oversampling**. The simplest strategy is to choose examples for the transformed dataset randomly, called random resampling. Random oversampling involves randomly selecting examples from the minority class, with replacement, and adding them to the training dataset. Random undersampling involves randomly selecting examples from the majority class and deleting them from the training dataset.
+
+Both techniques can be used for two-class (binary) classification problems and multi-class classification problems with one or more majority or minority classes. Importantly, the change to the class distribution **is only applied to the training dataset**. The intent is to influence the fit of the models. The resampling is not applied to the test or holdout dataset used to evaluate the performance of a model [[8]](#8).
 
 ## References
 
@@ -570,3 +574,8 @@ https://subscription.packtpub.com/book/big_data_and_business_intelligence/978178
 Mirko Stojiljković
 Linear Regression in Python
 Real Python, [Link](https://realpython.com/linear-regression-in-python/)
+
+<a id="8">[8]</a> 
+Jason Brownlee (2020)
+Random Oversampling and Undersampling for Imbalanced Classification
+Machine Learning Mastery, [Link](https://machinelearningmastery.com/random-oversampling-and-undersampling-for-imbalanced-classification/)
