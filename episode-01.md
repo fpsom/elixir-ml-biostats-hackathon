@@ -373,8 +373,8 @@ print(pca.explained_variance_ratio_)
 
 Finally, we have to mention here that a big chapter of dimensionality reduction is **feature selection**. The key difference is that feature selection is simply selecting and excluding the most informative features (whatever does it mean) without changing them, while dimensionality reduction transforms features into a lower dimension. The decision whether we should use dimensionality reduction or feature seleciton essentially depends on many parameters, such as the problem itself and the nature of features.
 
-## Role of statistics in Machine learning
 
+## Εpilogue - Theoretical stuff: Role of statistics in Machine learning
 Statistics is generally considered a prerequisite to the field of applied machine learning. Statistical methods are required to find answers to the questions that we have about data. Data raises questions, such as:
 
 - What is the most common or expected observation?

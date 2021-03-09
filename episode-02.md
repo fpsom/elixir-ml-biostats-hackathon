@@ -491,7 +491,8 @@ print(classification_report(y_pred=y_pred, y_true=y_test))
 weighted avg       0.93      0.92      0.92       114
 ~~~
 
-## Discussion: Ways to improve your model
+
+## Εpilogue - Theoretical stuff: Ways to improve your model
 This is a bit tricky question. Improving in terms of what? Of accuracy? Well, that's what an amateur data analyst would suggest, but accuracy is not always the answer in our problems. Just think of a multi-class problem with non-uniform distribution in labels. Supposse that our dataset contains a very short number of samples with label A (5 or 10) and a relatively large number of samples of label B (100 or 1000). If we set our model to classify every sample in class B, our accuracy would be almost 100%; in this way, however, we wouln't find any optimal way to distinguish the two classes. So to succeed that, somebody would think to force the algorithm to strictly fit on our training dataset. This might lead, on the other hand, to overfitting. **Overfitting** happens when a machine learning model has become too attuned to the data on which it was trained and therefore loses its applicability to any other dataset. The opposite scenario of overfitting is **underfitting**, in which the model chosen to get optimized is less complex that it was practically needed. Overfitting and underfitting are visualized in the following plot[[14]].
 
 <p align="center">

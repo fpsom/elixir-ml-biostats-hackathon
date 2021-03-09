@@ -537,8 +537,7 @@ R^2: 0.6134311649340822
 
 𝑅² is more or less like the accuracy metric in classification problems. Here, it seems that we don't have nice "accuracy" results, however, if you check for other degree values, you'll notice that the metric is worse.
 
-
-
+## Εpilogue - Theoretical stuff: Oversampling and Undersampling 
 
 
 ## References
