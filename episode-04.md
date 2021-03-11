@@ -88,7 +88,7 @@ Next, we are goint to apply some **supervised feature selection** method, meanin
 
 In our case, we have numerical inputs and outputs, so we end up with two choices: Pearson's and Spearman's coefficinets. As we already discussed, Pearson's coefficient checks the linearity between two variables. However, if we go back to the previous episode, we'll notice that the optimal degree of polynomial features occured from cros-validation process was `degree = 2`. Hence, at least one feature is connected quadratically with the output. So it seems obvious that Pearson's coefficient is not the optimal criterion.
 
-On the other hand, **Spearman's rank correlation coefficient** assesses how well the relationship between two variables can be described using a monotonic function. While Pearson's correlation assesses linear relationships, Spearman's correlation assesses monotonic relationships (whether linear or not). If there are no repeated data values, a perfect Spearman correlation of +1 or −1 occurs when each of the variables is a perfect monotone function of the other.
+On the other hand, **Spearman's rank correlation coefficient** assesses how well the relationship between two variables can be described using a monotonic function. While Pearson's correlation assesses linear relationships, Spearman's correlation assesses monotonic relationships (whether linear or not). If there are no repeated data values, a perfect Spearman correlation of +1 or −1 occurs when each of the variables is a perfect monotone function of the other[[4]](#4).
 
 Therefore, we're going to calculate Spearman's coefficient between each one of the remaining columns and output variable. But prior to this step, let's rescale data, because at this point we start mixing up target variable in our analysis. Basically, normalization is only required when calculating distances, that is the pre-modeling phase. It's not actually important at this step, but let's do this now to get rid of it.
 
@@ -186,11 +186,14 @@ MSE: 23.805568624080962
 R^2: 0.7141004599281642
 ~~~
 
-Metrics are absolutely better than the model of the previous episode. So, it's obvious now that we've achieved denoising our model for a better performance!
+Metrics are absolutely better than the model of the previous episode. So, it's obvious now that we've succeded denoising our model for a better performance!
 
 ## Feature Selection - Classification
-bla bla bla
+For the purpose of studying feature selection in classification problems, we're gonna use Bearst Cancer dataset, to enrich the analysis of second episode. It's highly recommended to open up a new notebook at this point. So, let's load our data.
 
+```python
+import pandas as pd
+```
 
 ## References
 
@@ -206,3 +209,6 @@ Towards Data Science, [Link](https://towardsdatascience.com/linear-regression-on
 
 <a id="3">[3]</a> 
 https://en.wikipedia.org/wiki/Pearson_correlation_coefficient
+
+<a id="4">[4]</a> 
+https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient
