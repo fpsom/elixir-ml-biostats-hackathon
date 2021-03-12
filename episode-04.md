@@ -193,7 +193,62 @@ For the purpose of studying feature selection in classification problems, we're 
 
 ```python
 import pandas as pd
+
+# Loading breast cancer dataset
+breast_cancer_data = pd.read_csv('breast_cancer_data.csv', header=0, index_col=0)
+
+# Removing the first column (ID)
+breast_cancer_data = breast_cancer_data.iloc[:,1:]
+
+# separating X and Y matrix
+tumors = breast_cancer_data.pop('Diagnosis')
+X, y = breast_cancer_data, tumors
 ```
+
+Secondly, let's standarize our features this time, so as to try something new.
+
+```python
+from sklearn.preprocessing import StandardScaler
+
+# feature names
+feature_names = X.columns
+
+# data standarization
+X_scaled = StandardScaler().fit_transform(X)
+
+# as data frame
+X_scaled = pd.DataFrame(X_scaled, columns=feature_names)
+```
+
+Now, a few words about this particular set of data that we haven't said so far. More specifically, it has to do with the features. Ten real-valued features are computed for each cell nucleus of the image:
+- Radius (mean of distances from center to points on the perimeter) 
+- Texture (standard deviation of gray-scale values)
+- Perimeter 
+- Area 
+- Smoothness (local variation in radius lengths) 
+- Compactness (perimeter^2 / area - 1.0) 
+- Concavity (severity of concave portions of the contour) 
+- Concave points (number of concave portions of the contour) 
+- Symmetry 
+- Fractal dimension ("coastline approximation" )
+
+The mean, standard error and "worst" or largest (mean of the three largest values) of these features were computed for each image, resulting in 30 features. For instance, field 3 is Mean Radius, field 13 is Radius SE, field 23 is Worst Radius. As a result, we expect the features to be highly correlated. This hypothesis can be vertified by the correlation matrix.
+
+```python
+# Unsupervised - correlation matrix
+correlation_matrix = X_scaled.corr(method='pearson').round(2)
+
+# annot = True to print the values inside the square
+plt.figure(figsize=(20,20))
+sns.heatmap(data=correlation_matrix, annot=True)
+plt.show()
+```
+
+<p align="center">
+  <img width="1440" height="1440" src="images/corr_matrix_breas_cancer_e_04.png">
+</p>
+
+The visualization of the correlation matrix isn't always possible, especially when we talk about high dimensional data (e.g. number of dimensions greater than 100). I mean, we can't always scan it manually, since the number of its elements grows quadratically with respect to the number of features.
 
 ## References
 
