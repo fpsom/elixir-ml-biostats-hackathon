@@ -205,7 +205,7 @@ tumors = breast_cancer_data.pop('Diagnosis')
 X, y = breast_cancer_data, tumors
 ```
 
-Secondly, let's standarize our features this time, so as to try something new.
+Secondly, let's standarize our features this time, so as to try something new (escape from the routine of normalization).
 
 ```python
 from sklearn.preprocessing import StandardScaler
@@ -219,6 +219,20 @@ X_scaled = StandardScaler().fit_transform(X)
 # as data frame
 X_scaled = pd.DataFrame(X_scaled, columns=feature_names)
 ```
+
+Thirdly, let's check the distribution of output lablels, so as to ensure that both classes have a sufficient number of elements:
+
+```python
+# Print classes and element counts
+B, M = y.value_counts(sort=True) #sort=True (default) in order to be sure B, M are in the right order (alphabetical)
+print('Number of Benign: ',B)
+print('Number of Malignant : ',M)
+```
+
+~~~
+Number of Benign:  357
+Number of Malignant :  212
+~~~
 
 Now, a few words about this particular set of data that we haven't said so far. More specifically, it has to do with the features. Ten real-valued features are computed for each cell nucleus of the image:
 - Radius (mean of distances from center to points on the perimeter) 
@@ -248,7 +262,98 @@ plt.show()
   <img width="1440" height="1440" src="images/corr_matrix_breas_cancer_e_04.png">
 </p>
 
-The visualization of the correlation matrix isn't always possible, especially when we talk about high dimensional data (e.g. number of dimensions greater than 100). I mean, we can't always scan it manually, since the number of its elements grows quadratically with respect to the number of features.
+The plot of the correlation matrix isn't always managable, especially when we talk about high dimensional data (e.g. number of dimensions greater than 100). I mean, we can't always scan it manually, since the number of its elements grows quadratically with respect to the number of features. Hencel, the following code will indicate which tuples of features are highly correlated with an absolute value of Pearson's coefficient greater than 0.9:
+
+```python
+# Detect which features have correlation higher than 0.9
+for i in range(len(feature_names)):
+    for j in range(i):
+        feature_1 = feature_names[i]
+        feature_2 = feature_names[j]
+        
+        if abs(correlation_matrix.iloc[i,j]) > 0.9:
+            print('{0} - {1}: {2}'.format(feature_1, feature_2, correlation_matrix.iloc[i,j]))
+```
+
+~~~
+Perimeter.Mean - Radius.Mean: 1.0
+Area.Mean - Radius.Mean: 0.99
+Area.Mean - Perimeter.Mean: 0.99
+Concave.Points.Mean - Concavity.Mean: 0.92
+Perimeter.SE - Radius.SE: 0.97
+Area.SE - Radius.SE: 0.95
+Area.SE - Perimeter.SE: 0.94
+Radius.Worst - Radius.Mean: 0.97
+Radius.Worst - Perimeter.Mean: 0.97
+Radius.Worst - Area.Mean: 0.96
+Texture.Worst - Texture.Mean: 0.91
+Perimeter.Worst - Radius.Mean: 0.97
+Perimeter.Worst - Perimeter.Mean: 0.97
+Perimeter.Worst - Area.Mean: 0.96
+Perimeter.Worst - Radius.Worst: 0.99
+Area.Worst - Radius.Mean: 0.94
+Area.Worst - Perimeter.Mean: 0.94
+Area.Worst - Area.Mean: 0.96
+Area.Worst - Radius.Worst: 0.98
+Area.Worst - Perimeter.Worst: 0.98
+Concave.Points.Worst - Concave.Points.Mean: 0.91
+~~~
+
+Comments:
+- Features: `Perimeter`, `Area`, `Radius` (Worst, Mean and SE) are more or less highly correlated. Hence, a logical choice would be to keep only `Area` feature and exlude the rest.
+- Features: `Concave.Points.Mean` and `Concavity.Mean` are also highly correlated. Hence, a logical choice would be to keep only `Concavity.Mean` feature, so as to also get rid of the last correlation, between `Concave.Points.Worst` and `Concave.Points.Mean`.
+- `Texture.Worst` and `Texture.Mean` are highly correlated too, so we'll keep only `Texture.Mean`.
+
+```python
+# Drop out features to avoid correlations
+to_drop = ['Perimeter.Mean', 'Perimeter.Worst', 'Perimeter.SE', 'Radius.Mean', 'Radius.SE', \
+           'Radius.Worst', 'Concave.Points.Mean', 'Texture.Worst']
+X_scaled.drop(columns=to_drop, inplace=True)
+```
+Same goes for tuples of features with correlation coefficient within the interval [0.8, 0.9] (which is still high enough though).
+
+```python
+# Detect which features have correlation higher than 0.8 and lower than 0.9
+for i in range(len(feature_names)):
+    for j in range(i):
+        feature_1 = feature_names[i]
+        feature_2 = feature_names[j]
+        
+        if abs(correlation_matrix.iloc[i,j]) > 0.8 and abs(correlation_matrix.iloc[i,j]) <= 0.9:
+            print('{0} - {1}: {2}'.format(feature_1, feature_2, correlation_matrix.iloc[i,j]))
+```
+
+~~~
+Concavity.Mean - Compactness.Mean: 0.88
+Concave.Points.Mean - Radius.Mean: 0.82
+Concave.Points.Mean - Perimeter.Mean: 0.85
+Concave.Points.Mean - Area.Mean: 0.82
+Concave.Points.Mean - Compactness.Mean: 0.83
+Radius.Worst - Concave.Points.Mean: 0.83
+Perimeter.Worst - Concave.Points.Mean: 0.86
+Area.Worst - Concave.Points.Mean: 0.81
+Area.Worst - Area.SE: 0.81
+Smoothness.Worst - Smoothness.Mean: 0.81
+Compactness.Worst - Compactness.Mean: 0.87
+Concavity.Worst - Compactness.Mean: 0.82
+Concavity.Worst - Concavity.Mean: 0.88
+Concavity.Worst - Compactness.Worst: 0.89
+Concave.Points.Worst - Compactness.Mean: 0.82
+Concave.Points.Worst - Concavity.Mean: 0.86
+Concave.Points.Worst - Perimeter.Worst: 0.82
+Concave.Points.Worst - Concavity.Worst: 0.86
+Fractal.Dimension.Worst - Compactness.Worst: 0.81
+~~~
+
+Some of the features above are already excluded. At the current step, we choose to exclude `Area.Worst`, `Smoothness.Worst`, `Compactness.Worst`, `Concavity.Worst` and `Compactness.Mean`.
+
+```python
+# Drop out features to avoid correlations
+to_drop = ['Area.Worst', 'Smoothness.Worst', 'Compactness.Worst', 'Concavity.Worst', 'Compactness.Mean']
+X_scaled.drop(columns=to_drop, inplace=True)
+```
+
+At this point, we are left with 17 out of 30 features, which are decently unrelated to each other. 
 
 ## References
 
