@@ -140,7 +140,7 @@ plt.show()
 X_selected = X_normalized[['LSTAT', 'RM']]
 ```
 
-The following code is more or less similar to the previous episode. We apply polynomial transofmation of `degree = 2` to features and apply Linear Regression. There is no need to apply cross-validation, because we work under the assumption that the optimal degree was calculated in the previous episode. So we only train and test our model. Let's check the results.
+The following code is more or less similar to the previous episode. We apply polynomial transofmation of `degree = 2` to features and apply Linear Regression. We don't apply cross-validation here, because we work under the assumption that the optimal degree was calculated in the previous episode, to save time. So we only train and test our model. Let's check the results. Metrics are absolutely better than the model of the previous episode. It seems that we've succeded in denoising our model for a better performance!
 
 ```python
 from sklearn.model_selection import train_test_split
@@ -186,7 +186,10 @@ MSE: 23.805568624080962
 R^2: 0.7141004599281642
 ~~~
 
-Metrics are absolutely better than the model of the previous episode. So, it's obvious now that we've succeded denoising our model for a better performance!
+
+> ## Important comment
+> 
+> In the previous episode, we optimized the `degree` hyperparameter based on the initial dataset, without applying any feature seleciton technique. Hence, we used the complete dataset for hyperparameter optimization. Here, we first selected the features and then proceed to the polynomial transformation of the remaining features. We have to keep in mind, though, that now the optimal degree value may have possibly changed. There is no guarantee at all that the optimal hyperparameter values remain constant before and after feature selection. Luckily, here we've succeeded a much better performance, but it could have been worse as well. The standard pipeline is to optimize hyperparameters after the feature selection process.
 
 ## Feature Selection - Classification
 For the purpose of studying feature selection in classification problems, we're gonna use Bearst Cancer dataset, to enrich the analysis of second episode. It's highly recommended to open up a new notebook at this point. So, let's load our data.
@@ -353,7 +356,9 @@ to_drop = ['Area.Worst', 'Smoothness.Worst', 'Compactness.Worst', 'Concavity.Wor
 X_scaled.drop(columns=to_drop, inplace=True)
 ```
 
-At this point, we are left with 17 out of 30 features, which are decently unrelated to each other. 
+We reduced the number of features from 30 to 17. To check if our feature selection is correct in classification problems, we generally use a classification method and check out the recall evalutaion metric.
+
+
 
 ## References
 
