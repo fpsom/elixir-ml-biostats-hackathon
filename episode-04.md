@@ -249,7 +249,7 @@ Now, a few words about this particular set of data that we haven't said so far. 
 - Symmetry 
 - Fractal dimension ("coastline approximation" )
 
-The mean, standard error and "worst" or largest (mean of the three largest values) of these features were computed for each image, resulting in 30 features. For instance, field 3 is Mean Radius, field 13 is Radius SE, field 23 is Worst Radius. As a result, we expect the features to be highly correlated. This hypothesis can be vertified by the correlation matrix.
+The mean, standard error and "worst" or largest (mean of the three largest values) of these features were computed for each image, resulting in 30 features. For instance, field 3 is Mean Radius, field 13 is Radius SE, field 23 is Worst Radius[[5]](#5). As a result, we expect the features to be highly correlated. This hypothesis can be vertified by the correlation matrix.
 
 ```python
 # Unsupervised - correlation matrix
@@ -356,9 +356,110 @@ to_drop = ['Area.Worst', 'Smoothness.Worst', 'Compactness.Worst', 'Concavity.Wor
 X_scaled.drop(columns=to_drop, inplace=True)
 ```
 
-We reduced the number of features from 30 to 17. To check if our feature selection is correct in classification problems, we generally use a classification method and check out the recall evalutaion metric.
+We reduced the number of features from 30 to 17 and we proceed to the supervised part. Firstly, we are going to explain some stuff concerning feature importance topic.
 
+**Feature importance** refers to techniques that assign a score to input features based on how useful they are at predicting a target variable. There are many types and sources of feature importance scores, although popular examples include statistical correlation scores, coefficients calculated as part of linear models, decision trees, and permutation importance scores. Actually, feature importance is a superset of the statistical methods already mentioned (ANOVA, Pearson's and Spearman's coefficient, etc). Apart from them, it contatins any method nested within the modeling process that somehow assigns scores to features and indicates which of them contribute the most. For example, linear machine learning algorithms fit a model where the prediction is the weighted sum of the input values. These algorithms find a set of coefficients to use in the weighted sum in order to make a prediction. These coefficients can be used directly as a crude type of feature importance score[[6]](#6).
 
+Decision tree algorithms like classification and regression trees (CART) offer importance scores based on the reduction in the criterion used to select split points, like Gini or entropy. Thus, Decision Trees are intrinsic feature selection methods, meaning that the feature selection is done simultaneously with the modeling phase. Python provides `feature_importances_` attribute in `DecisionTreeClassifier()` to determine the scores of each feature. Hence, in the following code, we split data into training and testing set and apply `DecisionTreeClassifier()` to select the most important feature. We skip the cross-validation step, because we don't determine the `max_depth` parameter; in this case, then nodes are expanded until all leaves are pure or until all leaves contain less than `min_samples_split` samples, whose default value equals 2. ([More info](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html))
+
+```python
+# decision tree for feature importance on a classification problem
+from sklearn.tree import DecisionTreeClassifier
+from matplotlib import pyplot as plt
+from sklearn.model_selection import train_test_split
+
+# feature names
+feature_names = X_scaled.columns
+
+# Splitting - train test
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.3, random_state = 0)
+
+# define the model
+model = DecisionTreeClassifier()
+
+# fit the model
+model.fit(X_train, y_train)
+
+# get importance
+importance = model.feature_importances_
+
+# summarize feature importance
+for i,v in enumerate(importance):
+    print('{0}: {1}'.format(feature_names[i], v))
+
+# plot feature importance
+plt.figure(figsize=(10,8))
+plt.bar(feature_names, importance)
+plt.xticks(rotation = 'vertical')
+plt.title('Feature scores')
+plt.show()
+```
+
+~~~
+Texture.Mean: 0.02498201061312569
+Area.Mean: 0.0
+Smoothness.Mean: 0.0
+Concavity.Mean: 0.014460252335057036
+Symmetry.Mean: 0.013409342066251584
+Fractal.Dimension.Mean: 0.0
+Texture.SE: 0.0
+Area.SE: 0.12085429022281288
+Smoothness.SE: 0.021080255642524484
+Compactness.SE: 0.009902283372001166
+Concavity.SE: 0.010164175822968571
+Concave.Points.SE: 0.0
+Symmetry.SE: 0.008045605239750949
+Fractal.Dimension.SE: 0.0
+Concave.Points.Worst: 0.7627984864815059
+Symmetry.Worst: 0.014303298204001688
+Fractal.Dimension.Worst: 0.0
+~~~
+
+<p align="center">
+  <img width="720" height="576" src="images/dt_feature_selection_e04.png">
+</p>
+
+Clearly, the most significant features are `Area.SE` and `Concave.Points.Worst`. So, we isolate them and rebuild a `DecisionTreeClassifier()` model, using only these two features, test and evaluate our model, using `classification_report` function. Results are presented below.
+
+```python
+from sklearn.metrics import classification_report
+
+# Selectin features
+X_train = X_train[['Area.SE', 'Concave.Points.Worst']]
+X_test = X_test[['Area.SE', 'Concave.Points.Worst']]
+
+# Model
+model = DecisionTreeClassifier()
+
+# fit the model
+model.fit(X_train, y_train)
+
+# Predict
+y_pred = model.predict(X_test)
+
+# Classification report
+print(classification_report(y_true=y_test, y_pred=y_pred))
+```
+
+~~~
+             precision    recall  f1-score   support
+
+           B       0.94      0.93      0.93       108
+           M       0.88      0.90      0.89        63
+
+    accuracy                           0.92       171
+   macro avg       0.91      0.92      0.91       171
+weighted avg       0.92      0.92      0.92       171
+~~~
+
+Bingo! We've just selected only 2 out of the initial set of 30 features. That's definitely a great success! :)
+
+## Εpilogue - Theoretical stuff: Data Imputation and Data Restructuring
+Although we haven't faced it here, it's really common for data matrices to have missing values and thus be incomplete. **Imputation** is the process of replacing missing data with substituted values. There are three main problems that missing data causes: missing data can introduce a substantial amount of bias, make the handling and analysis of the data more arduous, and create reductions in efficiency. Imputation preserves all cases by replacing missing data with an estimated value based on other available information. Once all missing values have been imputed, the data set can then be analysed using standard techniques for complete data[[7]](#7). For instance, some basic techniques in data imputation are replacing missing values with the average of the rest or applying some regression proceduce, while there are also more complex techniques.
+
+On the other hand, **Data Restructuring** is the process to restructure the source data to the target data during data transformation. Data Restructuring is an integral part in data warehousing. A very common set of processes is used in running large data warehouses. This set of process is called Extract, Transform, and Load (ETL).
+
+The general flow of ETL involves extracting data from outside sources, then transforming based on business rules and requirements so that the data fit the business needs and finally, data is loaded in to the data warehouse.
 
 ## References
 
@@ -377,3 +478,21 @@ https://en.wikipedia.org/wiki/Pearson_correlation_coefficient
 
 <a id="4">[4]</a> 
 https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient
+
+<a id="5">[5]</a> 
+Thomas Roncen (2019)
+Breast Cancer data set feature selection
+Kaggle, [Link](https://www.kaggle.com/quantumofronron/breast-cancer-data-set-feature-selection)
+
+<a id="6">[6]</a> 
+Jason Brownlee (2020)
+How to Calculate Feature Importance With Python
+Machine Learning Mastery, [Link](https://machinelearningmastery.com/calculate-feature-importance-with-python/)
+
+<a id="7">[7]</a> 
+https://en.wikipedia.org/wiki/Imputation_(statistics)
+
+<a id="8">[8]</a> 
+Editorial Team (2008)
+What is Data Restructuring
+Geek Interview, [Link](http://www.learn.geekinterview.com/data-warehouse/data-structure/what-is-data-restructuring.html)
