@@ -189,7 +189,7 @@ The general overview of data is the following. Hopefully, there are no missing v
 
 Features             |  Targets
 :-------------------------:|:-------------------------:
-![](images/diabetes_X_e_05.png)  |  ![](images/diabetes_y_e_05.png)
+![](images/diabetes_X_e05.png)  |  ![](images/diabetes_y_e05.png)
 
 
 
