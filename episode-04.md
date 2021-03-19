@@ -32,7 +32,7 @@ boston_houses = load_boston(return_X_y=False)
 
 # as data frame
 X = pd.DataFrame(boston_houses.data, columns=boston_houses.feature_names)
-y = pd.DataFrame(boston_houses.target, columns = ['Av. Price'])
+y = pd.DataFrame(boston_houses.target, columns = ['Median Price'])
 ```
 
 As you've already noticed, we have also imported `seaborn`, which is a widely used package for plotting purposes, especially for fitting, distribution and other statistical/ML stuff. Now, let’s first plot the distribution of the target variable. We will use the `distplot()` function from the `seaborn` library.

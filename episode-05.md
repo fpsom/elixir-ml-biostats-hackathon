@@ -8,7 +8,7 @@ _Learning Outcomes_
     - _Internal Note_: method B is not taught in the course, to be performed using resources shared in course (stretch goal, as an optional aspect)
 
 
-The last episode of this machine learning course can be devided into two main parts. In the first part, we'll talk about clustering, as we haven't studied it systematically in the previous episodes. We'll explain hierarchical clustering method and we'll attempt to visualize some stuff for a better interpretation. In the second part, we're going to combine the individual steps of ML into a inegrated pipeline, by utilizing Python's tools. So, let's jump directly into clustering stuff.
+The last episode of this machine learning course can be devided into two main parts. In the first part, we'll talk about clustering, as we haven't studied it systematically in the previous episodes. We'll explain hierarchical clustering method and we'll attempt to visualize some stuff for a better interpretation. In the second part, we're going to combine the individual steps of ML into a inegrated pipeline, by utilizing Python's tools. So, let's jump directly into clustering part.
 
 ## Clustering
 As we already mentioned, cluster analysis or clustering is the task of grouping a set of objects in such a way that objects in the same group (called a cluster) are more similar (in some sense) to each other than to those in other groups. Cluster analysis itself is not one specific algorithm, but the general task to be solved. It can be achieved by various algorithms that differ significantly in their understanding of what constitutes a cluster and how to efficiently find them. Popular notions of clusters include groups with small distances between cluster members, dense areas of the data space, intervals or particular statistical distributions.
@@ -25,7 +25,7 @@ from sklearn.preprocessing import MinMaxScaler
 # loading wine dataset -storing directly into X,y dataframes
 X,y = datasets.load_wine(return_X_y=True, as_frame=True)
 
-# feature names
+# feature names	
 feature_names = X.columns
 
 # Normalize
@@ -165,6 +165,33 @@ Cluster 1      2.0     63.0      0.0
 Cluster 2      0.0      4.0     48.0
 ~~~
 
+## Putting it all together
+This is the last part of the course and, for this reason, has a summarizing role. We'll use a new dataset, called Pima Indians Diabetes Dataset, which is uploaded as `diabetes.csv` in our github repository. Actually it's a widely used dataset and can be easily found online, with a simple google search ([Link](https://www.kaggle.com/uciml/pima-indians-diabetes-database)). This dataset is originally from the National Institute of Diabetes and Digestive and Kidney Diseases. The objective of the dataset is to diagnostically predict whether or not a patient has diabetes, based on certain diagnostic measurements included in the dataset. Several constraints were placed on the selection of these instances from a larger database. In particular, all patients here are females at least 21 years old of Pima Indian heritage[[3]](#3).
+
+So, let's import our dataset and separate `X` and `y` matrices.
+
+```python
+# Importing pandas package
+import pandas as pd
+
+# Loading file
+diabetes = pd.read_csv('diabetes.csv', header=0, index_col=None)
+
+# separating X and Y matrix
+targets = diabetes.pop('Outcome')
+X, y = diabetes, targets
+```
+
+Now it's time to systematize the basic steps of the ML pipeline.
+
+### 1. Data Overviw, Visualization, Normalization
+The general overview of data is the following. Hopefully, there are no missing values.
+
+Features             |  Targets
+:-------------------------:|:-------------------------:
+![](images/diabetes_X_e_05.png)  |  ![](images/diabetes_y_e_05.png)
+
+
 
 
 ## References
@@ -176,7 +203,7 @@ https://en.wikipedia.org/wiki/Hierarchical_clustering
 https://en.wikipedia.org/wiki/Hierarchical_clustering
 
 <a id="3">[3]</a> 
-Jason Brownlee (2020)
-How to Perform Feature Selection for Regression Data
-Machine Learning Mastery, [Link](https://machinelearningmastery.com/feature-selection-for-regression-data/)
+https://www.kaggle.com/uciml/pima-indians-diabetes-database
+
+
 

@@ -198,7 +198,7 @@ boston_houses = load_boston()
 
 # Converting to data frame
 boston_houses_df = pd.DataFrame(boston_houses.data, columns=boston_houses.feature_names)
-prices_df = pd.DataFrame(boston_houses.target, columns = ['Av. Price'])
+prices_df = pd.DataFrame(boston_houses.target, columns = ['Median Price'])
 ```
 
 Probably too many questions so let's analyze the code. In the first line of code we import the `load_boston()` function, which lies inside `datasets` subpackage, which in turn belongs to the `scikit-learn` main package. Apart from `scikit-learn` package, we also import [pandas](https://pandas.pydata.org/), which will be discussed in a bit. After that, we call the function and store its result to the `boston_houses` variable. The function returns an object of class `sklearn.utils.Bunch`; however we would prefer our data to be stored in a `DataFrame` object, that contains a bunch of useful functionalities. For this reason, we import `pandas` package as `pd`, meaning that after the initial import, rather than writing `pandas.function(...)`, you can now write `pd.function(...)`. . Some people prefer this as it is quicker to type and results in shorter lines of code - especially for libraries with long names! You will frequently see Python code online using a Pandas function with `pd`, and it's because they've used this shortcut. Pandas is another widely used library in python that contains many useful functionalitites to handle `DataFrames`. In the last line we use the `Dataframe()` function of `pandas` package to transform our data into `DataFrame` format. Targets in this example are stored in `prices_df` object as well. The input data looks like this.
@@ -233,12 +233,13 @@ print(prices_df.head())
 ```
 
 ~~~
-   Av. Price
-0       24.0
-1       21.6
-2       34.7
-3       33.4
-4       36.2
+   Median Price
+0          24.0
+1          21.6
+2          34.7
+3          33.4
+4          36.2
+
 
 [506 rows x 13 columns]
 
