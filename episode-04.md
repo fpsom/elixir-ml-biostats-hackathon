@@ -455,11 +455,33 @@ weighted avg       0.92      0.92      0.92       171
 Bingo! We've just selected only 2 out of the initial set of 30 features. That's definitely a great success! :)
 
 ## Εpilogue - Theoretical stuff: Data Imputation and Data Restructuring
-Although we haven't faced it here, it's really common for data matrices to have missing values and thus be incomplete. **Imputation** is the process of replacing missing data with substituted values. There are three main problems that missing data causes: missing data can introduce a substantial amount of bias, make the handling and analysis of the data more arduous, and create reductions in efficiency. Imputation preserves all cases by replacing missing data with an estimated value based on other available information. Once all missing values have been imputed, the data set can then be analysed using standard techniques for complete data[[7]](#7). For instance, some basic techniques in data imputation are replacing missing values with the average of the rest or applying some regression proceduce, while there are also more complex techniques.
+Although we haven't faced it here, it's really common for data matrices to have missing values and thus to be incomplete. **Imputation** is the process of replacing missing data with substituted values. There are three main problems that occur from missing data: it can introduce a substantial amount of bias, make the handling and analysis of the data more arduous, and create reductions in efficiency. Imputation preserves all cases by replacing missing data with an estimated value based on other available information. Once all missing values have been imputed, the data set can then be analysed using standard techniques for complete data[[7]](#7). For instance, some basic techniques in data imputation are replacing missing values with the average of the rest or applying some regression proceduce, while there are also more complex techniques.
 
-On the other hand, **Data Restructuring** is the process to restructure the source data to the target data during data transformation. Data Restructuring is an integral part in data warehousing. A very common set of processes is used in running large data warehouses. This set of process is called Extract, Transform, and Load (ETL).
+On the other hand, **Data Restructuring** is the process to change the structure of the source data to the target data during data transformation. Data Restructuring is an integral part in data warehousing. Sometimes it can be also a part of data preprocessing. Below we introduce you a simple example on what data restructuring practically means.
 
-The general flow of ETL involves extracting data from outside sources, then transforming based on business rules and requirements so that the data fit the business needs and finally, data is loaded in to the data warehouse.
+Suppose that we have the following data matrix[[8]](#8):
+
+~~~
+  ID   WEIGHT   CALORIES  TIME
+   1     200     3500      1 
+   1     190     3300      2
+   1     180     3100      3
+   2     160     3000      1
+   2     150     2900      2
+   2     140     2800      3
+~~~
+
+This data matrix can be alternatively writen as:
+
+~~~
+ ID    weight1   weight2    weight3    calories1    calories2    calories3
+   1      200       190        180         3500         3300         3100
+   2      160       150        140         3000         2900         2800
+~~~
+
+There are two advantages here. The first one is that we didn't lose any informationa t all. The second is that the second matrix consists of 14 cells in total, while the first one consists of 24. This means that we've succeded a 41% reduction in storing space. It's also highly recommended attempt data restructuring in data preprocessing part, it may increase the efficiency of the algorithm, but it depends.
+
+A very common set of processes is used in running large data warehouses is called ETL, refering to meaning Extract - Transform - Load. The general flow of ETL involves extracting data from outside sources, then transforming based on business rules and requirements so that the data fit the business needs and finally, data is loaded in to the data warehouse[[9]](#9). For more information, you could have a look at this [Link](http://www.learn.geekinterview.com/data-warehouse/data-structure/what-is-data-restructuring.html).
 
 ## References
 
@@ -493,6 +515,9 @@ Machine Learning Mastery, [Link](https://machinelearningmastery.com/calculate-fe
 https://en.wikipedia.org/wiki/Imputation_(statistics)
 
 <a id="8">[8]</a> 
+https://kb.iu.edu/d/bbqj
+
+<a id="9">[9]</a> 
 Editorial Team (2008)
 What is Data Restructuring
 Geek Interview, [Link](http://www.learn.geekinterview.com/data-warehouse/data-structure/what-is-data-restructuring.html)
