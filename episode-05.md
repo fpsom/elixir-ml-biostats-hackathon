@@ -185,14 +185,39 @@ X, y = diabetes, targets
 Now it's time to systematize the basic steps of the ML pipeline.
 
 ### 1. Data Overviw, Visualization, Normalization
-The general overview of data is the following. Hopefully, there are no missing values.
+The general overview of data is the following. Hopefully, there are no missing values. Furthermore, all features could be considered as numerical, with either taking discrete or continuous values.
 
 Features             |  Targets
 :-------------------------:|:-------------------------:
 ![](images/diabetes_X_e05.png)  |  ![](images/diabetes_y_e05.png)
 
+It's highly recommended to have a look at the distribution of features in the first place and check how they interact with the targets vector. For this reason, we're going to use two functions. The first one is `.describe()` attribute function, which can be called by any `pandas.DataFrame` object. This function returns useful information concerning the distribution of features, meaning the average value, the standard deviation, interquartile analysis, etc. 
 
+```python
+X.describe()
+```
 
+<p align="center">
+  <img width="892" height="270 " src="images/describe_e_05.png">
+</p>
+
+The second function is `pairplot()` inside `seaborn` package. This function plots the 2D distribution for every tuple of features, which assists in detecting which tuples of features are more suitable for separating data. This function is really helpful for getting a better interpretation of data, especially when the number of features, like in our case, is relatively small.
+
+```python
+# Plotting libraries
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Re-merging for pairplot function
+diabetes['Outcome'] = y
+
+# Visualization
+g = sns.pairplot(diabetes, hue='Outcome', palette="husl")
+```
+
+<p align="center">
+  <img width="1493" height="1440 " src="images/pairplot_e_05.png">
+</p>
 
 ## References
 
