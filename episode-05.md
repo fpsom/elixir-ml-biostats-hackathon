@@ -261,7 +261,7 @@ plt.show()
 
 Unfortunately, features seem to be relatively uncorrelated, according to Pearson's coefficient, and the same holds for Spearman's too (This can be confirmed by you, if you set the argument `method = spearman` in `.corr()` function). Generally speaking, in this data pre-processing part we often apply normalization - standarization of data, but this time we'll put this step in the next part, in which we'll combine different pipelines.
 
-### Pipelines: Normalization/Standarization - Train - Validation
+### 3. Pipelines: Normalization/Standarization - Train - Validation
 In this step we're going to show you an alternative technique of finding the best model, using Python's pipelines. More specifically, we are going to combine 12 different models:
 - Decision Tree Classifier with `max_depth = 3`
 - Decision Tree Classifier with `max_depth = 4`
@@ -507,7 +507,7 @@ The complete results matrix is the following:
 
 It seems that a MinMax scaler, combined with a kernel-SVM model of with `degree=2` and `C=0.1` is the most suitable pipeline for our data.
 
-### Testing - Evaluation - Supervised Feature Selection
+### 4. Testing - Evaluation - Supervised Feature Selection
 The testing part involves re-training the model with the best performance in the validation set. Hence, we create such a model apply the determined pipeline. Classification results are presented below:
 
 ```python
@@ -623,7 +623,7 @@ weighted avg       0.75      0.76      0.73       154
 It seems that we have successfully selected three out of 8 features in total, with a relatively small effect on the evaluation metrics as a trade-off.
 
 ## Εpilogue - Theoretical stuff: AB testing
-bla bla...
+bla bla...cd
 
 ## References
 
