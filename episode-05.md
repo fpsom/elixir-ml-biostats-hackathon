@@ -623,7 +623,17 @@ weighted avg       0.75      0.76      0.73       154
 It seems that we have successfully selected three out of 8 features in total, with a relatively small effect on the evaluation metrics as a trade-off.
 
 ## Εpilogue - Theoretical stuff: AB testing
-bla bla...cd
+A major disadvantage among all the algorithms presented in this course is that they all require the data to have been collected in a previous phase. In other words, they are non real-time algorithms. Fortunately, scientists have developed a bunch of ML and statistical methods to overcome this issue. A widely used statistical method for this purpose is AB testing.
+
+Picture this scenario – You have made certain changes to your website recently. Unfortunately, you have no way of knowing with full accuracy how the next 100,000 people who visit your website will behave. That is the information we cannot know today, and if we were to wait until those 100,000 people visited our site, it would be too late to optimize their experience. This is where a data scientist can take control. A data scientist collects and studies the data available to help optimize the website for a better consumer experience. And for this, it is imperative to know how to use various statistical tools, especially the concept of A/B Testing.
+
+**A/B testing** is a basic randomized control experiment. It is a way to compare the two versions of a variable to find out which performs better in a controlled environment. For instance, let’s say you own a company and want to increase the sales of your product. Here, either you can use random experiments, or you can apply scientific and statistical methods. A/B testing is one of the most prominent and widely used statistical tools. In the above scenario, you may divide the products into two parts – A and B. Here A will remain unchanged while you make significant changes in B’s packaging. Now, on the basis of the response from customer groups who used A and B respectively, you try to decide which is performing better[[5]](#5). The general pipeline is presented below:
+
+<p align="center">
+  <img width="870" height="449 " src="images/ab_testing_e_05.png">
+</p>
+
+The idea of AB testing is based on a standard methodology in statistics, called the Null Hypothesis. In a nutshell, the first 1000 or 2000 visitors in your website are assumed to be a representative subset of the total set of visitors, meaning that the distribution of their preferences is similar. The results occured from them may have index of uncertainty (meaning how confident we can be about the validity of the results of this subset), depending on the size of sample and the distribution of results. The process is repeated with a larger sample and we check how this uncertainty index changes.
 
 ## References
 
@@ -639,4 +649,9 @@ https://www.kaggle.com/uciml/pima-indians-diabetes-database
 <a id="4">[4]</a> 
 A Complete ML Pipeline Tutorial (ACU ~ 86%)
 Kaggle, [Link](https://www.kaggle.com/pouryaayria/a-complete-ml-pipeline-tutorial-acu-86)
+
+<a id="5">[5]</a> 
+Shipra Saxena (2020)
+A/B Testing for Data Science using Python – A Must-Read Guide for Data Scientists
+Analytics Vidhya, [Link](https://www.analyticsvidhya.com/blog/2020/10/ab-testing-data-science/)
 
