@@ -49,7 +49,31 @@ plt.show()
   <img width="842" height="595" src="images/medv_dist_e04.png">
 </p>
 
-We see that the target values are distributed almost normally with few outliers. And now we move on to the feature selection part.
+We see that the target values are distributed almost normally with few outliers. If we want to quantify these outliers, we need to introduce two new statistical metrics, skewness and kurtosis. **Skewness** is a measure of symmetry, or more precisely, the lack of symmetry. A distribution, or data set, is symmetric if it looks the same to the left and right of the center point. **Kurtosis** is a measure of whether the data are heavy-tailed or light-tailed relative to a normal distribution. That is, data sets with high kurtosis tend to have heavy tails, or outliers. Data sets with low kurtosis tend to have light tails, or lack of outliers. A uniform distribution is the extreme case, in which skewness and kurtosis equal 0.
+
+```python
+# Skewness and kyrtosis
+from scipy.stats import skew
+from scipy.stats import kurtosis
+import numpy as np
+
+print('--'*25)
+print("Target mean : " + str(np.mean(y.values)))
+print("Target var  : " + str(np.var(y.values)))
+print("Target skew : " + str(skew(y.values)))
+print("Target kurt : " + str(kurtosis(y.values)))
+print('--'*25)
+```
+~~~
+--------------------------------------------------
+Target mean : 22.532806324110677
+Target var  : 84.41955615616556
+Target skew : 1.10481082
+Target kurt : 1.46862877
+--------------------------------------------------
+~~~
+
+The positive values in two metrics are due to the asymmetry at the right part of density plot. And now we move on to the feature selection part.
 
 At the beggining, we usually apply some **unsupervised feature selection** method, so as to exclude linear dependencies among features. When referring to unsupervised feature selection, we mean that the information from output variable is totally ignored, as we focus only on the relationship between features. For this reason, we create a **correlation matrix** that measures the linearity between the variables. The correlation matrix can be formed by using the `.corr()` function from the `pandas.DataFrame` library[[2]](#2). We will use the `heatmap()` function from the `seaborn` library to plot the correlation matrix. Let's first print the matrix and then discuss further about it.
 
