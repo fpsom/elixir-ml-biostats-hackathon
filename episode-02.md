@@ -508,6 +508,28 @@ Well, the concept of improving our model isn't as obvious as it may seem. Below 
 5. Cross Validation: To find the right answer of this question, we must use cross validation technique. Cross Validation is one of the most important concepts in data modeling. In general, it says: try to leave a sample on which you do not train the model and test the model on this sample before finalizing the model. We'll check this up in the following episode[[15]](#15).
 6. Data dredging: Data dredging (also data fishing, data snooping, data butchery, and p-hacking) is the misuse of data analysis to find patterns in data that can be presented as statistically significant, thus dramatically increasing and understating the risk of false positives. This is done by performing many statistical tests on the data and only reporting those that come back with significant results [[16]](#16).
 
+## Exercises
+
+### Exercise 1
+**Question**: Reorder followings steps for Machine Learning model creation.
+- Model performance evaluation using test datase based on Cross-validation, F-Measure, accuracy, recall, specificity, sensitivity etc
+- Data QC and Preprocessing(Visualisation, Imputation,Transformation (categorical to numerical),Normalisation)
+- Various model development using training sets
+- Training and testing data separation
+- Model optimisations
+- Acquiring a dataset
+- Model deployment for real world data
+
+> ### Answer:
+> 1. Acquiring a dataset
+> 2. Data QC and Preprocessing(Visualisation, Imputation,Transformation (categorical to numerical),Normalisation)
+> 3. Training and testing data separation
+> 4. Various model development using training sets
+> 5. Model optimizations
+> 6. Model performance evaluation using test datase based on Cross-validation, F-Measure, accuracy, recall, specificity, sensitivity etc
+> 7. Model deployment for real world data
+
+
 ## References
 
 <a id="1">[1]</a> 
