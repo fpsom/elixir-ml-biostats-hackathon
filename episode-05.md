@@ -633,7 +633,7 @@ Picture this scenario – You have made certain changes to your website recently
   <img width="870" height="449 " src="images/ab_testing_e_05.png">
 </p>
 
-The idea of AB testing is based on a standard methodology in statistics, called the Null Hypothesis. In a nutshell, the first 1000 or 2000 visitors in your website are assumed to be a representative subset of the total set of visitors, meaning that the distribution of their preferences is similar. The results occured from them may have index of uncertainty (meaning how confident we can be about the validity of the results of this subset), depending on the size of sample and the distribution of results. The process is repeated with a larger sample and we check how this uncertainty index changes.
+The idea of AB testing is based on a standard methodology in statistics, called the Null Hypothesis. In a nutshell, the first 1000 or 2000 visitors in your website are assumed to be a representative subset of the total set of visitors, meaning that the distribution of their preferences is similar. The results occured from them may have index of uncertainty (meaning how confident we can be about the validity of the results of this subset), depending on the size of sample and the distribution of results. The process is repeated with a larger sample and we check how this uncertainty index variates.
 
 ## References
 
