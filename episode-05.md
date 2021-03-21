@@ -363,10 +363,6 @@ names,results = BasedLine2(X_train, y_train.values.ravel(), models)
 ```
 
 ~~~
-models = GetBasedModel()
-
-names,results = BasedLine2(X_train, y_train.values.ravel(), models)
-
 DT, depth = 3: 0.706917 (0.037627)
 DT, depth = 4: 0.721511 (0.021266)
 DT, depth = 5: 0.703559 (0.041499)
