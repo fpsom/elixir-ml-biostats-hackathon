@@ -450,6 +450,12 @@ Now, let's analyze the standard metrics used in supervised ML problems:
   <img width="278" height="63" src="images/recall_e02.png">
 </p>
 
+- **False positive rate (FPR)**: FPR is the ratio of correctly predicted negative observations to the total predicted negative observations. The question that this metric answer is of all tumors that labeled as benign, how many actually are benign? High precision relates to the low false negative rate. It is calculated by the following formula:
+
+<p align="center">
+  <img width="210" height="58" src="images/FPR.png">
+</p>
+
 - **Specificity**: Specificity measures the proportion of negatives (Benign) that are correctly identified (i.e. the proportion of those who do not have the condition (unaffected) who are correctly identified as not having the condition)
 
 <p align="center">
@@ -561,11 +567,14 @@ Based on the above definitions, the calculated accuracies of models are:
 
 > ### Answer:
 > This is a very typical example that highlights the importance of the rest of the evaluation metrics rather than accuracy. So let's calculate all metrics for the models, based on the above formulas:
-> - Model 1: precision = 0.5, recall = 0.5, specificity = 0.5, F-measure = 0.5
-> - Model 2: precision = 0.65, recall = 0.47, specificity = 0.37, F-measure = 0.54
-> - Model 3: precision = 0.36, recall = 0.57, specificity = 0.46, F-measure = 0.44
-
-
+> - Model 1: precision = 0.5,  recall = 0.5,  specificity = 0.5,  F-measure = 0.5
+> - Model 2: precision = 0.47, recall = 0.65, specificity = 0.37, F-measure = 0.54
+> - Model 3: precision = 0.57, recall = 0.36, specificity = 0.66, F-measure = 0.44
+> So what's the best model? The answer is not that simple, but let's analyze each model separately to explain the differences. 
+> 
+> The first model is purely stohastic. You don't actually need any ML model to produce such results. You just have to choose randomly whether a sample is positive or negative. So the first model is out of competition.
+> 
+> 
 
 ## References
 
