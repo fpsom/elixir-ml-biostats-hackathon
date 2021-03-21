@@ -211,8 +211,8 @@ Confusion Matrix
 
 |  | Yes   | No |
 | -------- | -------- | -------- |
-| Yes     | TP    | b     |
-| No     | c     | d     |
+| Yes     | TP    | FN     |
+| No     | FP     | TN     |
 
 
 Offer multiple models, each with their confusion matrix and the accuracy score, and rank them from best to worst.

@@ -553,14 +553,19 @@ Suppose that you've generated three models with the following confusion matrices
 | No     | 70     | 60     |
 
 Based on the above definitions, the calculated accuracies of models are:
-- acc1 = 50 %
-- acc2 = 50 %
-- acc3 = 50 %
+- acc1 = 0.5
+- acc2 = 0.5
+- acc3 = 0.5
 
 **Question**: Which model is better?
 
 > ### Answer:
-> Bla bla bla
+> This is a very typical example that highlights the importance of the rest of the evaluation metrics rather than accuracy. So let's calculate all metrics for the models, based on the above formulas:
+> - Model 1: precision = 0.5, recall = 0.5, specificity = 0.5, F-measure = 0.5
+> - Model 2: precision = 0.65, recall = 0.47, specificity = 0.37, F-measure = 0.54
+> - Model 3: precision = 0.36, recall = 0.57, specificity = 0.46, F-measure = 0.44
+
+
 
 ## References
 
