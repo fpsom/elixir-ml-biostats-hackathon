@@ -211,7 +211,7 @@ Confusion Matrix
 
 |  | Yes   | No |
 | -------- | -------- | -------- |
-| Yes     | a    | b     |
+| Yes     | TP    | b     |
 | No     | c     | d     |
 
 

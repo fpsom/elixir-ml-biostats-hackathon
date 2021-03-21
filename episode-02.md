@@ -496,7 +496,7 @@ weighted avg       0.93      0.92      0.92       114
 This is a bit tricky question. Improving in terms of what? Of accuracy? Well, that's what an amateur data analyst would suggest, but accuracy is not always the answer in our problems. Just think of a multi-class problem with non-uniform distribution in labels. Supposse that our dataset contains a very short number of samples with label A (5 or 10) and a relatively large number of samples of label B (100 or 1000). If we set our model to classify every sample in class B, our accuracy would be almost 100%; in this way, however, we wouln't find any optimal way to distinguish the two classes. So to succeed that, somebody would think to force the algorithm to strictly fit on our training dataset. This might lead, on the other hand, to overfitting. **Overfitting** happens when a machine learning model has become too attuned to the data on which it was trained and therefore loses its applicability to any other dataset. The opposite scenario of overfitting is **underfitting**, in which the model chosen to get optimized is less complex that it was practically needed. Overfitting and underfitting are visualized in the following plot[[14]].
 
 <p align="center">
-  <img width="1125" height="391" src="images/overfitting_underfitting_e02.png">
+  <img width="1125" height="391	" src="images/overfitting_underfitting_e02.png">
 </p>
 
 Well, the concept of improving our model isn't as obvious as it may seem. Below we are listing some general hints that are necessary to keep in our minds:
@@ -529,6 +529,38 @@ Well, the concept of improving our model isn't as obvious as it may seem. Below 
 > 6. Model performance evaluation using test datase based on Cross-validation, F-Measure, accuracy, recall, specificity, sensitivity etc
 > 7. Model deployment for real world data
 
+### Exercise 2
+Suppose that you've generated three models with the following confusion matrices:
+- **Model 1**
+
+|  | Yes   | No |
+| -------- | -------- | -------- |
+| Yes     | 50    | 50     |
+| No     | 50     | 50     |
+
+- **Model 2**
+
+|  | Yes   | No |
+| -------- | -------- | -------- |
+| Yes     | 60    | 68     |
+| No     | 32     | 40     |
+
+- **Model 3**
+
+|  | Yes   | No |
+| -------- | -------- | -------- |
+| Yes     | 40    | 30     |
+| No     | 70     | 60     |
+
+Based on the above definitions, the calculated accuracies of models are:
+- acc1 = 50 %
+- acc2 = 50 %
+- acc3 = 50 %
+
+**Question**: Which model is better?
+
+> ### Answer:
+> Bla bla bla
 
 ## References
 
@@ -588,8 +620,9 @@ Accuracy, Precision, Recall & F1 Score: Interpretation of Performance Measures
 Exsilio Solutions, [Link](https://blog.exsilio.com/all/accuracy-precision-recall-f1-score-interpretation-of-performance-measures/)
 
 <a id="14">[14]</a>
-Underfitting
-DataRoot, [Link](https://www.datarobot.com/wiki/underfitting/)
+Anup Bhande (2018)
+What is underfitting and overfitting in machine learning and how to deal with it.
+Medium, [Link](https://medium.com/greyatom/what-is-underfitting-and-overfitting-in-machine-learning-and-how-to-deal-with-it-6803a989c76)
 
 <a id="15">[15]</a>
 Sanil Ray (2015)
