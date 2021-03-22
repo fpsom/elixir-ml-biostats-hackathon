@@ -572,9 +572,11 @@ Based on the above definitions, the calculated accuracies of models are:
 > - Model 3: precision = 0.57, recall = 0.36, specificity = 0.66, NPV = 0.46, F-measure = 0.44
 > So what's the best model? The answer is not that simple, but let's analyze each model separately to explain the differences. 
 > 
-> The first model is purely stohastic. You don't actually need any ML model to produce such results. You just have to choose randomly whether a sample is positive or negative. So the first model is out of competition.
+> The first model is purely stohastic. You don't actually need any ML model to produce such results. We just have to choose randomly whether a sample is positive or negative. So the first model is out of competition.
 > 
+> Regarding the second and third model, the answer depends on which question you wish to answer. For example, in the tumor-size problem, its much better a benign tumor to be considered as malignant, than the opposite scenario (I'm not a doctor but it sounds logical for the tumors of fuzzy size - meaning that you cannot clearly determine whether they're benign or malignant - to be considered as malignant and, hence, the patients to start their treatment on time). Therefore, in this case we're intrested in higher recall in the first plase, because we want to eliminate the False-Negative results. On the other hand, if were more interested at the negative results, we would focus on specificity. 
 > 
+> Hence, the answer is that the two models are almost binary equivalent, meaning that model two better at focusing on the prediction of positive resutls (recall = 0.65 - specificity = 0.37), while the second one is better at predicting negative results (recall = 0.36 - specificity = 0.66). Moreover, precision and NPV are also switchable in the two models. (Model 2: precision = 0.47 - NPV = 0.55), (Model 3: precision = 0.57 - NPV = 0.46). Therefore, the most diplomatic answer in this question is that... it depends!
 
 ## References
 
