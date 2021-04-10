@@ -470,6 +470,153 @@ conf_matrix
 
 Although we haven't succeded in a correct classification of all malignant samples, for a wide range of `k-neighbors` values (especially when the variable lies within the interval [10,25]), we classify 2 out of 3 samples correctly, which is definitely an improvement. Moreover, for some values (like `n_neighbors=16` in our example), we succeed in classify perfectly all benign samples!
 
+
+## Exercise 3
+The aim of this exercise is to introduce some more ML techniques to enhance your practical machine learning skills. More specifically, along those lines, this exercise will use an intuitive example to provide a conceptual framework of the Random Forest, a powerful machine learning algorithm. Moreover, we'll use Grid Search Cross validation to tune the parameteres of our model. You'll certainly notice that the two techniques do not significantly differ from what we've learned up to this point.
+
+The problem we will tackle is predicting the max temperature for tommorow (the next day) in Seattle city, WA, using one year of past weather data. Data was downloaded from NOAA Climate Data Online tool. We are going to act as if we don’t have access to any weather forecasts (and besides, it’s more fun to make our own predictions rather than rely on others). What we do have access to is one year of historical max temperatures, the temperatures for the previous two days, and an estimate from a friend who is always claiming to know everything about the weather. This is a supervised, regression machine learning problem. It should be mentioned here that a significant part of the following analysis is based on an article in Towards-Data-Sciene hub with title '[Random Forest in Python](https://towardsdatascience.com/random-forest-in-python-24d0893d51c0)'[[2]](#2).
+
+### Solution
+So, at first, let's import our data.
+
+```python
+import pandas as pd
+import numpy as np
+
+# Load iris
+features = pd.read_csv('temps.csv')
+features
+```
+
+<p align="center">
+  <img width="748" height="363" src="exercises_images/temps_dataset_e3_ex3.png">
+</p>
+
+Following are explanations of the columns:
+- **year**: 2016 for all data points
+- **month**: number for month of the year
+- **day**: number for day of the year
+- **week**: day of the week as a character string
+- **temp_2**: max temperature 2 days prior
+- **temp_1**: max temperature 1 day prior
+- **average**: historical average max temperature
+- **actual**: max temperature measurement
+- **friend**: your friend’s prediction, a random number between 20 below the average and 20 above the average
+
+If we look at the dimensions of the data, we notice there are only 348 rows, which doesn’t quite agree with the 366 days we know there were in 2016. Looking through the data from the NOAA, it seems there are several missing days, which is a great reminder that data collected in the real-world will never be perfect. Missing data can impact an analysis as can incorrect data or outliers. In this case, the missing data will not have a large effect, and the data quality is good because of the source. We also can see there are nine columns which represent eight features and the one target `actual`.
+
+Unfortunately, we aren’t quite at the point where we can just feed raw data into a model and have it return an answer! We will need to do some minor modification to put our data into machine-understandable terms. The first step for us is known as **one-hot encoding** of the data. This process takes categorical variables, such as days of the week and converts it to a numerical representation without an arbitrary ordering. Days of the week are intuitive to us because we use them all the time. You will (hopefully) never find anyone who doesn’t know that ‘Mon’ refers to the first day of the workweek, but machines do not have any intuitive knowledge. What computers know is numbers and for machine learning we must accommodate them. We could simply map days of the week to numbers 1–7, but this might lead to the algorithm placing more importance on Sunday because it has a higher numerical value. Instead, we change the single column of weekdays into seven columns of binary data. This is best illustrated pictorially. So the result is the following:
+
+```python
+# One-hot encode the data using pandas get_dummies
+features = pd.get_dummies(features)
+
+# Display the first 5 rows of the last 12 columns
+features.iloc[:,5:].head(5)
+```
+
+<p align="center">
+  <img width="972" height="171" src="exercises_images/temps_dummies_e3_ex3.png">
+</p>
+
+Now, let's introduce some theoretical stuff.
+
+### Random Forest
+Suppose that a single decision tree represents the way of thinking of a sinlge person. Let's take me for example. If I had to predict the max temperature of the next day, I would start from an reasonable initial range of temperatures (let's say [30,70] degrees Fahreneit, I would consider the current season, the average max temperatue of that particular day in the previous years, the weather of the previous days and finally I would make an estimation. And this is more or the way a single decision tree takes decisions. Well, my prediction for the maximum temperature is probably wrong. And I hate to break it to you, but so is yours. There are too many factors to take into account, and chances are, each individual guess will be high or low. Every person comes to the problem with different background knowledge and may interpret the exact same answer to a question entirely differently. In technical terms, the predictions have variance because they will be widely spread around the right answer. Now, what if we take predictions from hundreds or thousands of individuals, some of which are high and some of which are low, and decided to average them together? Well, congratulations, we have created a random forest! The fundamental idea behind a random forest is to combine many decision trees into a single model. Individually, predictions made by decision trees (or humans) may not be accurate, but combined together, the predictions will be closer to the mark on average.
+
+Why exactly is a random forest better than a single decision tree? We can think about it terms of having hundreds of humans make estimates for the max temperature problem: by pooling predictions, we can incorporate much more knowledge than from any one individual. Each individual brings their own background experience and information sources to the problem. Some people may swear by Accuweather, while others will only look at NOAA (National Oceanic and Atmospheric Administration) forecasts. Perhaps one person relies on a meteorologist friend for their predictions while another uses hundred of years of temperature data. If we only ask one individual, we would only take advantage of their limited scope of information, but by combining everyone’s predictions together, our net of information is much greater. Furthermore, the more diverse each person’s source of information, the more robust the random forest is because it will not be swayed by a single anomalous data source. If NOAA goes rogue and starts making predictions over 100 degrees and everyone relied on NOAA, then our entire model would be worthless. If instead, individuals in our ‘forest’ use a number of different weather sources, then our model will not be greatly affected by a single source and we can continue to make reasonable predictions.
+
+Why the name random forest? Well, much as people might rely on different sources to make a prediction, *each decision tree in the forest considers a random subset of features when forming questions and only has access to a random set of the training data points*. This increases diversity in the forest leading to more robust overall predictions and the name ‘random forest.’ When it comes time to make a prediction, the random forest takes an average of all the individual decision tree estimates. (This is the case for a regression task, such as our problem where we are predicting a continuous value of temperature. The other class of problems is known as classification, where the targets are a discrete class label such as cloudy or sunny. In that case, the random forest will take a majority vote for the predicted class). With that in mind, we now have down all the conceptual parts of the random forest [[3]](#3)!
+
+### Grid Search Cross validation
+Let's us understand what is grid search. It is the process of performing hyperparameter tuning in order to determine the optimal values for a given model. As mentioned many times during this course, the performance of a model significantly depends on the value of hyperparameters. Note that there is no way to know in advance the best values for hyperparameters so ideally, we need to try all possible values to know the optimal values. Doing this manually could take a considerable amount of time and resources and thus we use GridSearchCV to automate the tuning of hyperparameters. So, it's an automated version of what we've done manually during the episodes. Nothing more.
+
+`GridSearchCV()` is a function that comes in Scikit-learn’s `model_selection` package. This function helps to loop through predefined hyperparameters and fit your estimator (model) on your training set. So, in the end, we can select the best parameters from the listed hyperparameters.
+
+### Back to code
+The rest of the exercise is evidently quite simple, because all the necessary stuff is implemented in Scikit Learn package. First of all, we need to split data into training, validation and test set:
+
+```python
+# Split to train, validation and test data
+from sklearn.model_selection import train_test_split
+
+# Specifying train and test set
+X_train_validation, X_test, y_train_validation, y_test = \
+    train_test_split(X, y, test_size=0.3, shuffle = True, random_state = 0)
+
+```
+
+As you can see, we haven't proceed to further split of `X_train_validation` and `y_train_validaiton` datasets. The reason is that `GridSearchCV()` implements automatically the latter process while being executed. In the following code we initialize a `RandomForestRegressor()` and use `GridSearchCV()` to optimize some hyperparameters. The chosen hyperparameters are: `n_estimators` which is the number of the constructed Decision Trees, `criterion` is basically the function to measure the quality of a split on the tree, `max_depth` is the maximum depth of the tree and `max_features` are the maximum number of features that a subject in the Random Forest may contain. By passing `cv = 5` as an argument to `GridSearchCV()` object, we determine the number of folds in a (Stratified) KFold routine, which is being executed in the background. (The following block may take a couple of minutes to run).
+
+```python
+from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import RandomForestRegressor
+
+param_grid = {'n_estimators':[50, 100, 150, 200, 250, 300], 'criterion':('mse', 'mae'), \
+             'max_depth': [3,4,5,6,7,8], 'max_features': [3,6,9,12,15]}
+
+# random forest classifier
+rf = RandomForestRegressor()
+
+# Gris Search cv object
+gscv = GridSearchCV(estimator= rf, param_grid = param_grid, cv = 5)
+
+# fit data
+gscv.fit(X_train_validation, y_train_validation)
+```
+
+~~~
+GridSearchCV(cv=5, estimator=RandomForestRegressor(),
+             param_grid={'criterion': ('mse', 'mae'),
+                         'max_depth': [3, 4, 5, 6, 7, 8],
+                         'max_features': [3, 6, 9, 12, 15],
+                         'n_estimators': [50, 100, 150, 200, 250, 300]})
+~~~
+
+So, the optimal combination of hyperparameters is:
+
+```python
+# best choise
+gscv.best_params_
+```
+
+~~~
+{'criterion': 'mae', 'max_depth': 8, 'max_features': 9, 'n_estimators': 50}
+~~~
+
+Lastly, let's check the performance of the model having the optimized parameters:
+
+```python
+from sklearn.metrics import mean_squared_error
+
+# optimal random forest
+rf = RandomForestRegressor(n_estimators=50, criterion='mae',max_depth=8, max_features=9)
+
+# fit to train data
+rf.fit(X_train_validation, y_train_validation)
+
+# predict
+y_pred = rf.predict(X_test)
+
+print('Test set results:')
+
+# MSE
+mse = mean_squared_error(y_test, y_pred)
+print('MSE: ' + str(mse))
+
+# R square
+r_sq = rf.score(X_test, y_test)
+print('R^2: ' + str(r_sq))
+```
+
+~~~
+Test set results:
+MSE: 21.46646761904762
+R^2: 0.8162853658025393
+~~~
+
+Results are pretty encouraging! Our temperature predictions in the test set seem to be really close to the real ones!
+
 ## References
 
 <a id="1">[1]</a> 
@@ -477,3 +624,12 @@ Jason Brownlee
 SMOTE for Imbalanced Classification with Python
 Machine Learning Mastery, [Link](https://machinelearningmastery.com/smote-oversampling-for-imbalanced-classification/)
 
+<a id="2">[2]</a> 
+Will Koehrsen (2017)
+Random Forest in Python
+Towards Data Science, [Link](https://towardsdatascience.com/random-forest-in-python-24d0893d51c0)
+
+<a id="3">[3]</a> 
+Will Koehrsen (2017)
+Understanding the Random Forest with an intuitive example
+Medium, [Link](https://williamkoehrsen.medium.com/random-forest-simple-explanation-377895a60d2d)
