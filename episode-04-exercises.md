@@ -212,7 +212,7 @@ plt.show()
 ```
 
 <p align="center">
-  <img width="1080" height="720" src="exercises_images/feature_importances_ex1_e4.png">
+  <img width="774" height="579" src="exercises_images/feature_importances_ex1_e4.png">
 </p>
 
 We can define an arbitary cut-off, let's say `cut-off = 0.05`, meaning that we only keep the features with higher score than the `cut-off`. The number of features is generally short, so we can do it manually. Let's check how the model with less features behaves.
