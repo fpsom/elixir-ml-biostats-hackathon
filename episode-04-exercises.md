@@ -248,9 +248,128 @@ R^2 from Approach 2 - Test set - Feature selection:
 
 Bingo! Performance is slightly lower but features are reduced by half, leading to a particularly decent trade-off.
 
+## Exercise 2
+This is the last exercise of our episode and tackles with metagenomic data. The general point of the exercise is to classify diseaces based on "metagenomic features", in general. We'll definetely discuss the dataset and make it clear what these features mean. The file used is the `abundance.csv` file from [Human Metagenomics](https://www.kaggle.com/antaresnyc/human-metagenomics) dataset in Kaggle, which was also used in the analysis part of a research article in July of 2016, titled 'Machine Learning Meta-analysis of Large Metagenomic Datasets: Tools and Biological Insights' [[2]](#2). So let's get started.
+
+### Dataset
+First of all, let's import our dataset:
+
+```python
+import pandas as pd
+
+data = pd.read_csv('abundance.csv', low_memory = False)
+```
+
+We have set `low_memory = False` because some columns have mixed types of data (for example numeric with strings). Our dataset consists of **3610 rows × 3513 columns**, so it's meaningless to print the data table. Our target variable is `disease` column, so:
+
+```python
+y = data.pop('disease')
+X = data
+```
+
+So, let's talk about the columns of `X` matrix. The features of this dataset were generated from [MetaPhlAn2](https://huttenhower.sph.harvard.edu/metaphlan2/) toolkit. MetaPhlAn (Metagenomic Phylogenetic Analysis) is a computational tool for profiling the composition of microbial communities from metagenomic shotgun sequencing data. So, in a nutshell, the toolkit takes as input shotgun sequencing data and generates an accurate estimation of organismal relative abundance (in terms of number of cells rather than fraction of reads). These quantified estimations are expressed as features in `X` matrix, in those features whose names begin with the prefix `k_`, for example `k__Archaea`, `k__Archaea|p__Euryarchaeota`, `k__Archaea|p__Euryarchaeota|c__Methanobacteria` etc. Suffixes 'k\_', 'p\_', 'c\_' etc refer to different [taxonomic ranks](https://en.wikipedia.org/wiki/Taxonomic_rank). Hence, these columns correspond to different organisms that were identified within the metagenomic sample. The rest of data matrix was filled with metadata columns, which were appended as initial columns. Therefore, around the first 210 columns are metadata, and the rest of them are features. However, we're gonna keep metadata columns, because we want to combine numerical and categorical features in this exercise, and check how this combination affects our classification model. 
+
+Now, let's check the distribution of targets:
+
+```python
+# Printing claases and corresponding number of samples
+y.value_counts()
+```
+
+~~~
+n                             2054
+nd                             475
+t2d                            223
+obesity                        164
+ibd_ulcerative_colitis         148
+cirrhosis                      118
+leaness                         89
+stec2-positive                  52
+impaired_glucose_tolerance      49
+cancer                          48
+n_relative                      47
+y                               36
+small_adenoma                   26
+ibd_crohn_disease               25
+ -                              20
+large_adenoma                   13
+overweight                      10
+-                                7
+obese                            5
+underweight                      1
+Name: disease, dtype: int64
+~~~
+
+It seems that the distribution of target values is totally non-uniform, including classes with very few samples (class `underweight` also contains a singleton) and many `NaN` values (probably the `n` class refers to `NaN` or `NULL` or something similar). To simplify our lives, we're gonna isolate only samples of several diseases: obesity, ibd\_ulcerative\_colitis, cirrhosis, leaness, stec2-positive, impaired\_glucose\_tolerance and cancer. To succeed this, we use Numpy's `isnin()` function.
+
+```python
+import numpy as np
+
+# isolate rows of specific diseases: 
+# obesity, ibd_ulcerative_colitis, cirrhosis, leaness, stec2-positive, impaired_glucose_tolerance and cancer
+X = X[np.isin(y, ['obesity', 'ibd_ulcerative_colitis', 'cirrhosis', 'leaness', 'stec2-positive', 'impaired_glucose_tolerance', 'cancer'])]
+y = y[np.isin(y, ['obesity', 'ibd_ulcerative_colitis', 'cirrhosis', 'leaness', 'stec2-positive', 'impaired_glucose_tolerance', 'cancer'])]
+```
+
+Evidently, after the deletion of the majority of rows, there might have occured columns with a single value (zero variance columns). We have to remove those columns, as they provide no information at all. For this reasone, we're gonna use Sklearn's `VarianceThreshold()`, which identifies columns of variance lower than a pre-specified threshold and deletes them. At this initial stage, the `threshold` is set to 0, which is by the way the default parameter. We could possibly also extract near-zero variance features, but this will be done in further steps. The first thing we need to do is to encode categorical features into numerical ones. At first we copy the feature matrix dataframe into a new one and save the feature names into a list. Then we need to extract the categorial featuers using boolean mask:
+
+```python
+# Keeping feature names into a list
+feature_names = X.columns
+
+# copy dataframe
+X_new = X.copy()
+
+# Categorical boolean mask
+categorical_feature_mask = X_new.dtypes==object # filter categorical columns using mask and turn it into a list
+categorical_cols = X_new.columns[categorical_feature_mask].tolist()
+```
+
+`LabelEncoder()` converts each class under specified feature to a numerical value. Instantiate a `LabelEncoder()` object and apply it on each of the categorical columns:
+
+```python
+# import labelencoder
+from sklearn.preprocessing import LabelEncoder# instantiate labelencoder object
+le = LabelEncoder()
+
+# apply le on categorical feature columns
+X_new[categorical_cols] = X_new[categorical_cols].apply(lambda col: le.fit_transform(col))
+```
+
+If we plot the `X_new` dataframe, we'll verify that categorical features have successfully been encoded into numerical ones. Now, let's apply `VarianceThreshold()`.
+
+```python
+from sklearn.feature_selection import VarianceThreshold
+
+# Zero variance
+selector = VarianceThreshold()
+X_nzv = selector.fit_transform(X_new)
+
+# non-zero feature names
+non_zero_feature_names = [feature_names[i] for i,x in enumerate(selector.variances_) if x != 0]
+
+# X non zero
+X = X[non_zero_feature_names]
+X
+```
+
+<p align="center">
+  <img width="957" height="361" src="exercises_images/X_reduced_ex2_e4.png">
+</p>
+
+Indeed, features have beed reduced, from 3513 to 1840.
+
+### Dataset
+
+
 ## References
 
 <a id="1">[1]</a> 
 https://www.kaggle.com/alexisbcook/missing-values
+
+<a id="2">[2]</a> 
+Edoardo Pasolli, Duy Tin Truong, Faizan Malik, Levi Waldron, Nicola Segata (2016)
+Machine Learning Meta-analysis of Large Metagenomic Datasets: Tools and Biological Insights
+Plos Computational Biology, doi: [https://doi.org/10.1371/journal.pcbi.1004977](https://doi.org/10.1371/journal.pcbi.1004977)
 
 
