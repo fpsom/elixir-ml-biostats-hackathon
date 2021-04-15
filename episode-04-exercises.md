@@ -267,7 +267,24 @@ y = data.pop('disease')
 X = data
 ```
 
-So, let's talk about the columns of `X` matrix. The features of this dataset were generated from [MetaPhlAn2](https://huttenhower.sph.harvard.edu/metaphlan2/) toolkit. MetaPhlAn (Metagenomic Phylogenetic Analysis) is a computational tool for profiling the composition of microbial communities from metagenomic shotgun sequencing data. So, in a nutshell, the toolkit takes as input shotgun sequencing data and generates an accurate estimation of organismal relative abundance (in terms of number of cells rather than fraction of reads). These quantified estimations are expressed as features in `X` matrix, in those features whose names begin with the prefix `k_`, for example `k__Archaea`, `k__Archaea|p__Euryarchaeota`, `k__Archaea|p__Euryarchaeota|c__Methanobacteria` etc. Suffixes 'k\_', 'p\_', 'c\_' etc refer to different [taxonomic ranks](https://en.wikipedia.org/wiki/Taxonomic_rank). Hence, these columns correspond to different organisms that were identified within the metagenomic sample. The rest of data matrix was filled with metadata columns, which were appended as initial columns. Therefore, around the first 210 columns are metadata, and the rest of them are features. However, we're gonna keep metadata columns, because we want to combine numerical and categorical features in this exercise, and check how this combination affects our classification model. 
+So, let's talk about the columns of `X` matrix. The features of this dataset were generated from [MetaPhlAn2](https://huttenhower.sph.harvard.edu/metaphlan2/) toolkit. MetaPhlAn (Metagenomic Phylogenetic Analysis) is a computational tool for profiling the composition of microbial communities from metagenomic shotgun sequencing data. So, in a nutshell, the toolkit takes as input shotgun sequencing data and generates an accurate estimation of organismal relative abundance (in terms of number of cells rather than fraction of reads). These quantified estimations are expressed as features in `X` matrix, in those features whose names begin with the prefix `k_`, for example `k__Archaea`, `k__Archaea|p__Euryarchaeota`, `k__Archaea|p__Euryarchaeota|c__Methanobacteria` etc. Suffixes 'k\_', 'p\_', 'c\_' etc refer to different [taxonomic ranks](https://en.wikipedia.org/wiki/Taxonomic_rank). Hence, these columns refer to different organisms that were identified within the metagenomic sample. The rest of data matrix was filled with metadata columns, which were appended as initial columns. Therefore, around the first 210 columns are metadata, and the rest of them are features. At first, let's pop out those columns, because when dealing with metadata, the metadata-labels might be strictly correlated with the output. For example, if our target disease is `cancer`, a possible metadata-label might refer to the type of cancer, otherwise it might take a NaN value. By default, the presence of this label would strictly indicate the `cancer` label in the target, something extremly easy for the model to learn.
+
+```python
+# feature names
+feature_names = X.columns
+
+# identify species abundance features
+abundance_features = [x for x in feature_names if x.startswith('k_')]
+
+# isolate only (numerical) metagenomic features
+X = X[abundance_features]
+X
+```
+
+<p align="center">
+  <img width="969" height="363" src="exercises_images/features_ex2_e4.png">
+</p>
+
 
 Now, let's check the distribution of targets:
 
@@ -311,39 +328,17 @@ X = X[np.isin(y, ['obesity', 'ibd_ulcerative_colitis', 'cirrhosis', 'leaness', '
 y = y[np.isin(y, ['obesity', 'ibd_ulcerative_colitis', 'cirrhosis', 'leaness', 'stec2-positive', 'impaired_glucose_tolerance', 'cancer'])]
 ```
 
-Evidently, after the deletion of the majority of rows, there might have occured columns with a single value (zero variance columns). We have to remove those columns, as they provide no information at all. For this reasone, we're gonna use Sklearn's `VarianceThreshold()`, which identifies columns of variance lower than a pre-specified threshold and deletes them. At this initial stage, the `threshold` is set to 0, which is by the way the default parameter. We could possibly also extract near-zero variance features, but this will be done in further steps. The first thing we need to do is to encode categorical features into numerical ones. At first we copy the feature matrix dataframe into a new one and save the feature names into a list. Then we need to extract the categorial featuers using boolean mask:
-
-```python
-# Keeping feature names into a list
-feature_names = X.columns
-
-# copy dataframe
-X_new = X.copy()
-
-# Categorical boolean mask
-categorical_feature_mask = X_new.dtypes==object # filter categorical columns using mask and turn it into a list
-categorical_cols = X_new.columns[categorical_feature_mask].tolist()
-```
-
-`LabelEncoder()` converts each class under specified feature to a numerical value. Instantiate a `LabelEncoder()` object and apply it on each of the categorical columns:
-
-```python
-# import labelencoder
-from sklearn.preprocessing import LabelEncoder# instantiate labelencoder object
-le = LabelEncoder()
-
-# apply le on categorical feature columns
-X_new[categorical_cols] = X_new[categorical_cols].apply(lambda col: le.fit_transform(col))
-```
-
-If we plot the `X_new` dataframe, we'll verify that categorical features have successfully been encoded into numerical ones. Now, let's apply `VarianceThreshold()`.
+Evidently, after the deletion of the majority of rows, there might have occured columns with a single value (zero variance columns). We have to remove those columns, as they provide no information at all. For this reasone, we're gonna use Sklearn's `VarianceThreshold()`, which identifies columns of variance lower than a pre-specified threshold and deletes them. At this initial stage, the `threshold` is set to 0, which is by the way the default parameter. We could possibly also extract near-zero variance features, but we're gonna check this at a later stage.
 
 ```python
 from sklearn.feature_selection import VarianceThreshold
 
+# new feature names
+feature_names = X.columns
+
 # Zero variance
 selector = VarianceThreshold()
-X_nzv = selector.fit_transform(X_new)
+X_nzv = selector.fit_transform(X)
 
 # non-zero feature names
 non_zero_feature_names = [feature_names[i] for i,x in enumerate(selector.variances_) if x != 0]
@@ -354,10 +349,75 @@ X
 ```
 
 <p align="center">
-  <img width="957" height="361" src="exercises_images/X_reduced_ex2_e4.png">
+  <img width="980" height="368" src="exercises_images/X_reduced_ex2_e4.png">
 </p>
 
-Indeed, features have beed reduced, from 3513 to 1840.
+Indeed, features have beed reduced, from 3302 to 1753. We're going to apply linear-SVM to predict the target variable y. Prior to this, let's normalize our features:
+
+```python
+from sklearn.preprocessing import MinMaxScaler
+
+# feature names
+feature_names = X.columns
+
+# data normalization
+scaler = MinMaxScaler()
+X_normalized = scaler.fit_transform(X)
+X_normalized = pd.DataFrame(X_normalized, columns=feature_names)
+X_normalized
+```
+
+<p align="center">
+  <img width="977" height="362" src="exercises_images/X_normalized_ex2_e4.png">
+</p>
+
+Now, let's define a more general function that prints the classification report.
+
+```python
+from sklearn import svm
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
+
+def apply_svm(X,y):
+    
+    # train_test split
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0, stratify=y)
+    
+    # model fit
+    model = svm.LinearSVC()
+    model.fit(X_train, y_train)
+    
+    # predict
+    pred = model.predict(X_test)
+    
+    # print report
+    print(classification_report(y_true=y_test,y_pred=pred))
+    return
+```
+
+And see what we have.
+
+```python
+# apply svm to initial data
+apply_svm(X,y)
+```
+
+~~~
+                            precision    recall  f1-score   support
+
+                    cancer       0.00      0.00      0.00        14
+                 cirrhosis       0.84      0.74      0.79        35
+    ibd_ulcerative_colitis       0.73      0.78      0.75        45
+impaired_glucose_tolerance       0.40      0.53      0.46        15
+                   leaness       0.42      0.52      0.47        27
+                   obesity       0.55      0.45      0.49        49
+            stec2-positive       0.61      0.88      0.72        16
+
+                  accuracy                           0.59       201
+                 macro avg       0.51      0.56      0.53       201
+              weighted avg       0.58      0.59      0.58       201
+~~~
+
 
 ### Dataset
 
