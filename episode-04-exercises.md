@@ -249,7 +249,7 @@ R^2 from Approach 2 - Test set - Feature selection:
 Bingo! Performance is slightly lower but features are reduced by half, leading to a particularly decent trade-off.
 
 ## Exercise 2
-This is the last exercise of our episode and tackles with metagenomic data. The general point of the exercise is to classify diseaces based on "metagenomic features", in general. We'll definetely discuss the dataset and make it clear what these features mean. The file used is the `abundance.csv` file from [Human Metagenomics](https://www.kaggle.com/antaresnyc/human-metagenomics) dataset in Kaggle, which was also used in the analysis part of a research article in July of 2016, titled 'Machine Learning Meta-analysis of Large Metagenomic Datasets: Tools and Biological Insights' [[2]](#2). So let's get started.
+This is the last exercise of our episode and tackles with metagenomic data. The general point of the exercise is to classify diseaces based on "metagenomic features" and check how feature selection affects our result. We'll definetely discuss the dataset and make it clear what these features mean. The file used is the `abundance.csv` file from [Human Metagenomics](https://www.kaggle.com/antaresnyc/human-metagenomics) dataset in Kaggle, which was also used in the analysis part of a research article in July of 2016, titled 'Machine Learning Meta-analysis of Large Metagenomic Datasets: Tools and Biological Insights' [[2]](#2). So let's get started.
 
 ### Dataset
 First of all, let's import our dataset:
@@ -260,7 +260,7 @@ import pandas as pd
 data = pd.read_csv('abundance.csv', low_memory = False)
 ```
 
-We have set `low_memory = False` because some columns have mixed types of data (for example numeric with strings). Our dataset consists of **3610 rows × 3513 columns**, so it's meaningless to print the data table. Our target variable is `disease` column, so:
+We have set `low_memory = False` because some columns have mixed types of data (for example numeric with strings). Our dataset consists of **3610 rows × 3302 columns**, so it's meaningless to print the data table. Our target variable is `disease` column, so:
 
 ```python
 y = data.pop('disease')
@@ -268,6 +268,8 @@ X = data
 ```
 
 So, let's talk about the columns of `X` matrix. The features of this dataset were generated from [MetaPhlAn2](https://huttenhower.sph.harvard.edu/metaphlan2/) toolkit. MetaPhlAn (Metagenomic Phylogenetic Analysis) is a computational tool for profiling the composition of microbial communities from metagenomic shotgun sequencing data. So, in a nutshell, the toolkit takes as input shotgun sequencing data and generates an accurate estimation of organismal relative abundance (in terms of number of cells rather than fraction of reads). These quantified estimations are expressed as features in `X` matrix, in those features whose names begin with the prefix `k_`, for example `k__Archaea`, `k__Archaea|p__Euryarchaeota`, `k__Archaea|p__Euryarchaeota|c__Methanobacteria` etc. Suffixes 'k\_', 'p\_', 'c\_' etc refer to different [taxonomic ranks](https://en.wikipedia.org/wiki/Taxonomic_rank). Hence, these columns refer to different organisms that were identified within the metagenomic sample. The rest of data matrix was filled with metadata columns, which were appended as initial columns. Therefore, around the first 210 columns are metadata, and the rest of them are features. At first, let's pop out those columns, because when dealing with metadata, the metadata-labels might be strictly correlated with the output. For example, if our target disease is `cancer`, a possible metadata-label might refer to the type of cancer, otherwise it might take a NaN value. By default, the presence of this label would strictly indicate the `cancer` label in the target, something extremly easy for the model to learn.
+
+### Solution - Code
 
 ```python
 # feature names
@@ -328,7 +330,7 @@ X = X[np.isin(y, ['obesity', 'ibd_ulcerative_colitis', 'cirrhosis', 'leaness', '
 y = y[np.isin(y, ['obesity', 'ibd_ulcerative_colitis', 'cirrhosis', 'leaness', 'stec2-positive', 'impaired_glucose_tolerance', 'cancer'])]
 ```
 
-Evidently, after the deletion of the majority of rows, there might have occured columns with a single value (zero variance columns). We have to remove those columns, as they provide no information at all. For this reasone, we're gonna use Sklearn's `VarianceThreshold()`, which identifies columns of variance lower than a pre-specified threshold and deletes them. At this initial stage, the `threshold` is set to 0, which is by the way the default parameter. We could possibly also extract near-zero variance features, but we're gonna check this at a later stage.
+Evidently, after the deletion of the majority of rows, there might have occured single value columns (zero variance columns). We have to remove those columns, as they provide no information at all. For this reasone, we're gonna use Sklearn's `VarianceThreshold()`, which identifies columns of variance lower than a pre-specified threshold and deletes them. At this initial stage, the `threshold` is set to 0, which is by the way the default parameter. We could possibly also extract near-zero variance features, but we're gonna check this at a later stage.
 
 ```python
 from sklearn.feature_selection import VarianceThreshold
@@ -352,7 +354,7 @@ X
   <img width="980" height="368" src="exercises_images/X_reduced_ex2_e4.png">
 </p>
 
-Indeed, features have beed reduced, from 3302 to 1753. We're going to apply linear-SVM to predict the target variable y. Prior to this, let's normalize our features:
+Indeed, features have reduced, from 3302 to 1753. We're going to apply linear-SVM to predict the target variable y. Prior to this, let's normalize our features:
 
 ```python
 from sklearn.preprocessing import MinMaxScaler
@@ -395,7 +397,7 @@ def apply_svm(X,y):
     return
 ```
 
-And see what we have.
+And see what we have. The first test will be with the non-normalized feature matrix.
 
 ```python
 # apply svm to initial data
@@ -406,21 +408,146 @@ apply_svm(X,y)
                             precision    recall  f1-score   support
 
                     cancer       0.00      0.00      0.00        14
-                 cirrhosis       0.84      0.74      0.79        35
-    ibd_ulcerative_colitis       0.73      0.78      0.75        45
-impaired_glucose_tolerance       0.40      0.53      0.46        15
-                   leaness       0.42      0.52      0.47        27
-                   obesity       0.55      0.45      0.49        49
-            stec2-positive       0.61      0.88      0.72        16
+                 cirrhosis       0.90      0.80      0.85        35
+    ibd_ulcerative_colitis       0.77      0.76      0.76        45
+impaired_glucose_tolerance       0.67      0.53      0.59        15
+                   leaness       0.33      0.63      0.43        27
+                   obesity       0.46      0.35      0.40        49
+            stec2-positive       0.68      0.81      0.74        16
 
-                  accuracy                           0.59       201
-                 macro avg       0.51      0.56      0.53       201
-              weighted avg       0.58      0.59      0.58       201
+                  accuracy                           0.58       201
+                 macro avg       0.54      0.55      0.54       201
+              weighted avg       0.59      0.58      0.58       201
+
+
+
+
 ~~~
 
+Let's see how normalization affects our results:
 
-### Dataset
+```python
+# apply svm to normalized data
+apply_svm(X_normalized,y)
+```
 
+~~~
+                            precision    recall  f1-score   support
+
+                    cancer       0.40      0.29      0.33        14
+                 cirrhosis       0.79      0.86      0.82        35
+    ibd_ulcerative_colitis       0.76      0.76      0.76        45
+impaired_glucose_tolerance       0.83      0.67      0.74        15
+                   leaness       0.37      0.52      0.43        27
+                   obesity       0.54      0.45      0.49        49
+            stec2-positive       0.82      0.88      0.85        16
+
+                  accuracy                           0.64       201
+                 macro avg       0.64      0.63      0.63       201
+              weighted avg       0.64      0.64      0.64       201
+~~~
+
+The majority of metrics seem to have a tiny but noticeable improvement. Now, a nice idea would be to remove feautres that are high correlated with others. To succeed this, we construct the correlation matrix, keep the upper triangular part and pop out columns that are high correlated with rows. By the way, this is a standard routine to automatically remove high correlated features.
+
+```python
+# correlation matrix
+cor_matrix = X_normalized.corr().abs()
+
+# upper triangular
+upper_tri = cor_matrix.where(np.triu(np.ones(cor_matrix.shape),k=1).astype(np.bool_))
+
+# columns to drop
+to_drop = [column for column in upper_tri.columns if any(upper_tri[column] > 0.8)]
+
+# droppin high correlated columns
+X_drop_cor = X_normalized.drop(labels = to_drop, axis=1)
+X_drop_cor
+```
+
+<p align="center">
+  <img width="972" height="360" src="exercises_images/X_cor_pop_out_ex2_e4.png">
+</p>
+
+We ended up having a matrix with only 600 columns, starting from a total number of 3302. What's the effect of those changes in the final result?
+
+```python
+# apply svm to normalized data with uncorrelated features
+apply_svm(X_drop_cor,y)
+```
+
+~~~
+                            precision    recall  f1-score   support
+
+                    cancer       0.40      0.14      0.21        14
+                 cirrhosis       0.76      0.91      0.83        35
+    ibd_ulcerative_colitis       0.75      0.80      0.77        45
+impaired_glucose_tolerance       1.00      0.80      0.89        15
+                   leaness       0.41      0.52      0.46        27
+                   obesity       0.60      0.51      0.55        49
+            stec2-positive       0.78      0.88      0.82        16
+
+                  accuracy                           0.67       201
+                 macro avg       0.67      0.65      0.65       201
+              weighted avg       0.67      0.67      0.66       201
+
+~~~
+
+Again, the improvement is small but noticeable. The final unsupervised feature selection method to apply is to delete Near-Zero variant features. More specifically, we select an arbitary cut-off for feature variance, and keep only features that have higher variance than cut-off.
+
+```python
+# new feature names
+feature_names = X_drop_cor.columns
+
+# variance threshold
+var_thres = 0.005
+
+# Zero variance
+selector = VarianceThreshold(threshold = var_thres)
+X_nzv = selector.fit_transform(X_drop_cor)
+
+# non-zero feature names
+non_zero_feature_names = [feature_names[i] for i,x in enumerate(selector.variances_) if x > var_thres]
+F
+# X non zero
+X_drop_cor_nzv = X_drop_cor[non_zero_feature_names]
+X_drop_cor_nzv
+```
+
+<p align="center">
+  <img width="957" height="365" src="exercises_images/X_nzv_ex2_e4.png">
+</p>
+
+The number of features reduced even more to 164. The selection of threshold was based on the distribution of feature variances. From the following plot, it's clear that a significant number of features have lower variance value than 0.01. 
+
+<p align="center">
+  <img width="946" height="598" src="exercises_images/feature_variance_disttribution_ex2_e4.png">
+</p>
+
+But what's the impact to classification results?
+
+```python
+# apply svm to normalized data with uncorrelated features
+# close to zero variance features deleted
+apply_svm(X_drop_cor_nzv,y)
+```
+
+~~~
+                            precision    recall  f1-score   support
+
+                    cancer       0.30      0.21      0.25        14
+                 cirrhosis       0.78      0.91      0.84        35
+    ibd_ulcerative_colitis       0.76      0.76      0.76        45
+impaired_glucose_tolerance       0.79      0.73      0.76        15
+                   leaness       0.52      0.44      0.48        27
+                   obesity       0.63      0.65      0.64        49
+            stec2-positive       0.76      0.81      0.79        16
+
+                  accuracy                           0.68       201
+                 macro avg       0.65      0.65      0.64       201
+              weighted avg       0.67      0.68      0.67       201
+~~~
+
+Parameters remained more or less the same. However, we've ended up with a relatively small number of features that seem to identify preety good some of the diseases. Indeed, results are not generally decent, but keep in mind that the classification correlation of metagenomic samples to diseases is a difficult problem of great research interest nowadays. So, we were not expecting to break the state of the art models within our exercise. In contrast, we wanted to show how ML interacts with pure Bioinformatics and why it is considered as a really promising way to solve many problems, such as the analysis of metagenomic samples.
 
 ## References
 
